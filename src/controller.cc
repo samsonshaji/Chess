@@ -16,7 +16,7 @@ void Controller::startGame(Player &p1, Player &p2) {
 }
 
 void Controller::checkWin() {
-    if (board.isCheckmate(currentPlayer->getColor())) {
+    if (board.isCheckmate(currentPlayer->getColour())) {
         gameEnded = true;
         std::cout << "Checkmate! ";
         if (currentPlayer == player1) {
@@ -24,7 +24,7 @@ void Controller::checkWin() {
         } else {
             std::cout << "Player 1 wins!" << std::endl;
         }
-    } else if (board.isStalemate(currentPlayer->getColor())) {
+    } else if (board.isStalemate(currentPlayer->getColour())) {
         gameEnded = true;
         std::cout << "Stalemate!" << std::endl;
     }
@@ -33,14 +33,14 @@ void Controller::checkWin() {
 // newly added -> document later
 void Controller::playTurn(Player* p) {
     Move move = p->makeMove(board);
-    board.move(move);
+    board.movePiece(move);
     MoveHistory.push_back(move);
     std::cout << "Player " << (p == player1 ? "1" : "2") << "made a move" << std::endl;
 }
 
 void Controller::runGame(Player &p1, Player &p2) {
     while (!gameEnded) {
-        board.notify();
+        board.notifyObservers();
         playTurn(currentPlayer);
         checkWin();
         currentPlayer = (currentPlayer == player1) ? player2 : player1;

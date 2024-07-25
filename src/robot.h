@@ -4,8 +4,10 @@
 #include "move.h"
 
 class Robot : public Player {
-    public: 
-        virtual Move makeMove(const Board& board) = 0;
+public:
+    Robot(Colour colour) : Player(colour) {}
+    virtual Colour getColour() const override;
+    virtual void makeMove(const Board &board) override;
 };
 
 #endif
