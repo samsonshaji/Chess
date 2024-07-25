@@ -25,6 +25,8 @@ public:
     virtual bool isCheckingSquare(Move m, const Board &b) const = 0;
     virtual int getPoints() const = 0;
     virtual bool canCheck(const Board &b) const = 0;
+
+    friend std::ostream &operator<<(std::ostream &out, const Piece &p);
 protected:
     Color color;
 };

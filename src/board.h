@@ -23,6 +23,8 @@ class Board: public Observer {
         Board();
         void notify() override;
         void move(Move m);
+        void printBoard() const;
+
         void isCheck(Color c);
         void isCheckmate(Color c);
         void isStalemate(Color c);
