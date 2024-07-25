@@ -2,16 +2,17 @@
 #define PIECE_H
 
 #include <string>
+#include "colour.h"
 
 class Piece {
 public:
-    Piece(bool isWhite);
+    Piece(Colour colour);
     virtual ~Piece() = default;
-    virtual bool isMoveValid(int startX, int startY, int endX, int endY) const = 0;
-    bool isWhite() const;
+    virtual bool isMoveValid(int startX, int startY, int endX, int endY, const Board& board) const = 0;
+    Colour getColour() const;
     virtual std::string getSymbol() const = 0;
 private:
-    bool white;
+    Colour colour;
 };
 
 #endif // PIECE_H

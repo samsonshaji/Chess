@@ -4,18 +4,20 @@
 #include <vector>
 #include "piece.h"
 #include "move.h"
+#include "square.h"
+#include "colour.h"
 
 class Board {
 public:
     Board();
     void display() const;
     bool movePiece(const Move& move);
-    bool isInCheck(bool isWhite) const;
-    bool isCheckmate(bool isWhite) const;
-    bool isStalemate(bool isWhite) const;
+    bool isInCheck(Colour colour) const;
+    bool isCheckmate(Colour colour) const;
+    bool isStalemate(Colour colour) const;
     void resetBoard();
 private:
-    std::vector<std::vector<Piece*>> board;
+    std::vector<std::vector<Square*>> board;
     void setupInitialBoard();
     bool isMoveLegal(const Move& move) const;
     // Add other private helper functions as needed

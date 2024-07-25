@@ -1,10 +1,14 @@
 #ifndef _OBSERVER_H_
 #define _OBSERVER_H_
+
+#include "board.h"
+
 class Subject;
 
 class Observer {
- public:
-  virtual void notify() = 0;
-  virtual ~Observer() = default;
+  public:
+    Board *board;
+    virtual void notify() = 0;
+    virtual ~Observer() = default;
 };
 #endif

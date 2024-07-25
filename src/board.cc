@@ -5,12 +5,11 @@ Board::Board() {
     setupInitialBoard();
 }
 
-// should put this into textObserver
 void Board::display() const {
     for (const auto& row : board) {
-        for (const auto& piece : row) {
-            if (piece) {
-                std::cout << piece->getSymbol() << ' ';
+        for (const auto& square : row) {
+            if (square->getPiece()) {
+                std::cout << square->getPiece()->getSymbol() << ' ';
             } else {
                 std::cout << "_ ";
             }
@@ -20,21 +19,26 @@ void Board::display() const {
 }
 
 bool Board::movePiece(const Move& move) {
-    // Implement move logic
+    if (!isMoveLegal(move)) return false;
+    Square* fromSquare = board[move.from.x][move.from.y];
+    Square* toSquare = board[move.to.x][move.to.y];
+
+    toSquare->setPiece(fromSquare->getPiece());
+    fromSquare->setPiece(nullptr);
     return true;
 }
 
-bool Board::isInCheck(bool isWhite) const {
+bool Board::isInCheck(Colour colour) const {
     // Implement check detection logic
     return false;
 }
 
-bool Board::isCheckmate(bool isWhite) const {
+bool Board::isCheckmate(Colour colour) const {
     // Implement checkmate detection logic
     return false;
 }
 
-bool Board::isStalemate(bool isWhite) const {
+bool Board::isStalemate(Colour colour) const {
     // Implement stalemate detection logic
     return false;
 }
@@ -44,7 +48,13 @@ void Board::resetBoard() {
 }
 
 void Board::setupInitialBoard() {
-    // Implement initial board setup
+    board.resize(8, std::vector<Square*>(8, nullptr));
+    for (int x = 0; x < 8; ++x) {
+        for (int y = 0; y < 8; ++y) {
+            board[x][y] = new Square(x, y);
+        }
+    }
+    // Place pieces on the board in the initial positions
 }
 
 bool Board::isMoveLegal(const Move& move) const {
