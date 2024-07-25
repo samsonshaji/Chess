@@ -19,10 +19,10 @@ public:
     void resetBoard();
     Board getState() const override;
     Square* getSquare(int x, int y) const;
+    bool isMoveLegal(const Move& move) const;
 private:
     std::vector<std::vector<Square*>> board;
     void setupInitialBoard();
-    bool isMoveLegal(const Move& move) const;
     // Add other private helper functions as needed
 };
 
