@@ -1,7 +1,7 @@
 #include "board.h"
 #include <iostream>
 
-Board::Board() : controller(nullptr) {
+Board::Board() {
     setupInitialBoard();
 }
 
