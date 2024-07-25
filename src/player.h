@@ -3,13 +3,12 @@
 
 #include "Move.h"
 #include "Board.h"
-#include "Colour.h"
 
 class Player {
-    Colour colour;
+    Color color;
 public:
-    Player(Colour c): colour{c} {}
-    virtual Colour getColour() const = 0;
+    Player(Color c): color{c} {}
+    virtual Color getColor() const = 0;
     virtual Move makeMove(const Board &board) = 0;
 };
 
