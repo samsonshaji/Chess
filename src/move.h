@@ -6,8 +6,7 @@
 #include <string>
 
 #include "square.h"
-
-enum class MoveType { Normal, Capture, Castle, EnPassant, Promotion };
+#include "movetype.h"
 
 class Move {
     public:

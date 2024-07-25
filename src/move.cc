@@ -1,23 +1,18 @@
 #include "move.h"
 
-Move::Move() : from(Square()), to(Square()) {}
-
 Move::Move(Square from, Square to) : from(from), to(to) {}
 
-// TODO
+Move::Move() : from(Square()), to(Square()) {}
+
 MoveType Move::getMoveType() const {
-    if (to.getPiece() != PieceType::Empty) {
-        return MoveType::Capture;
-    }
+    // Implement logic to determine the move type (e.g., normal move, castling, promotion, etc.)
     return MoveType::Normal;
 }
 
 void Move::execute() {
-    to.setPiece(from.getPiece());
-    from.setPiece(PieceType::Empty);
+    // Implement logic to execute the move on the board
 }
 
 void Move::undo() {
-    from.setPiece(to.getPiece());
-    to.setPiece(PieceType::Empty);
+    // Implement logic to undo the move on the board
 }

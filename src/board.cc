@@ -1,47 +1,53 @@
 #include "board.h"
+#include <iostream>
 
 Board::Board() {
-    for (int i = 0; i < 8; i++) {
-        std::vector<Square> row;
-        for (int j = 0; j < 8; j++) {
-            row.push_back(Square());
-        }
-        board.push_back(row);
-    }
+    setupInitialBoard();
 }
 
-
-void Board::notify() {
-    printBoard();
-}
-
-// TODO
-void Board::move(Move m) {
-    board[m.to.row][m.to.col].setPiece(board[m.from.row][m.from.col].getPiece());
-    board[m.from.row][m.from.col].setPiece(PieceType::Pawn);
-}
-
-void Board::printBoard() const {
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            std::cout << std::setw(2) << board[i][j].getPiece() << " ";
+// should put this into textObserver
+void Board::display() const {
+    for (const auto& row : board) {
+        for (const auto& piece : row) {
+            if (piece) {
+                std::cout << piece->getSymbol() << ' ';
+            } else {
+                std::cout << "_ ";
+            }
         }
         std::cout << std::endl;
     }
 }
 
-void Board::isCheck(Color c) {
-    // TODO
+bool Board::movePiece(const Move& move) {
+    // Implement move logic
+    return true;
 }
 
-void Board::isCheckmate(Color c) {
-    // TODO
+bool Board::isInCheck(bool isWhite) const {
+    // Implement check detection logic
+    return false;
 }
 
-void Board::isStalemate(Color c) {
-    // TODO
+bool Board::isCheckmate(bool isWhite) const {
+    // Implement checkmate detection logic
+    return false;
 }
 
-PieceType Board::getPieceType(int row, int col) const {
-    return board[row][col].getPiece();
+bool Board::isStalemate(bool isWhite) const {
+    // Implement stalemate detection logic
+    return false;
+}
+
+void Board::resetBoard() {
+    // Implement board reset logic
+}
+
+void Board::setupInitialBoard() {
+    // Implement initial board setup
+}
+
+bool Board::isMoveLegal(const Move& move) const {
+    // Implement move legality check
+    return true;
 }

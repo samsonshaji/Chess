@@ -2,33 +2,23 @@
 #define BOARD_H
 
 #include <vector>
-#include <string>
-#include <iostream>
-#include <iomanip>
-#include <algorithm>
-
-#include "scoreBoard.h"
-#include "observer.h"
-#include "square.h"
+#include "piece.h"
 #include "move.h"
 
-enum class Color { White, Black };
-enum class PieceType { Pawn, Rook, Knight, Bishop, Queen, King, Empty };
-
-class Board: public Observer {
-    private:
-        std::vector<std::vector<Square>> board;
-        ScoreBoard scoreBoard;
-    public:
-        Board();
-        void notify() override;
-        void move(Move m);
-        void printBoard() const;
-
-        void isCheck(Color c);
-        void isCheckmate(Color c);
-        void isStalemate(Color c);
-        PieceType getPieceType(int row, int col) const;
+class Board {
+public:
+    Board();
+    void display() const;
+    bool movePiece(const Move& move);
+    bool isInCheck(bool isWhite) const;
+    bool isCheckmate(bool isWhite) const;
+    bool isStalemate(bool isWhite) const;
+    void resetBoard();
+private:
+    std::vector<std::vector<Piece*>> board;
+    void setupInitialBoard();
+    bool isMoveLegal(const Move& move) const;
+    // Add other private helper functions as needed
 };
 
-#endif
+#endif // BOARD_H
