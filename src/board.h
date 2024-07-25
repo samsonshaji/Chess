@@ -6,8 +6,9 @@
 #include "move.h"
 #include "square.h"
 #include "colour.h"
+#include "subject.h"
 
-class Board {
+class Board : public Subject {
 public:
     Board();
     void display() const;
@@ -16,6 +17,7 @@ public:
     bool isCheckmate(Colour colour) const;
     bool isStalemate(Colour colour) const;
     void resetBoard();
+    Board getState() const override;
 private:
     std::vector<std::vector<Square*>> board;
     void setupInitialBoard();

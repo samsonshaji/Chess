@@ -25,6 +25,7 @@ bool Board::movePiece(const Move& move) {
 
     toSquare->setPiece(fromSquare->getPiece());
     fromSquare->setPiece(nullptr);
+    notifyObservers();
     return true;
 }
 
@@ -45,6 +46,7 @@ bool Board::isStalemate(Colour colour) const {
 
 void Board::resetBoard() {
     // Implement board reset logic
+    notifyObservers();
 }
 
 void Board::setupInitialBoard() {
@@ -55,9 +57,15 @@ void Board::setupInitialBoard() {
         }
     }
     // Place pieces on the board in the initial positions
+    notifyObservers();
 }
 
 bool Board::isMoveLegal(const Move& move) const {
     // Implement move legality check
     return true;
+}
+
+// for now
+Board Board::getState() const {
+    return *this;
 }
