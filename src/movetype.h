@@ -1,5 +1,5 @@
-#ifndef COLOUR_H
-#define COLOUR_H
+#ifndef MOVE_TYPE_H
+#define MOVE_TYPE_H
 
 enum MoveType {
     Normal,

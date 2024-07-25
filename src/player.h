@@ -1,8 +1,9 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "Move.h"
-#include "Board.h"
+#include "move.h"
+#include "board.h"
+#include "colour.h"
 
 class Player {
     protected:
