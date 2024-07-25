@@ -5,6 +5,7 @@ Board::Board() {
     setupInitialBoard();
 }
 
+// leave to textObserver
 void Board::display() const {
     for (const auto& row : board) {
         for (const auto& square : row) {
@@ -68,4 +69,8 @@ bool Board::isMoveLegal(const Move& move) const {
 // for now
 Board Board::getState() const {
     return *this;
+}
+
+Square* Board::getSquare(int x, int y) const {
+    return board[x][y];
 }

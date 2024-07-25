@@ -18,6 +18,7 @@ public:
     bool isStalemate(Colour colour) const;
     void resetBoard();
     Board getState() const override;
+    Square* getSquare(int x, int y) const;
 private:
     std::vector<std::vector<Square*>> board;
     void setupInitialBoard();
