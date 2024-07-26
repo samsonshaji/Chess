@@ -20,8 +20,8 @@ void Board::display() const {
 
 bool Board::movePiece(const Move& move) {
     if (!isMoveLegal(move)) return false;
-    Square* fromSquare = board[move.from.x][move.from.y];
-    Square* toSquare = board[move.to.x][move.to.y];
+    Square* fromSquare = board[move.from.getX()][move.from.getY()];
+    Square* toSquare = board[move.to.getX()][move.to.getY()];
 
     toSquare->setPiece(fromSquare->getPiece());
     fromSquare->setPiece(nullptr);
@@ -67,6 +67,7 @@ void Board::setupInitialBoard() {
     for (int x = 0; x < 8; ++x) {
         for (int y = 0; y < 8; ++y) {
             board[x][y] = new Square(x, y);
+            board[x][y]->setBoard(this);
         }
     }
     // Setup initial pieces (Pawns, Rooks, Knights, Bishops, Queens, Kings)
@@ -120,7 +121,7 @@ Square* Board::findKing(Colour colour) const {
     for (const auto& row : board) {
         for (const auto& square : row) {
             Piece* piece = square->getPiece();
-            if (piece && piece->getColour() == colour && piece->getSymbol() == 'K') {
+            if (piece && piece->getColour() == colour && piece->getPieceType() == King) {
                 return square;
             }
         }

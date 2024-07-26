@@ -4,17 +4,23 @@
 #include "piece.h"
 
 class Square {
-public:
+private:
     int x;
     int y;
     Piece* piece;
+    Board* board;
+
+public:
 
     Square(int x, int y);
-    Square();
 
-    bool isValid() const;
     Piece* getPiece() const;
-    void setPiece(Piece* piece);
+    void setPiece(Piece* p);
+    void setBoard(Board* b);
+    void removePiece();
+    void deletePiece();
+    int getX() const;
+    int getY() const;
 };
 
 #endif // SQUARE_H

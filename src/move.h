@@ -9,13 +9,17 @@
 #include "movetype.h"
 
 class Move {
+    private:
+        Square* from;
+        Square* to;
+        MoveType type;
+
     public:
-        Square from;
-        Square to;
-        Move(Square from, Square to);
+        Move(Square* from, Square* to);
         Move();
 
         MoveType getMoveType() const;
+        void setType(MoveType t);
 
         void execute();
         void undo();
