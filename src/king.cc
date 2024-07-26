@@ -49,6 +49,9 @@ std::vector<Move> King::getValidMoves() const {
                     if (targetSquare->getPiece() == nullptr) {
                         validMoves.push_back(Move(square, targetSquare, MoveType::Normal));
                     } else if (targetSquare->getPiece()->getColour() != colour) {
+                        if (targetSquare->getPiece()->getPieceType() == PieceType::King) {
+                            board->isInCheck(targetSquare->getPiece()->getColour());
+                        }
                         validMoves.push_back(Move(square, targetSquare, MoveType::Capture));
                     }
                 }
