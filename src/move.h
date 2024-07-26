@@ -23,6 +23,9 @@ class Move {
 
         void execute();
         void undo();
+
+        Square* getFrom() const;
+        Square* getTo() const;
 };
 
 #endif

@@ -12,6 +12,14 @@ void Move::setType(MoveType t) {
     type = t;
 }
 
+Square* Move::getFrom() const {
+    return from;
+}
+
+Square* Move::getTo() const {
+    return to;
+}
+
 void Move::execute() {
     // Implement logic to execute the move on the board
 }
