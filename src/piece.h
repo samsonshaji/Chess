@@ -1,18 +1,28 @@
 #ifndef PIECE_H
 #define PIECE_H
 
-#include <string>
-#include "colour.h"
+#include "Move.h"
+#include "Board.h"
+#include "Colour.h"
+#include "PieceType.h"
+#include <vector>
 
 class Piece {
-public:
-    Piece(Colour colour);
-    virtual ~Piece() = default;
-    virtual bool isMoveValid(int startX, int startY, int endX, int endY, const Board& board) const = 0;
-    Colour getColour() const;
-    virtual std::string getSymbol() const = 0;
-private:
+protected:
     Colour colour;
+    bool hasMoved;
+public:
+    virtual ~Piece() = default;
+    virtual PieceType getType() const = 0;
+    virtual std::vector<Move> getMoveStack() const = 0;
+    virtual bool isMoveValid(const Move &m, const Board &board) const = 0;
+    virtual int getPoints() const = 0;
+    virtual PieceType getPieceType() const = 0;
+    virtual bool isPinned(const Board &b) const = 0;
+    virtual bool canCheck(const Board &b) const = 0;
+    virtual void move(const Move &m) = 0;
+    virtual bool hasMoved() const;
+    Colour getColour() const;
 };
 
-#endif // PIECE_H
+#endif 
