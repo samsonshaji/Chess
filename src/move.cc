@@ -1,12 +1,15 @@
 #include "move.h"
 
-Move::Move(Square from, Square to) : from(from), to(to) {}
+Move::Move(Square* f, Square* t) : from(f), to(t) {}
 
-Move::Move() : from(Square()), to(Square()) {}
+Move::Move(Square* f, Square* t, MoveType mt) : from(f), to(t), type(mt) {}
 
 MoveType Move::getMoveType() const {
-    // Implement logic to determine the move type (e.g., normal move, castling, promotion, etc.)
-    return MoveType::Normal;
+    return type;
+}
+
+void Move::setType(MoveType t) {
+    type = t;
 }
 
 void Move::execute() {

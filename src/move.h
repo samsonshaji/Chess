@@ -15,8 +15,8 @@ class Move {
         MoveType type;
 
     public:
-        Move(Square* from, Square* to);
-        Move();
+        Move(Square* f, Square* t);
+        Move(Square* f, Square* t, MoveType mt);
 
         MoveType getMoveType() const;
         void setType(MoveType t);

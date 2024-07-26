@@ -12,7 +12,7 @@ class Move;
 class Piece {
 protected:
     Colour colour;
-    bool hasMoved;
+    bool hasMoved = false;
     PieceType type;
     char symbol;
     Square *square;

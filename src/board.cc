@@ -18,31 +18,31 @@ void Board::display() const {
     }
 }
 
-bool Board::movePiece(const Move& move) {
-    if (!isMoveLegal(move)) return false;
-    Square* fromSquare = board[move.from.getX()][move.from.getY()];
-    Square* toSquare = board[move.to.getX()][move.to.getY()];
+// bool Board::movePiece(const Move& move) {
+//     if (!isMoveLegal(move)) return false;
+//     Square* fromSquare = board[move.from.getX()][move.from.getY()];
+//     Square* toSquare = board[move.to.getX()][move.to.getY()];
 
-    toSquare->setPiece(fromSquare->getPiece());
-    fromSquare->setPiece(nullptr);
-    notifyObservers();
-    return true;
-}
+//     toSquare->setPiece(fromSquare->getPiece());
+//     fromSquare->setPiece(nullptr);
+//     notifyObservers();
+//     return true;
+// }
 
-bool Board::isInCheck(Colour colour) const {
-    Square* kingSquare = findKing(colour);
-    for (const auto& row : board) {
-        for (const auto& square : row) {
-            Piece* piece = square->getPiece();
-            if (piece && piece->getColour() != colour) {
-                if (piece->canMoveTo(kingSquare->getX(), kingSquare->getY(), *this)) {
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
-}
+// bool Board::isInCheck(Colour colour) const {
+//     Square* kingSquare = findKing(colour);
+//     for (const auto& row : board) {
+//         for (const auto& square : row) {
+//             Piece* piece = square->getPiece();
+//             if (piece && piece->getColour() != colour) {
+//                 // if (piece->canMoveTo(kingSquare->getX(), kingSquare->getY(), *this)) {
+//                     return true;
+//                 }
+//             }
+//         }
+//     }
+//     return false;
+// }
 
 bool Board::isCheckmate(Colour colour) const {
     if (!isInCheck(colour)) return false;
