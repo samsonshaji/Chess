@@ -4,7 +4,6 @@
 #include "piece.h"
 #include "move.h"
 #include "board.h"
-#include <vector>
 
 class Queen : public Piece {
 public:
