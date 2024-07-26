@@ -8,3 +8,5 @@ public:
     Rook(Colour c);
     std::vector<Move> getValidMoves() const override;
 };
+
+#endif
