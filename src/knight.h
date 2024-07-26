@@ -8,7 +8,6 @@ class Knight : public Piece {
 public:
     Knight(Colour c);
     std::vector<Move> getValidMoves() const override;
-    
 };
 
 #endif 
