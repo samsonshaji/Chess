@@ -3,6 +3,7 @@
 
 enum MoveType {
     Normal,
+    Capture,
     EnPassant,
     Castling,
     DoublePawn,

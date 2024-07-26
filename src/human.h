@@ -2,7 +2,7 @@
 #define HUMAN_H
 
 #include "player.h"
-#include "Colour.h"
+#include "colour.h"
 
 class Human : public Player {
 public:

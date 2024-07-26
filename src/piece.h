@@ -1,8 +1,8 @@
 #ifndef PIECE_H
 #define PIECE_H
 
-#include "Colour.h"
-#include "PieceType.h"
+#include "colour.h"
+#include "piecetype.h"
 #include <vector>
 
 class Square;
