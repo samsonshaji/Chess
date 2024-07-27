@@ -3,7 +3,6 @@
 #include <vector>
 #include <iostream>
 
-#include "board.h"
 #include "square.h"
 
 class Observer;
