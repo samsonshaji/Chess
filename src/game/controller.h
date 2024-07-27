@@ -11,7 +11,7 @@ class Controller {
         Player* player1;
         Player* player2;
         Player* currentPlayer;
-        Board board;
+        Board* board;
         bool gameEnded = false;
         std::vector<Move> MoveHistory;
         ScoreBoard* scoreBoard;
@@ -30,7 +30,7 @@ class Controller {
         
         void handleCommand(const std::string &command);
 
-        Square* stringToSquare(std::string square);
+        Square* stringToSquare(std::string squarestring);
 
         bool getGameEnded();
         void setGameEnded(bool ended);

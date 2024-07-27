@@ -15,7 +15,10 @@
 #include "queen.h"
 
 Controller::Controller(Player* player1, Player* player2) : 
-player1(player1), player2(player2), currentPlayer(player1), gameEnded(false) {}
+player1(player1), player2(player2), currentPlayer(player1), gameEnded(false) {
+    board = new Board();
+    board->setController(this);
+}
 
 bool Controller::getGameEnded() {
     return gameEnded;
@@ -25,7 +28,7 @@ void Controller::setGameEnded(bool ended) {
     gameEnded = ended;
 }
 
-Square* stringToSquare(std::string squarestring){
+Square* Controller::stringToSquare(std::string squarestring){
     if (squarestring.length() != 2) {
         return nullptr;
     }
@@ -34,7 +37,15 @@ Square* stringToSquare(std::string squarestring){
     if (file < 'a' || file > 'h' || rank < '1' || rank > '8') {
         return nullptr;
     }
-    return new Square(file - 'a', rank - '1');
+
+    // find corresponding square in board
+    for(int i = 0; i < 8; i++){
+        for(int j = 0; j < 8; j++){
+            if(board->getSquare(i, j)->getX() == file - 'a' && board->getSquare(i, j)->getY() == rank - '1'){
+                return board->getSquare(i, j);
+            }
+        }
+    }
 }
 
 void Controller::setScoreBoard(ScoreBoard* sb) {
@@ -93,10 +104,10 @@ void Controller::handleCommand(const std::string &command) {
         endGame(true);
     } 
     else if (action == "move") {
-        std::string from, to, promotePeice;
-        iss >> from >> to >> promotePeice;
-        if (promotePeice != "") {
-            setPromotedTo(promotePeice);
+        std::string from, to, promotePiece;
+        iss >> from >> to >> promotePiece;
+        if (promotePiece != "") {
+            setPromotedTo(promotePiece);
         }
         Square* fromSquare = stringToSquare(from);
         Square* toSquare = stringToSquare(to);
@@ -117,13 +128,12 @@ void Controller::startGame(Player &p1, Player &p2) {
     player2 = &p2;
     currentPlayer = player1;
     gameEnded = false;
-    board = Board();
     MoveHistory.clear();
     std::cout << "Game started! (between Player 1 and Player2)" << std::endl;
 }
 
 void Controller::checkWin() {
-    if (board.isCheckmate(currentPlayer->getColour())) {
+    if (board->isCheckmate(currentPlayer->getColour())) {
         gameEnded = true;
         std::cout << "Checkmate! ";
         if (currentPlayer == player1) {
@@ -131,7 +141,7 @@ void Controller::checkWin() {
         } else {
             std::cout << "Player 1 wins!" << std::endl;
         }
-    } else if (board.isStalemate(currentPlayer->getColour())) {
+    } else if (board->isStalemate(currentPlayer->getColour())) {
         gameEnded = true;
         std::cout << "Stalemate!" << std::endl;
     }
@@ -139,22 +149,22 @@ void Controller::checkWin() {
 
 // newly added -> document later
 void Controller::playTurn(Player* p) {
-    Move move = p->makeMove(board);
-    board.movePiece(move);
+    Move move = p->makeMove(*board);
+    board->movePiece(move);
     MoveHistory.push_back(move);
     std::cout << "Player " << (p == player1 ? "1" : "2") << "made a move" << std::endl;
 }
 
 void Controller::runGame(Player &p1, Player &p2, const Move &move) {
     while (!gameEnded) {
-        Move move = currentPlayer->makeMove(board);
-        board.movePiece(move);
+        Move move = currentPlayer->makeMove(*board);
+        board->movePiece(move);
         MoveHistory.push_back(move);
         std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << "made a move" << std::endl;
     }
     checkWin();
     currentPlayer = (currentPlayer == player1) ? player2 : player1;
-    board.notifyObservers();
+    board->notifyObservers();
 }
 
 void Controller::endGame(bool resigned) {
@@ -176,9 +186,11 @@ void Controller::setupMode(){
    while (getGameEnded()) {
         std::string command;
         std::cin >> command;
+
         if (command == "+") {
             std::string piece, square;
             std::cin >> piece >> square;
+
             Square* targetSquare = stringToSquare(square);
             if (targetSquare != nullptr) {
                 targetSquare->deletePiece();
@@ -187,6 +199,7 @@ void Controller::setupMode(){
                 std::cout << "Invalid square" << std::endl;
                 continue;
             }
+
             Colour colour = (piece[0] < 'a') ? Colour::White : Colour::Black;
             PieceType pieceType;
             Piece *piecePtr = nullptr;
@@ -213,7 +226,9 @@ void Controller::setupMode(){
                 continue;
             }
             targetSquare->setPiece(piecePtr);
-        } else if (command == "-") {
+        }
+
+        else if (command == "-") {
             std::string square;
             std::cin >> square;
             Square* s = stringToSquare(square);
@@ -221,8 +236,10 @@ void Controller::setupMode(){
                 std::cout << "Invalid square" << std::endl;
                 continue;
             }
-            // board.removePiece(s);
-        } else if (command == "=") {
+            board->removePiece(s);
+        }
+
+        else if (command == "=") {
             std::string colour;
             std::cin >> colour;
             if (colour == "white") {
@@ -232,10 +249,14 @@ void Controller::setupMode(){
             } else {
                 std::cout << "Invalid colour" << std::endl;
             }
-        } else if (command == "done") {
+        }
+
+        else if (command == "done") {
             gameEnded = false;
             break;
-        } else {
+        }
+
+        else {
             std::cout << "Invalid command" << std::endl;
         }
    }
