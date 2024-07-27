@@ -6,6 +6,7 @@
 class Robot : public Player {
     Colour c;
     int level;
+    Robot *robot;
 public:
     Robot(Colour c, int level);
     virtual Colour getColour() const override;
