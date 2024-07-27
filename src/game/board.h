@@ -13,7 +13,7 @@ class Controller;
 
 class Board : public Subject {
 private:
-    std::vector<std::vector<Square*> > board;
+    std::vector<std::vector<Square*>> board;
     Controller* controller;
     void setupInitialBoard();
     std::vector<Move> moveStack;
@@ -37,22 +37,20 @@ public:
 
     bool isValidSetup() const;
 
-    Board getState() const;
+    std::vector<std::vector<Square*>> getState() const override;
 
-    // TODO all of these
     // false if move is illegal, true + updates board otherwise
     bool movePiece(const Move& move);
     bool isInCheck(Colour colour) const;
     bool isCheckmate(Colour colour) const;
     bool isStalemate(Colour colour) const;
 
+    // copy constructor
+    Board(const Board& other);
+    // assignment operator
+    Board& operator=(const Board& other);
+
     bool isMoveLegal(const Move& move) const;
 };
 
 #endif // BOARD_H
-
-
-// TODO:
-// movePiece (+ determine move type)
-// undo move
-// in check, stale, checkmate

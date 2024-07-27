@@ -8,6 +8,8 @@
 #include "king.h"
 #include "pawn.h"
 #include "colour.h"
+#include "move.h"
+#include "square.h"
 
 Board::Board() {
     setupInitialBoard();
@@ -82,8 +84,8 @@ void Board::removePiece(Square* square) {
     square->setPiece(nullptr);
 }
 
-Board Board::getState() const {
-    return *this;
+std::vector<std::vector<Square*>> Board::getState() const {
+    return board;
 }
 
 Square* Board::getSquare(int x, int y) const {
@@ -357,6 +359,98 @@ void Board::undoMove() {
     notifyObservers();
 }
 
+// copy constructor
+Board::Board(const Board& other) {
+    for (const auto& row : other.board) {
+        std::vector<Square*> newRow;
+        for (const auto& square : row) {
+            Square* newSquare = new Square(square->getX(), square->getY());
+            if (square->getPiece() != nullptr) {
+                Piece* piece = square->getPiece();
+                Piece* newPiece = nullptr;
+                switch (piece->getPieceType()) {
+                    case PieceType::pawn:
+                        newPiece = new Pawn(piece->getColour());
+                        break;
+                    case PieceType::rook:
+                        newPiece = new Rook(piece->getColour());
+                        break;
+                    case PieceType::knight:
+                        newPiece = new Knight(piece->getColour());
+                        break;
+                    case PieceType::bishop:
+                        newPiece = new Bishop(piece->getColour());
+                        break;
+                    case PieceType::queen:
+                        newPiece = new Queen(piece->getColour());
+                        break;
+                    case PieceType::king:
+                        newPiece = new King(piece->getColour());
+                        break;
+                    default:
+                        break;
+                }
+                newPiece->setHasMoved(piece->getHasMoved());
+                newSquare->setPiece(newPiece);
+            }
+            newRow.push_back(newSquare);
+        }
+        board.push_back(newRow);
+    }
+}
+
+// assignment operator
+Board& Board::operator=(const Board& other) {
+    if (this == &other) {
+        return *this;
+    }
+
+    for (auto& row : board) {
+        for (auto& square : row) {
+            delete square;
+        }
+    }
+    board.clear();
+
+    for (const auto& row : other.board) {
+        std::vector<Square*> newRow;
+        for (const auto& square : row) {
+            Square* newSquare = new Square(square->getX(), square->getY());
+            if (square->getPiece() != nullptr) {
+                Piece* piece = square->getPiece();
+                Piece* newPiece = nullptr;
+                switch (piece->getPieceType()) {
+                    case PieceType::pawn:
+                        newPiece = new Pawn(piece->getColour());
+                        break;
+                    case PieceType::rook:
+                        newPiece = new Rook(piece->getColour());
+                        break;
+                    case PieceType::knight:
+                        newPiece = new Knight(piece->getColour());
+                        break;
+                    case PieceType::bishop:
+                        newPiece = new Bishop(piece->getColour());
+                        break;
+                    case PieceType::queen:
+                        newPiece = new Queen(piece->getColour());
+                        break;
+                    case PieceType::king:
+                        newPiece = new King(piece->getColour());
+                        break;
+                    default:
+                        break;
+                }
+                newPiece->setHasMoved(piece->getHasMoved());
+                newSquare->setPiece(newPiece);
+            }
+            newRow.push_back(newSquare);
+        }
+        board.push_back(newRow);
+    }
+
+    return *this;
+}
 
 bool Board::isInCheck(Colour colour) const {
     Square* kingSquare = findKing(colour);
@@ -388,7 +482,13 @@ bool Board::isCheckmate(Colour colour) const {
             if (piece && piece->getColour() == colour) {
                 std::vector<Move> validMoves = piece->getValidMoves();
                 for (const auto& move : validMoves) {
-                    Board copy = getState();
+                    // Board copy = getState();
+                    // copy.movePiece(move);
+                    // if (!copy.isInCheck(colour)) {
+                    //     return false;
+                    // }
+
+                    Board copy = *this;
                     copy.movePiece(move);
                     if (!copy.isInCheck(colour)) {
                         return false;
@@ -411,11 +511,19 @@ bool Board::isStalemate(Colour colour) const {
             if (piece && piece->getColour() == colour) {
                 std::vector<Move> validMoves = piece->getValidMoves();
                 for (const auto& move : validMoves) {
-                    Board copy = getState();
+                    
+                    // Board copy = getState();
+                    // copy.movePiece(move);
+                    // if (!copy.isInCheck(colour)) {
+                    //     return false;
+                    // }
+
+                    Board copy = *this;
                     copy.movePiece(move);
                     if (!copy.isInCheck(colour)) {
                         return false;
                     }
+
                 }
             }
         }

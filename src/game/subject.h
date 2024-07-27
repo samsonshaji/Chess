@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "board.h"
+#include "square.h"
 
 class Observer;
 
@@ -13,7 +14,7 @@ class Subject {
     void attach(Observer *o);
     void detach(Observer *o);
     void notifyObservers();
-    virtual Board getState() const = 0;
+    virtual std::vector<std::vector<Square*>> getState() const = 0;
     virtual ~Subject() = default;
 };
 
