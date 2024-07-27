@@ -86,11 +86,11 @@ void Board::addMoveToStack(const Move& move) {
     moveStack.push_back(move);
 }
 
-vector<Move> getMoveStack() const {
+std::vector<Move> Board::getMoveStack() const {
     return moveStack;
 }
 
-Move getLastMove() const {
+Move Board::getLastMove() const {
     return moveStack.back();
 }
 
