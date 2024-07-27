@@ -69,11 +69,9 @@ void Controller::setPromotedTo(std::string promotedType) {
 }
 
 void Controller::handleCommand(const std::string &command) {
-    // std::cout << "command inside handleCommand: " << command << std::endl;
     std::istringstream iss(command);
     std::string action;
     while (iss >> action) {
-        // std::cout << "action: " << action << std::endl;
         if (action == "game") {
         std::string whitePlayerType;
         std::string blackPlayerType;
@@ -101,6 +99,7 @@ void Controller::handleCommand(const std::string &command) {
         startGame(*player1, *player2);
         } else if (action == "resign") {
             endGame(true);
+            break;
         } else if (action == "move") {
             std::string from, to, promotePiece;
             iss >> from >> to >> promotePiece;
@@ -113,8 +112,6 @@ void Controller::handleCommand(const std::string &command) {
             runGame(*player1, *player2, move);
         } else if (action == "setup") {
             setupMode();
-        // } else {
-        //     std::cout << "Invalid command" << std::endl;}
         }
     }
 }
@@ -134,8 +131,10 @@ void Controller::checkWin() {
         std::cout << "Checkmate! ";
         if (currentPlayer == player1) {
             std::cout << "Player 2 wins!" << std::endl;
+            return;
         } else {
             std::cout << "Player 1 wins!" << std::endl;
+            return;
         }
     } else if (board->isStalemate(currentPlayer->getColour())) {
         gameEnded = true;
@@ -166,6 +165,8 @@ void Controller::endGame(bool resigned) {
     gameEnded = true;
     if (resigned) {
         std::cout << "Player " << (currentPlayer == player1 ? "2" : "1") << " wins!" << std::endl;
+        std::cout << "Game ended!" << std::endl;
+        return;
     }
     currentPlayer == player1 ? player2 : player1;
     if (currentPlayer == player1) {
