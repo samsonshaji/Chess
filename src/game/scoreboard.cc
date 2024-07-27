@@ -1,9 +1,9 @@
 #include "scoreboard.h"
 #include <iostream>
 
-Scoreboard::Scoreboard() : whiteScore(0), blackScore(0) {}
+ScoreBoard::ScoreBoard() : whiteScore(0), blackScore(0) {}
 
-void Scoreboard::updateScore(bool isWhiteWinner) {
+void ScoreBoard::updateScore(bool isWhiteWinner) {
     if (isWhiteWinner) {
         ++whiteScore;
     } else {
@@ -11,6 +11,6 @@ void Scoreboard::updateScore(bool isWhiteWinner) {
     }
 }
 
-void Scoreboard::displayScores() const {
+void ScoreBoard::displayScore() const {
     std::cout << "White: " << whiteScore << " Black: " << blackScore << std::endl;
 }

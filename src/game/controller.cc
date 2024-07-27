@@ -5,6 +5,23 @@
 Controller::Controller(Player* player1, Player* player2) : 
 player1(player1), player2(player2), currentPlayer(player1), gameEnded(false) {}
 
+void Controller::setScoreBoard(ScoreBoard* sb) {
+    scoreBoard = sb;
+}
+
+PieceType Controller::getPromotedTo() {
+    if (promotedTo == "Q" || promotedTo == "q") {
+        return PieceType::Queen;
+    } else if (promotedTo == "R" || promotedTo == "r") {
+        return PieceType::Rook;
+    } else if (promotedTo == "B"  || promotedTo == "b") {
+        return PieceType::Bishop;
+    } else if (promotedTo == "N" || promotedTo == "n") {
+        return PieceType::Knight;
+    }
+    return PieceType::Pawn;
+}
+
 void Controller::startGame(Player &p1, Player &p2) {
     player1 = &p1;
     player2 = &p2;
@@ -51,6 +68,13 @@ void Controller::endGame(bool resigned) {
     gameEnded = true;
     if (resigned) {
         std::cout << "Player " << (currentPlayer == player1 ? "2" : "1") << " wins!" << std::endl;
+    }
+    currentPlayer == player1 ? player2 : player1;
+    if (currentPlayer == player1) {
+        scoreBoard->updateScore(true);
+    }
+    else {
+        scoreBoard->updateScore(false);
     }
     std::cout << "Game ended!" << std::endl;
 }

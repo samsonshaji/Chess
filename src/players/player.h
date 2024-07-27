@@ -14,4 +14,4 @@ class Player {
         virtual Move makeMove(const Board &board) = 0;
 };
 
-#endif // PLAYER_H
+#endif 
