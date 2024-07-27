@@ -7,12 +7,16 @@
 
 class GraphicsObserver : public Observer {
     Subject &subject;
-    Xwindow xw;
+    Xwindow w;
+    bool gridDrawn = false;
 public:
     GraphicsObserver(Subject &sub);
     ~GraphicsObserver();
 
     void notify() override;
+
+    // void update();
+    // void update(int x, int y);
 };
 
 #endif // GRAPHICSOBSERVER_H
