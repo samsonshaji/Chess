@@ -13,10 +13,15 @@
 // #include "robot.h"
 #include "rook.h"
 #include "square.h"
+#include "textobserver.h"
+#include "graphicsobserver.h"
 
 Controller::Controller(Player *player1, Player *player2) : player1(player1), player2(player2), currentPlayer(player1), gameEnded(false) {
     board = new Board();
     board->setController(this);
+
+    // for now -- only textdisplay
+    new TextObserver(*board);
 }
 
 bool Controller::getGameEnded() {
@@ -101,6 +106,7 @@ void Controller::handleCommand(const std::string &command) {
         startGame(*player1, *player2);
         } else if (action == "resign") {
             endGame(true);
+            return;
         } else if (action == "move") {
             std::string from, to, promotePiece;
             iss >> from >> to >> promotePiece;
@@ -126,6 +132,9 @@ void Controller::startGame(Player &p1, Player &p2) {
     gameEnded = false;
     MoveHistory.clear();
     std::cout << "Game started! (between Player 1 and Player2)" << std::endl;
+
+    // display via text display
+    board->notifyObservers();
 }
 
 void Controller::checkWin() {

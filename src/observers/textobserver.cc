@@ -11,13 +11,13 @@ TextObserver::~TextObserver() {
 
 void TextObserver::notify() {
     std::vector<std::vector<Square*>> board = subject.getState();
-    for (int x = 0; x < 8; ++x) {
-        for (int y = 0; y < 8; ++y) {
-            Square* square = board[x][y];
-            if (square->getPiece()) {
-                out << square->getPiece()->getSymbol() << ' ';
+    for (int i = 7; i >= 0; i--) {
+        out << i+1 << " ";
+        for (int j = 0; j < 8; j++) {
+            if (board[i][j]->getPiece() == nullptr) {
+                out << "_";
             } else {
-                out << "_ ";
+                out << board[i][j]->getPiece()->getSymbol();
             }
         }
         out << std::endl;
