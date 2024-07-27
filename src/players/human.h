@@ -3,6 +3,8 @@
 
 #include "player.h"
 #include "colour.h"
+#include "move.h"
+#include "board.h"
 
 class Human : public Player {
 public:
