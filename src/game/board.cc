@@ -86,11 +86,19 @@ void Board::addMoveToStack(const Move& move) {
     moveStack.push_back(move);
 }
 
-bool Board::isMoveLegal(const Move& move) const {
-    // bishop
-    if (move.getPiece()->getPieceType() == PieceType::Bishop) {
+vector<Move> getMoveStack() const {
+    return moveStack;
+}
 
-    }
+Move getLastMove() const {
+    return moveStack.back();
+}
+
+bool Board::isMoveLegal(const Move& move) const {
+    std::vector<Move> validMoves = move.getPiece()->getValidMoves();
+
+    // double check if this will work for all pieces
+    return std::find(validMoves.begin(), validMoves.end(), move) != validMoves.end();
 }
 
 bool Board::movePiece(const Move& move) {
@@ -132,10 +140,6 @@ bool Board::isCheckmate(Colour colour) const {
 bool Board::isStalemate(Colour colour) const {
     // TODO
     return false;
-}
-
-vector<Move> getMoveStack() const {
-    return moveStack;
 }
 
 void Board::undoMove() {

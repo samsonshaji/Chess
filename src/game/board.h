@@ -27,6 +27,8 @@ public:
     Square* getSquare(int x, int y) const;
 
     vector<Move> getMoveStack() const;
+    Move getLastMove() const;
+    
     void addMoveToStack(const Move& move);
     void undoMove();
 
