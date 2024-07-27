@@ -12,7 +12,7 @@ Move Human::makeMove(const Board &board) {
     std::cin >> oldRow >> oldCol >> newRow >> newCol;
     Square from = Square(oldRow, oldCol);
     Square to = Square(newRow, newCol);
-    Move move(from, to);
+    Move move = Move(from, to);
     return move;
 }
 

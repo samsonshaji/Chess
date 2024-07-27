@@ -125,6 +125,65 @@ bool Board::isMoveLegal(const Move& move) const {
     return std::find(validMoves.begin(), validMoves.end(), move) != validMoves.end();
 }
 
+bool Board::isValidSetup() const {
+    // check if there is exactly one king of each color
+    int whiteKingCount = 0;
+    int blackKingCount = 0;
+    for (const auto& row : board) {
+        for (const auto& square : row) {
+            Piece* piece = square->getPiece();
+            if (piece) {
+                if (piece->getPieceType() == PieceType::king) {
+                    if (piece->getColour() == Colour::White) {
+                        whiteKingCount++;
+                    } else {
+                        blackKingCount++;
+                    }
+                }
+            }
+        }
+    }
+    if (whiteKingCount != 1 || blackKingCount != 1) {
+        return false;
+    }
+
+    // check if there are no pawns on the first or last row
+    for (int i = 0; i < 8; i++) {
+        if (board[0][i]->getPiece() && board[0][i]->getPiece()->getPieceType() == PieceType::pawn) {
+            return false;
+        }
+        if (board[7][i]->getPiece() && board[7][i]->getPiece()->getPieceType() == PieceType::pawn) {
+            return false;
+        }
+    }
+
+    // check if there are no more than 8 pawns of each color
+    int whitePawnCount = 0;
+    int blackPawnCount = 0;
+    for (const auto& row : board) {
+        for (const auto& square : row) {
+            Piece* piece = square->getPiece();
+            if (piece && piece->getPieceType() == PieceType::pawn) {
+                if (piece->getColour() == Colour::White) {
+                    whitePawnCount++;
+                } else {
+                    blackPawnCount++;
+                }
+            }
+        }
+    }
+
+    if (whitePawnCount > 8 || blackPawnCount > 8) {
+        return false;
+    }
+
+    // ensure neither king is in check
+    if (isInCheck(Colour::White) || isInCheck(Colour::Black)) {
+        return false;
+    }
+
+    return true;
+}
 
 
 bool Board::movePiece(const Move& move) {

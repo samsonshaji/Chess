@@ -33,6 +33,8 @@ public:
     void removePiece(Square* square);
     void clearBoard();
 
+    bool isValidSetup() const;
+
     Board getState() const;
 
     // TODO all of these
