@@ -14,7 +14,6 @@ private:
     std::vector<std::vector<Square*>> board;
     Controller* controller;
     void setupInitialBoard();
-    void clearBoard();
     std::vector<Move> moveStack;
 public:
     Board();
@@ -32,6 +31,7 @@ public:
 
     void addPiece(Piece* piece, Square* square);
     void removePiece(Square* square);
+    void clearBoard();
 
     Board getState() const;
 
