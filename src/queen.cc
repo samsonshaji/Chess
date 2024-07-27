@@ -6,105 +6,69 @@ Queen::Queen(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'Q' : 'q';
 }
 
-//fill the vector with all possible Moves a queen can make at any given time
+PieceType Queen::getPieceType() const {
+    return PieceType::Queen;
+}
+
+void Queen::addDiagonalMoves(std::vector<Move>& moves, int xDir, int yDir) const {
+    int x = square->getX() + xDir;
+    int y = square->getY() + yDir;
+    
+    while (x >= 0 && x < 8 && y >= 0 && y < 8) {
+        
+        Square* targetSquare = board->getSquare(x, y);
+        
+        if (targetSquare->getPiece() == nullptr) {
+            moves.push_back(Move(square, targetSquare, MoveType::Normal));
+        } 
+        else if (targetSquare->getPiece()->getColour() != colour) {
+            if (targetSquare->getPiece()->getPieceType() == PieceType::King) {
+                board->isInCheck(targetSquare->getPiece()->getColour());
+            }
+            moves.push_back(Move(square, targetSquare, MoveType::Capture));
+            break;
+        } else {
+            break;
+        }
+        x += xDir;
+        y += yDir;
+    }
+}
+
+void Queen::addStraightMoves(std::vector<Move>& moves, int xDir, int yDir) const {
+    int x = square->getX() + xDir;
+    int y = square->getY() + yDir;
+    
+    while (x >= 0 && x < 8 && y >= 0 && y < 8) {
+        
+        Square* targetSquare = board->getSquare(x, y);
+        
+        if (targetSquare->getPiece() == nullptr) {
+            moves.push_back(Move(square, targetSquare, MoveType::Normal));
+        } 
+        else if (targetSquare->getPiece()->getColour() != colour) {
+            if (targetSquare->getPiece()->getPieceType() == PieceType::King) {
+                board->isInCheck(targetSquare->getPiece()->getColour());
+            }
+            moves.push_back(Move(square, targetSquare, MoveType::Capture));
+            break;
+        } else {
+            break;
+        }
+        x += xDir;
+        y += yDir;
+    }
+}
+
 std::vector<Move> Queen::getValidMoves() const {
-    std::vector<Move> validMoves;
-    
-    //check all squares to the right of the queen
-    for (int i = square->getX() + 1; i < 8; i++) {
-        if (board->getSquare(i, square->getY())->getPiece() == nullptr) {
-            validMoves.push_back(Move(square, board->getSquare(i, square->getY()), MoveType::Normal));
-        } else if (board->getSquare(i, square->getY())->getPiece()->getColour() != colour) {
-            validMoves.push_back(Move(square, board->getSquare(i, square->getY()), MoveType::Capture));
-            break;
-        } else {
-            break;
-        }
-    }
-    
-    //check all squares to the left of the queen
-    for (int i = square->getX() - 1; i >= 0; i--) {
-        if (board->getSquare(i, square->getY())->getPiece() == nullptr) {
-            validMoves.push_back(Move(square, board->getSquare(i, square->getY()), MoveType::Normal));
-        } else if (board->getSquare(i, square->getY())->getPiece()->getColour() != colour) {
-            validMoves.push_back(Move(square, board->getSquare(i, square->getY()), MoveType::Capture));
-            break;
-        } else {
-            break;
-        }
-    }
-    
-    //check all squares above the queen
-    for (int i = square->getY() + 1; i < 8; i++) {
-        if (board->getSquare(square->getX(), i)->getPiece() == nullptr) {
-            validMoves.push_back(Move(square, board->getSquare(square->getX(), i), MoveType::Normal));
-        } else if (board->getSquare(square->getX(), i)->getPiece()->getColour() != colour) {
-            validMoves.push_back(Move(square, board->getSquare(square->getX(), i), MoveType::Capture));
-            break;
-        } else {
-            break;
-        }
-    }
-    
-    //check all squares below the queen
-    for (int i = square->getY() - 1; i >= 0; i--) {
-        if (board->getSquare(square->getX(), i)->getPiece () == nullptr) {
-            validMoves.push_back(Move(square, board->getSquare(square->getX(), i), MoveType::Normal));
-        } else if (board->getSquare(square->getX(), i)->getPiece()->getColour() != colour) {
-            validMoves.push_back(Move(square, board->getSquare(square->getX(), i), MoveType::Capture));
-            break;
-        } else {
-            break;
-        }
-    }
-
-    //check all squares to the top right of the queen
-    for (int i = 1; square->getX() + i < 8 && square->getY() + i < 8; i++) {
-        if (board->getSquare(square->getX() + i, square->getY() + i)->getPiece() == nullptr) {
-            validMoves.push_back(Move(square, board->getSquare(square->getX() + i, square->getY() + i), MoveType::Normal));
-        } else if (board->getSquare(square->getX() + i, square->getY() + i)->getPiece()->getColour() != colour) {
-            validMoves.push_back(Move(square, board->getSquare(square->getX() + i, square->getY() + i), MoveType::Capture));
-            break;
-        } else {
-            break;
-        }
-    }
-
-    //check all squares to the top left of the queen
-    for (int i = 1; square->getX() - i >= 0 && square->getY() + i < 8; i++) {
-        if (board->getSquare(square->getX() - i, square->getY() + i)->getPiece() == nullptr) {
-            validMoves.push_back(Move(square, board->getSquare(square->getX() - i, square->getY() + i), MoveType::Normal));
-        } else if (board->getSquare(square->getX() - i, square->getY() + i)->getPiece()->getColour() != colour) {
-            validMoves.push_back(Move(square, board->getSquare(square->getX() - i, square->getY() + i), MoveType::Capture));
-            break;
-        } else {
-            break;
-        }
-    }
-
-    //check all squares to the bottom right of the queen
-    for (int i = 1; square->getX() + i < 8 && square->getY() - i >= 0; i++) {
-        if (board->getSquare(square->getX() + i, square->getY() - i)->getPiece() == nullptr) {
-            validMoves.push_back(Move(square, board->getSquare(square->getX() + i, square->getY() - i), MoveType::Normal));
-        } else if (board->getSquare(square->getX() + i, square->getY() - i)->getPiece()->getColour() != colour) {
-            validMoves.push_back(Move(square, board->getSquare(square->getX() + i, square->getY() - i), MoveType::Capture));
-            break;
-        } else {
-            break;
-        }
-    }
-
-    //check all squares to the bottom left of the queen
-    for (int i = 1; square->getX() - i >= 0 && square->getY() - i >= 0; i++) {
-        if (board->getSquare(square->getX() - i, square->getY() - i)->getPiece() == nullptr) {
-            validMoves.push_back(Move(square, board->getSquare(square->getX() - i, square->getY() - i), MoveType::Normal));
-        } else if (board->getSquare(square->getX() - i, square->getY() - i)->getPiece()->getColour() != colour) {
-            validMoves.push_back(Move(square, board->getSquare(square->getX() - i, square->getY() - i), MoveType::Capture));
-            break;
-        } else {
-            break;
-        }
-    }
-
-    return validMoves;
+    std::vector<Move> moves;
+    addDiagonalMoves(moves, 1, 1);
+    addDiagonalMoves(moves, 1, -1);
+    addDiagonalMoves(moves, -1, 1);
+    addDiagonalMoves(moves, -1, -1);
+    addStraightMoves(moves, 1, 0);
+    addStraightMoves(moves, -1, 0);
+    addStraightMoves(moves, 0, 1);
+    addStraightMoves(moves, 0, -1);
+    return moves;
 }
