@@ -33,9 +33,7 @@ bool Pawn::isEnPassantValid(const Board &board, int side) const {
         adjacentSquare->getPiece()->getColour() != colour &&
         targetSquare->getPiece() == nullptr) {
 
-        // Check if the adjacent pawn moved two squares in the previous move
-        // This information should be tracked in your Board or Game class
-        // For this example, we'll assume a method `board->getLastMove()` returns the last move made
+        // Check if the adjacent pawn moved two squares in the previous movex
         Move lastMove = board.getLastMove();
         if (lastMove.getTo()->getPiece()->getPieceType() == PieceType::Pawn &&
             lastMove.getTo() == adjacentSquare &&
