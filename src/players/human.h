@@ -9,7 +9,7 @@
 class Human : public Player {
 public:
     Human(Colour colour);
-    virtual Move makeMove(const Board &board) override;
+    Move makeMove(const Board &board);
 };
 
 #endif 

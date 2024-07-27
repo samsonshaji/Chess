@@ -11,7 +11,8 @@ class Player {
     public:
         Player(Colour c): colour{c} {}
         Colour getColour() const { return colour; }
-        virtual Move makeMove(const Board &board) = 0;
+        // virtual Move makeMove(const Board &board) = 0;
+        virtual ~Player();
 };
 
 #endif 
