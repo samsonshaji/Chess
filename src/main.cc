@@ -4,7 +4,7 @@
 #include "board.h"
 #include "player.h"
 #include "human.h"
-#include "robot.h"
+// #include "robot.h"
 
 int main() {
     Player* whitePlayer = nullptr;

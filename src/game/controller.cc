@@ -10,7 +10,7 @@
 #include "move.h"
 #include "pawn.h"
 #include "queen.h"
-#include "robot.h"
+// #include "robot.h"
 #include "rook.h"
 #include "square.h"
 
@@ -80,22 +80,22 @@ void Controller::handleCommand(const std::string &command) {
 
         if (whitePlayerType == "human") {
             player1 = new Human(Colour::White);
-        } else if (whitePlayerType == "computer1") {
-            player1 = new Robot(Colour::White, 1);
-        } else if (whitePlayerType == "computer2") {
-            player1 = new Robot(Colour::White, 2);
-        } else if (whitePlayerType == "computer3") {
-            player1 = new Robot(Colour::White, 3);
+        // } else if (whitePlayerType == "computer1") {
+        //     player1 = new Robot(Colour::White, 1);
+        // } else if (whitePlayerType == "computer2") {
+        //     player1 = new Robot(Colour::White, 2);
+        // } else if (whitePlayerType == "computer3") {
+        //     player1 = new Robot(Colour::White, 3);
         }
 
         if (blackPlayerType == "human") {
             player2 = new Human(Colour::Black);
-        } else if (blackPlayerType == "computer1") {
-            player2 = new Robot(Colour::Black, 1);
-        } else if (blackPlayerType == "computer2") {
-            player2 = new Robot(Colour::Black, 2);
-        } else if (blackPlayerType == "computer3") {
-            player2 = new Robot(Colour::Black, 3);
+        // } else if (blackPlayerType == "computer1") {
+        //     player2 = new Robot(Colour::Black, 1);
+        // } else if (blackPlayerType == "computer2") {
+        //     player2 = new Robot(Colour::Black, 2);
+        // } else if (blackPlayerType == "computer3") {
+        //     player2 = new Robot(Colour::Black, 3);
         }
         startGame(*player1, *player2);
     } else if (action == "resign") {
