@@ -2,12 +2,12 @@
 #define BOARD_H
 
 #include <vector>
-#include "piece.h"
 #include "move.h"
 #include "square.h"
 #include "subject.h"
 #include "colour.h"
 #include "controller.h"
+#include "piece.h"
 
 class Board : public Subject {
 private:
@@ -17,7 +17,8 @@ private:
     void clearBoard();
     void addPiece(Piece* piece, Square* square);
     void removePiece(Square* square);
-    vector<Move> moveStack;
+    std::vector<Move> moveStack;
+
 public:
     Board();
     ~Board();
@@ -26,7 +27,7 @@ public:
     void setController(Controller* ctrl);
     Square* getSquare(int x, int y) const;
 
-    vector<Move> getMoveStack() const;
+    std::vector<Move> getMoveStack() const;
     Move getLastMove() const;
     
     void addMoveToStack(const Move& move);
@@ -45,3 +46,9 @@ public:
 };
 
 #endif // BOARD_H
+
+
+// TODO:
+// movePiece (+ determine move type)
+// undo move
+// in check, stale, checkmate

@@ -8,7 +8,7 @@ MoveType Move::getMoveType() const {
     return type;
 }
 
-void Move::setType(MoveType t) {
+void Move::setMoveType(MoveType t) {
     type = t;
 }
 
@@ -20,10 +20,14 @@ Square* Move::getTo() const {
     return to;
 }
 
-void Move::execute() {
-    // Implement logic to execute the move on the board
+Piece* Move::getCapturedPiece() const {
+    return capturedPiece;
 }
 
-void Move::undo() {
-    // Implement logic to undo the move on the board
+void Move::setCapturedPiece(Piece* piece) {
+    capturedPiece = piece;
+}
+
+void Move::execute() {
+    
 }
