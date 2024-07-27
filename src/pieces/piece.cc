@@ -5,7 +5,10 @@
 
 using namespace std;
 
-Piece::~Piece() {}
+Piece::~Piece() {
+    square = nullptr;
+    board = nullptr;
+}
 
 PieceType Piece::getPieceType() const {
     return type;

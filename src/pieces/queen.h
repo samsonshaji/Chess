@@ -6,8 +6,12 @@
 #include "board.h"
 
 class Queen : public Piece {
+private:
+    void addDiagonalMoves(std::vector<Move>& moves, int xDir, int yDir) const;
+    void addStraightMoves(std::vector<Move>& moves, int xDir, int yDir) const;
 public:
     Queen(Colour c);
+    PieceType getPieceType() const override;
     std::vector<Move> getValidMoves() const override;
 };
 
