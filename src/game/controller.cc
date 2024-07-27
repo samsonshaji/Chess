@@ -183,7 +183,8 @@ void Controller::endGame(bool resigned) {
 }
 
 void Controller::setupMode(){
-   while (getGameEnded()) {
+    while (getGameEnded()) {
+        board->clearBoard();
         std::string command;
         std::cin >> command;
 
@@ -259,6 +260,5 @@ void Controller::setupMode(){
         else {
             std::cout << "Invalid command" << std::endl;
         }
-   }
-
+    }
 }
