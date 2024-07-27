@@ -28,6 +28,10 @@ void Move::setCapturedPiece(Piece* piece) {
     capturedPiece = piece;
 }
 
-void Move::execute() {
-    
+Move& Move::operator=(const Move& m) {
+    from = m.from;
+    to = m.to;
+    type = m.type;
+    capturedPiece = m.capturedPiece;
+    return *this;
 }

@@ -8,12 +8,12 @@
 using namespace std;
 
 Bishop::Bishop(Colour c) : Piece(c) {
-    type = PieceType::Bishop;
+    type = PieceType::bishop;
     symbol = (c == Colour::White) ? 'B' : 'b';
 }
 
 PieceType Bishop::getPieceType() const {
-    return PieceType::Bishop;
+    return PieceType::bishop;
 }
 
 void Bishop::addDiagonalMoves(vector<Move>& moves, int xDir, int yDir) const {
@@ -28,7 +28,7 @@ void Bishop::addDiagonalMoves(vector<Move>& moves, int xDir, int yDir) const {
             moves.push_back(Move(square, targetSquare, MoveType::Normal));
         } 
         else if (targetSquare->getPiece()->getColour() != colour) {
-            if (targetSquare->getPiece()->getPieceType() == PieceType::King) {
+            if (targetSquare->getPiece()->getPieceType() == PieceType::king) {
                 board->isInCheck(targetSquare->getPiece()->getColour());
             }
             moves.push_back(Move(square, targetSquare, MoveType::Capture));

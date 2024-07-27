@@ -4,12 +4,12 @@
 #include "square.h"
 
 King::King(Colour c) : Piece(c) {
-    type = PieceType::King;
+    type = PieceType::king;
     symbol = (c == Colour::White) ? 'K' : 'k';
 }
 
 PieceType King::getPieceType() const {
-    return PieceType::King;
+    return PieceType::king;
 }
 
 bool King::isKingMoveValid(const Move& move, const Board& board) const {
@@ -49,7 +49,7 @@ std::vector<Move> King::getValidMoves() const {
                     if (targetSquare->getPiece() == nullptr) {
                         validMoves.push_back(Move(square, targetSquare, MoveType::Normal));
                     } else if (targetSquare->getPiece()->getColour() != colour) {
-                        if (targetSquare->getPiece()->getPieceType() == PieceType::King) {
+                        if (targetSquare->getPiece()->getPieceType() == PieceType::king) {
                             board->isInCheck(targetSquare->getPiece()->getColour());
                         }
                         validMoves.push_back(Move(square, targetSquare, MoveType::Capture));
@@ -65,7 +65,7 @@ std::vector<Move> King::getValidMoves() const {
         if (board->getSquare(curX + 1, curY)->getPiece() == nullptr &&
             board->getSquare(curX + 2, curY)->getPiece() == nullptr &&
             board->getSquare(curX + 3, curY)->getPiece() != nullptr &&
-            board->getSquare(curX + 3, curY)->getPiece()->getPieceType() == PieceType::Rook &&
+            board->getSquare(curX + 3, curY)->getPiece()->getPieceType() == PieceType::rook &&
             !board->getSquare(curX + 3, curY)->getPiece()->getHasMoved()) {
             
             // Additional checks to ensure the King is not in check, doesn't move through check, and doesn't end in check
@@ -81,7 +81,7 @@ std::vector<Move> King::getValidMoves() const {
             board->getSquare(curX - 2, curY)->getPiece() == nullptr &&
             board->getSquare(curX - 3, curY)->getPiece() == nullptr &&
             board->getSquare(curX - 4, curY)->getPiece() != nullptr &&
-            board->getSquare(curX - 4, curY)->getPiece()->getPieceType() == PieceType::Rook &&
+            board->getSquare(curX - 4, curY)->getPiece()->getPieceType() == PieceType::rook &&
             !board->getSquare(curX - 4, curY)->getPiece()->getHasMoved()) {
             
             // Additional checks to ensure the King is not in check, doesn't move through check, and doesn't end in check

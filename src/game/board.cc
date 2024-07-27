@@ -37,6 +37,7 @@ void Board::setupInitialBoard() {
 
     // calls square's setPiece function
     // white pieces
+
     addPiece(new Rook(Colour::White), board[0][0]);
     addPiece(new Knight(Colour::White), board[0][1]);
     addPiece(new Bishop(Colour::White), board[0][2]);
@@ -97,7 +98,7 @@ Square* Board::findKing(Colour colour) const {
     for (const auto& row : board) {
         for (const auto& square : row) {
             Piece* piece = square->getPiece();
-            if (piece && piece->getColour() == colour && piece->getPieceType() == PieceType::King) {
+            if (piece && piece->getColour() == colour && piece->getPieceType() == PieceType::king) {
                 return square;
             }
         }
@@ -135,8 +136,10 @@ bool Board::movePiece(const Move& move) {
     Square* to = move.getTo();
     Piece* piece = from->getPiece();
 
+    Move ourMove = move;
+
     // Handle castling
-    if (piece->getPieceType() == PieceType::King && !(piece->getHasMoved())) {
+    if (piece->getPieceType() == PieceType::king && !(piece->getHasMoved())) {
         if (to->getX() == from->getX() + 2) {
             // Kingside castling
             Square* rookFrom = getSquare(7, from->getY());
@@ -145,6 +148,9 @@ bool Board::movePiece(const Move& move) {
             rookFrom->setPiece(nullptr);
             rookTo->setPiece(rook);
             rook->setHasMoved(true);
+
+            ourMove.setMoveType(MoveType::Castling);
+
         } else if (to->getX() == from->getX() - 2) {
             // Queenside castling
             Square* rookFrom = getSquare(0, from->getY());
@@ -153,56 +159,68 @@ bool Board::movePiece(const Move& move) {
             rookFrom->setPiece(nullptr);
             rookTo->setPiece(rook);
             rook->setHasMoved(true);
+
+            ourMove.setMoveType(MoveType::Castling);
         }
     }
 
     // Handle en passant
-    if (piece->getPieceType() == PieceType::Pawn &&
+    if (piece->getPieceType() == PieceType::pawn &&
         from->getX() != to->getX() && to->getPiece() == nullptr) {
         Square* target = getSquare(to->getX(), from->getY());
         target->setPiece(nullptr);
+        ourMove.setMoveType(MoveType::EnPassant);
     }
 
     // Set piece as moved
-    if (piece->getPieceType() == PieceType::King ||
-        piece->getPieceType() == PieceType::Rook) {
+    if (piece->getPieceType() == PieceType::king ||
+        piece->getPieceType() == PieceType::rook) {
         piece->setHasMoved(true);
     }
-    if (piece->getPieceType() == PieceType::Pawn &&
+    if (piece->getPieceType() == PieceType::pawn &&
         abs(to->getY() - from->getY()) == 2) {
         // static_cast<Pawn*>(piece)->setDashed(true);
         piece->setHasMoved(true);
+        ourMove.setMoveType(MoveType::DoublePawn);
     }
 
     to->setPiece(piece);
     from->setPiece(nullptr);
 
     // Handle promotion
-    if (piece->getPieceType() == PieceType::Pawn && (to->getY() == 0 || to->getY() == 7)) {
+    if (piece->getPieceType() == PieceType::pawn && (to->getY() == 0 || to->getY() == 7)) {
         PieceType promotionType = controller->getPromotedTo();
 
         Piece* promotedPiece = nullptr;
         switch (promotionType) {
-            case PieceType::Queen:
+            case PieceType::queen:
                 promotedPiece = new Queen(piece->getColour());
                 break;
-            case PieceType::Rook:
+            case PieceType::rook:
                 promotedPiece = new Rook(piece->getColour());
                 break;
-            case PieceType::Bishop:
+            case PieceType::bishop:
                 promotedPiece = new Bishop(piece->getColour());
                 break;
-            case PieceType::Knight:
+            case PieceType::knight:
                 promotedPiece = new Knight(piece->getColour());
                 break;
             default:
                 break;
         }
+        ourMove.setMoveType(MoveType::Promotion);
         to->setPiece(promotedPiece);
         delete piece;
     }
 
-    addMoveToStack(move);
+    // Handle capture
+    if (to->getPiece() != nullptr) {
+        ourMove.setMoveType(MoveType::Capture);
+        ourMove.setCapturedPiece(to->getPiece());
+        delete to->getPiece();
+    }
+
+    addMoveToStack(ourMove);
     notifyObservers();
 
     // Reset the moved state for pawns of the opposite color
@@ -210,7 +228,7 @@ bool Board::movePiece(const Move& move) {
     for (auto& row : board) {
         for (auto& square : row) {
             Piece* p = square->getPiece();
-            if (p && p->getColour() == oppositeColor && p->getPieceType() == PieceType::Pawn) {
+            if (p && p->getColour() == oppositeColor && p->getPieceType() == PieceType::pawn) {
                 // static_cast<Pawn*>(p)->setDashed(false);
                 p->setHasMoved(false);
             }
@@ -239,7 +257,7 @@ void Board::undoMove() {
     }
 
     // Handle castling
-    if (piece->getPieceType() == PieceType::King && abs(from->getX() - to->getX()) == 2) {
+    if (piece->getPieceType() == PieceType::king && abs(from->getX() - to->getX()) == 2) {
         if (to->getX() == from->getX() + 2) {
             // Kingside castling
             Square* rookFrom = getSquare(5, from->getY());
@@ -258,20 +276,20 @@ void Board::undoMove() {
     }
 
     // Handle en passant
-    if (piece->getPieceType() == PieceType::Pawn &&
+    if (piece->getPieceType() == PieceType::pawn &&
         from->getX() != to->getX() && to->getPiece() == nullptr) {
         Square* target = getSquare(to->getX(), from->getY());
         target->setPiece(new Pawn(piece->getColour()));
     }
 
     // Reset piece's moved state
-    if (piece->getPieceType() == PieceType::King ||
-        piece->getPieceType() == PieceType::Rook) {
+    if (piece->getPieceType() == PieceType::king ||
+        piece->getPieceType() == PieceType::rook) {
         piece->setHasMoved(false);
     }
 
     // Handle promotion
-    if (piece->getPieceType() == PieceType::Pawn && (to->getY() == 0 || to->getY() == 7)) {
+    if (piece->getPieceType() == PieceType::pawn && (to->getY() == 0 || to->getY() == 7)) {
         delete piece;
         to->setPiece(new Pawn(piece->getColour()));
     }

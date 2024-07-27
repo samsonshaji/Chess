@@ -15,8 +15,9 @@ void GraphicsObserver::notify() {
         for (int y = 0; y < 8; ++y) {
             Square* square = board.getSquare(x, y);
             if (square->getPiece()) {
-                std::string pieceSymbol = square->getPiece()->getSymbol();
-                xw.drawString(x * 60, y * 60, pieceSymbol);
+                char pieceSymbol = square->getPiece()->getSymbol();
+                std::string pieceSymbolStr(1, pieceSymbol);
+                xw.drawString(x * 60, y * 60, pieceSymbolStr);
             } else {
                 xw.drawString(x * 60, y * 60, "_");
             }

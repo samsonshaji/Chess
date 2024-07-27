@@ -3,12 +3,12 @@
 using namespace std;
 
 Rook::Rook(Colour c) : Piece(c) {
-    type = PieceType::Rook;
+    type = PieceType::rook;
     symbol = (c == Colour::White) ? 'R' : 'r';
 }
 
 PieceType Rook::getPieceType() const {
-    return PieceType::Rook;
+    return PieceType::rook;
 }
 
 void Rook::addStraightMoves(vector<Move>& moves, int xDir, int yDir) const {
@@ -23,7 +23,7 @@ void Rook::addStraightMoves(vector<Move>& moves, int xDir, int yDir) const {
             moves.push_back(Move(square, targetSquare, MoveType::Normal));
         } 
         else if (targetSquare->getPiece()->getColour() != colour) {
-            if (targetSquare->getPiece()->getPieceType() == PieceType::King) {
+            if (targetSquare->getPiece()->getPieceType() == PieceType::king) {
                 board->isInCheck(targetSquare->getPiece()->getColour());
             }
             moves.push_back(Move(square, targetSquare, MoveType::Capture));
@@ -48,7 +48,7 @@ vector<Move> Rook::getValidMoves() const {
         Square* targetSquare = board->getSquare(0, 2);
         if (targetSquare->getPiece() == nullptr) {
             Square* rookSquare = board->getSquare(0, 0);
-            if (rookSquare->getPiece() != nullptr && rookSquare->getPiece()->getPieceType() == PieceType::Rook) {
+            if (rookSquare->getPiece() != nullptr && rookSquare->getPiece()->getPieceType() == PieceType::rook) {
                 if (rookSquare->getPiece()->getColour() == Colour::White) {
                     moves.push_back(Move(square, targetSquare, MoveType::Castling));
                 }
@@ -61,7 +61,7 @@ vector<Move> Rook::getValidMoves() const {
         Square* targetSquare = board->getSquare(0, 6);
         if (targetSquare->getPiece() == nullptr) {
             Square* rookSquare = board->getSquare(0, 7);
-            if (rookSquare->getPiece() != nullptr && rookSquare->getPiece()->getPieceType() == PieceType::Rook) {
+            if (rookSquare->getPiece() != nullptr && rookSquare->getPiece()->getPieceType() == PieceType::rook) {
                 if (rookSquare->getPiece()->getColour() == Colour::White) {
                     moves.push_back(Move(square, targetSquare, MoveType::Castling));
                 }
@@ -74,7 +74,7 @@ vector<Move> Rook::getValidMoves() const {
         Square* targetSquare = board->getSquare(7, 2);
         if (targetSquare->getPiece() == nullptr) {
             Square* rookSquare = board->getSquare(7, 0);
-            if (rookSquare->getPiece() != nullptr && rookSquare->getPiece()->getPieceType() == PieceType::Rook) {
+            if (rookSquare->getPiece() != nullptr && rookSquare->getPiece()->getPieceType() == PieceType::rook) {
                 if (rookSquare->getPiece()->getColour() == Colour::Black) {
                     moves.push_back(Move(square, targetSquare, MoveType::Castling));
                 }
@@ -87,7 +87,7 @@ vector<Move> Rook::getValidMoves() const {
         Square* targetSquare = board->getSquare(7, 6);
         if (targetSquare->getPiece() == nullptr) {
             Square* rookSquare = board->getSquare(7, 7);
-            if (rookSquare->getPiece() != nullptr && rookSquare->getPiece()->getPieceType() == PieceType::Rook) {
+            if (rookSquare->getPiece() != nullptr && rookSquare->getPiece()->getPieceType() == PieceType::rook) {
                 if (rookSquare->getPiece()->getColour() == Colour::Black) {
                     moves.push_back(Move(square, targetSquare, MoveType::Castling));
                 }

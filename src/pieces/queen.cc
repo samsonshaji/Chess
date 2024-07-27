@@ -2,12 +2,12 @@
 
 
 Queen::Queen(Colour c) : Piece(c) {
-    type = PieceType::Queen;
+    type = PieceType::queen;
     symbol = (c == Colour::White) ? 'Q' : 'q';
 }
 
 PieceType Queen::getPieceType() const {
-    return PieceType::Queen;
+    return PieceType::queen;
 }
 
 void Queen::addDiagonalMoves(std::vector<Move>& moves, int xDir, int yDir) const {
@@ -22,7 +22,7 @@ void Queen::addDiagonalMoves(std::vector<Move>& moves, int xDir, int yDir) const
             moves.push_back(Move(square, targetSquare, MoveType::Normal));
         } 
         else if (targetSquare->getPiece()->getColour() != colour) {
-            if (targetSquare->getPiece()->getPieceType() == PieceType::King) {
+            if (targetSquare->getPiece()->getPieceType() == PieceType::king) {
                 board->isInCheck(targetSquare->getPiece()->getColour());
             }
             moves.push_back(Move(square, targetSquare, MoveType::Capture));
@@ -47,7 +47,7 @@ void Queen::addStraightMoves(std::vector<Move>& moves, int xDir, int yDir) const
             moves.push_back(Move(square, targetSquare, MoveType::Normal));
         } 
         else if (targetSquare->getPiece()->getColour() != colour) {
-            if (targetSquare->getPiece()->getPieceType() == PieceType::King) {
+            if (targetSquare->getPiece()->getPieceType() == PieceType::king) {
                 board->isInCheck(targetSquare->getPiece()->getColour());
             }
             moves.push_back(Move(square, targetSquare, MoveType::Capture));

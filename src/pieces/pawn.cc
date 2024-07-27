@@ -8,12 +8,12 @@
 using namespace std;
 
 Pawn::Pawn(Colour c) : Piece(c) {
-    type = PieceType::Pawn;
+    type = PieceType::pawn;
     symbol = (c == Colour::White) ? 'P' : 'p';
 }
 
 PieceType Pawn::getPieceType() const {
-    return PieceType::Pawn;
+    return PieceType::pawn;
 }
 
 bool Pawn::isEnPassantValid(const Board &board, int side) const {
@@ -29,13 +29,13 @@ bool Pawn::isEnPassantValid(const Board &board, int side) const {
     Square* targetSquare = board.getSquare(curX + side, curY + direction);
 
     if (adjacentSquare->getPiece() &&
-        adjacentSquare->getPiece()->getPieceType() == PieceType::Pawn &&
+        adjacentSquare->getPiece()->getPieceType() == PieceType::pawn &&
         adjacentSquare->getPiece()->getColour() != colour &&
         targetSquare->getPiece() == nullptr) {
 
         // Check if the adjacent pawn moved two squares in the previous movex
         Move lastMove = board.getLastMove();
-        if (lastMove.getTo()->getPiece()->getPieceType() == PieceType::Pawn &&
+        if (lastMove.getTo()->getPiece()->getPieceType() == PieceType::pawn &&
             lastMove.getTo() == adjacentSquare &&
             abs(lastMove.getFrom()->getY() - lastMove.getTo()->getY()) == 2) {
             return true;
@@ -75,7 +75,7 @@ std::vector<Move> Pawn::getValidMoves() const {
         if (curX + side >= 0 && curX + side < 8 && curY + direction >= 0 && curY + direction < 8) {
             Square* captureSquare = board->getSquare(curX + side, curY + direction);
             if (captureSquare->getPiece() && captureSquare->getPiece()->getColour() != colour) {
-                if (captureSquare->getPiece()->getPieceType() == PieceType::King) {
+                if (captureSquare->getPiece()->getPieceType() == PieceType::king) {
                     board->isInCheck(captureSquare->getPiece()->getColour());
                 }
                 validMoves.push_back(Move(square, captureSquare, MoveType::Capture));

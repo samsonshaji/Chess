@@ -19,11 +19,11 @@ class Move {
         Move(Square* f, Square* t);
         Move(Square* f, Square* t, MoveType mt);
 
+        // copy assignment
+        Move& operator=(const Move& m);
+
         MoveType getMoveType() const;
         void setMoveType(MoveType t);
-
-        void execute();
-        void undo();
 
         Square* getFrom() const;
         Square* getTo() const;

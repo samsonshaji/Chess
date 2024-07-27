@@ -16,15 +16,15 @@ void Controller::setScoreBoard(ScoreBoard* sb) {
 
 PieceType Controller::getPromotedTo() {
     if (promotedTo == "Q" || promotedTo == "q") {
-        return PieceType::Queen;
+        return PieceType::queen;
     } else if (promotedTo == "R" || promotedTo == "r") {
-        return PieceType::Rook;
+        return PieceType::rook;
     } else if (promotedTo == "B"  || promotedTo == "b") {
-        return PieceType::Bishop;
+        return PieceType::bishop;
     } else if (promotedTo == "N" || promotedTo == "n") {
-        return PieceType::Knight;
+        return PieceType::knight;
     }
-    return PieceType::Pawn;
+    return PieceType::pawn;
 }
 
 void Controller::setPromotedTo(std::string promotedType) {

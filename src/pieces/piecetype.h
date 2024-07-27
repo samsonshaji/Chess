@@ -2,12 +2,12 @@
 #define PIECETYPE_H
 
 enum PieceType {
-    Pawn,
-    Knight,
-    Bishop,
-    Rook,
-    Queen,
-    King
+    pawn,
+    knight,
+    bishop,
+    rook,
+    queen,
+    king
 };
 
 #endif
