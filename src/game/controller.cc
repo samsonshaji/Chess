@@ -69,14 +69,15 @@ void Controller::setPromotedTo(std::string promotedType) {
 }
 
 void Controller::handleCommand(const std::string &command) {
+    // std::cout << "command inside handleCommand: " << command << std::endl;
     std::istringstream iss(command);
     std::string action;
-    iss >> action;
-
-    if (action == "game") {
+    while (iss >> action) {
+        // std::cout << "action: " << action << std::endl;
+        if (action == "game") {
         std::string whitePlayerType;
         std::string blackPlayerType;
-        std::cin >> whitePlayerType >> blackPlayerType;
+        iss >> whitePlayerType >> blackPlayerType;
 
         if (whitePlayerType == "human") {
             player1 = new Human(Colour::White);
@@ -98,22 +99,23 @@ void Controller::handleCommand(const std::string &command) {
         //     player2 = new Robot(Colour::Black, 3);
         }
         startGame(*player1, *player2);
-    } else if (action == "resign") {
-        endGame(true);
-    } else if (action == "move") {
-        std::string from, to, promotePiece;
-        iss >> from >> to >> promotePiece;
-        if (promotePiece != "") {
-            setPromotedTo(promotePiece);
+        } else if (action == "resign") {
+            endGame(true);
+        } else if (action == "move") {
+            std::string from, to, promotePiece;
+            iss >> from >> to >> promotePiece;
+            if (promotePiece != "") {
+                setPromotedTo(promotePiece);
+            }
+            Square *fromSquare = stringToSquare(from);
+            Square *toSquare = stringToSquare(to);
+            Move move = Move(fromSquare, toSquare);
+            runGame(*player1, *player2, move);
+        } else if (action == "setup") {
+            setupMode();
+        // } else {
+        //     std::cout << "Invalid command" << std::endl;}
         }
-        Square *fromSquare = stringToSquare(from);
-        Square *toSquare = stringToSquare(to);
-        Move move = Move(fromSquare, toSquare);
-        runGame(*player1, *player2, move);
-    } else if (action == "setup") {
-        setupMode();
-    } else {
-        std::cout << "Invalid command" << std::endl;
     }
 }
 
