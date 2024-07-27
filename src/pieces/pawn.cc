@@ -37,7 +37,7 @@ bool Pawn::isEnPassantValid(const Board &board, int side) const {
         // This information should be tracked in your Board or Game class
         // For this example, we'll assume a method `board->getLastMove()` returns the last move made
         Move lastMove = board.getLastMove();
-        if (lastMove.getPiece()->getPieceType() == PieceType::Pawn &&
+        if (lastMove.getTo()->getPiece()->getPieceType() == PieceType::Pawn &&
             lastMove.getTo() == adjacentSquare &&
             abs(lastMove.getFrom()->getY() - lastMove.getTo()->getY()) == 2) {
             return true;
