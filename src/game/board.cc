@@ -87,8 +87,10 @@ void Board::addMoveToStack(const Move& move) {
 }
 
 bool Board::isMoveLegal(const Move& move) const {
-    // TODO
-    return true;
+    // bishop
+    if (move.getPiece()->getPieceType() == PieceType::Bishop) {
+
+    }
 }
 
 bool Board::movePiece(const Move& move) {
@@ -112,7 +114,7 @@ bool Board::movePiece(const Move& move) {
     addMoveToStack(move);
 
     // notify controller
-    controller->notifyMove(move);
+    // controller->notifyMove(move);
 
     return true;
 }
@@ -130,6 +132,10 @@ bool Board::isCheckmate(Colour colour) const {
 bool Board::isStalemate(Colour colour) const {
     // TODO
     return false;
+}
+
+vector<Move> getMoveStack() const {
+    return moveStack;
 }
 
 void Board::undoMove() {
@@ -151,5 +157,5 @@ void Board::undoMove() {
     to->setPiece(nullptr);
 
     // notify controller somehow... TODO
-    controller->notifyUndoMove(move);
+    // controller->notifyUndoMove(move);
 }
