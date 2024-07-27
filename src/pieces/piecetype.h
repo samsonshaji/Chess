@@ -1,5 +1,5 @@
-#ifndef PIECE_TYPE_H
-#define PIECE_TYPE_H
+#ifndef PIECETYPE_H
+#define PIECETYPE_H
 
 enum PieceType {
     Pawn,
@@ -9,4 +9,5 @@ enum PieceType {
     Queen,
     King
 };
+
 #endif

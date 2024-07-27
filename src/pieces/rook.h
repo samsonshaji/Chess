@@ -2,7 +2,6 @@
 #define ROOK_H
 
 #include "piece.h"
-#include "piece.h"
 #include "move.h"
 #include "board.h"
 #include "piecetype.h"
