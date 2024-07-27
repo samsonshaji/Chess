@@ -10,10 +10,10 @@ TextObserver::~TextObserver() {
 }
 
 void TextObserver::notify() {
-    const Board &board = static_cast<const Board&>(subject.getState()); // idk if we need static cast, just to be safe though
+    std::vector<std::vector<Square*>> board = subject.getState();
     for (int x = 0; x < 8; ++x) {
         for (int y = 0; y < 8; ++y) {
-            Square* square = board.getSquare(x, y);
+            Square* square = board[x][y];
             if (square->getPiece()) {
                 out << square->getPiece()->getSymbol() << ' ';
             } else {
