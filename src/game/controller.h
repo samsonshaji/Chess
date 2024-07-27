@@ -12,7 +12,7 @@ class Controller {
         Player* player2;
         Player* currentPlayer;
         Board board;
-        bool gameEnded;
+        bool gameEnded = false;
         std::vector<Move> MoveHistory;
         ScoreBoard* scoreBoard;
         std::string promotedTo;
@@ -20,7 +20,7 @@ class Controller {
         Controller(Player* player1, Player* player2);
         void startGame(Player &p1, Player &p2);
         void checkWin();
-        void runGame(Player &p1, Player &p2);
+        void runGame(Player &p1, Player &p2, const Move &move);
         void endGame(bool resigned);
         void Controller::playTurn(Player* p);
         void setScoreBoard(ScoreBoard* sb);
@@ -29,6 +29,13 @@ class Controller {
         void setPromotedTo(std::string promotedType);
         
         void handleCommand(const std::string &command);
+
+        Square* stringToSquare(std::string square);
+
+        bool getGameEnded();
+        void setGameEnded(bool ended);
+
+        void setupMode();
 };
 
 #endif
