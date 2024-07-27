@@ -28,10 +28,16 @@ void Move::setCapturedPiece(Piece* piece) {
     capturedPiece = piece;
 }
 
+Move::Move(const Move& m) : from(m.from), to(m.to), type(m.type), capturedPiece(m.capturedPiece) {}
+
 Move& Move::operator=(const Move& m) {
     from = m.from;
     to = m.to;
     type = m.type;
     capturedPiece = m.capturedPiece;
     return *this;
+}
+
+bool Move::operator==(const Move& m) const {
+    return from == m.from && to == m.to;
 }

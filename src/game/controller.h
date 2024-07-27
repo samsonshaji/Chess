@@ -22,7 +22,7 @@ class Controller {
         void checkWin();
         void runGame(Player &p1, Player &p2, const Move &move);
         void endGame(bool resigned);
-        void Controller::playTurn(Player* p);
+        void playTurn(Player* p);
         void setScoreBoard(ScoreBoard* sb);
         
         PieceType getPromotedTo();

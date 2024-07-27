@@ -2,16 +2,18 @@
 #define BOARD_H
 
 #include <vector>
+#include "subject.h"
 #include "move.h"
 #include "square.h"
-#include "subject.h"
 #include "colour.h"
 #include "controller.h"
 #include "piece.h"
 
+class Controller;
+
 class Board : public Subject {
 private:
-    std::vector<std::vector<Square*>> board;
+    std::vector<std::vector<Square*> > board;
     Controller* controller;
     void setupInitialBoard();
     std::vector<Move> moveStack;

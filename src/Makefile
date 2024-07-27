@@ -1,21 +1,47 @@
+# Compiler and flags
 CXX = g++
-CXXFLAGS = -ggdb -Wall -MMD -Wextra
-# TODO: change objects
-OBJECTS = main.o board.o controller.o graphicsdisplay.o \
-		  human.o king.o knight.o move.o pawn.o piece.o queen.o \
-		  rook.o square.o textdisplay.o robot.o window.o player.o \
-		  robotlvl1.o robotlvl2.o robotlvl3.o robotlvl4.o
+CXXFLAGS = -ggdb -Wall -MMD -Wextra -std=c++17 -I. -Igame -Ipieces -Iobservers -Iplayers
 
-DEPENDS = ${OBJECTS:.o=.d}
-EXEC = pp9k
+# Directories
+SRC_DIRS = . game pieces observers players
+OBJ_DIR = obj
+BIN_DIR = bin
 
-${EXEC} : ${OBJECTS}
-	${CXX} -ggdb ${OBJECTS} -o ${EXEC} -lX11
+# Source files
+SRCS = main.cc \
+       game/controller.cc game/move.cc game/board.cc game/scoreboard.cc game/square.cc game/subject.cc \
+       pieces/king.cc pieces/knight.cc pieces/pawn.cc pieces/piece.cc pieces/queen.cc pieces/rook.cc \
+       observers/graphicsobserver.cc observers/textobserver.cc observers/window.cc \
+       players/human.cc
 
--include ${DEPENDS}
+# Object files
+OBJECTS = $(patsubst %.cc, $(OBJ_DIR)/%.o, $(SRCS))
+# Dependency files
+DEPENDS = $(OBJECTS:.o=.d)
+# Executable
+EXEC = $(BIN_DIR)/pp9k
 
-.PHONY : clean
-clean :
-	rm -f ${DEPENDS} ${OBJECTS} ${EXEC}
+# Default target
+all: $(EXEC)
 
-rebuild : clean ${EXEC}
+# Link object files to create executable
+$(EXEC): $(OBJECTS)
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(EXEC) -lX11
+
+# Compile source files to object files
+$(OBJ_DIR)/%.o: %.cc
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Include dependency files
+-include $(DEPENDS)
+
+# Clean target
+.PHONY: clean
+clean:
+	rm -f $(DEPENDS) $(OBJECTS) $(EXEC)
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
+
+# Rebuild target
+rebuild: clean all

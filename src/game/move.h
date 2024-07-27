@@ -18,8 +18,8 @@ class Move {
     public:
         Move(Square* f, Square* t);
         Move(Square* f, Square* t, MoveType mt);
-
-        // copy assignment
+        
+        Move(const Move& m);
         Move& operator=(const Move& m);
 
         MoveType getMoveType() const;
@@ -30,6 +30,9 @@ class Move {
 
         Piece* getCapturedPiece() const;
         void setCapturedPiece(Piece* piece);
+
+        bool operator==(const Move& m) const;
+
 };
 
 #endif
