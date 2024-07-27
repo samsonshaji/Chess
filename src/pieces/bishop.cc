@@ -12,10 +12,6 @@ Bishop::Bishop(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'B' : 'b';
 }
 
-PieceType Bishop::getPieceType() const {
-    return PieceType::bishop;
-}
-
 void Bishop::addDiagonalMoves(vector<Move>& moves, int xDir, int yDir) const {
     int x = square->getX() + xDir;
     int y = square->getY() + yDir;

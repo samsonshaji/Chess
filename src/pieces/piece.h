@@ -20,7 +20,7 @@ protected:
 
 public:
     virtual ~Piece();
-    virtual PieceType getPieceType() const = 0;
+    PieceType getPieceType() const;
     virtual std::vector<Move> getValidMoves() const = 0;
     Colour getColour() const;
     Piece(Colour c);

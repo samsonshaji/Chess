@@ -8,10 +8,6 @@ King::King(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'K' : 'k';
 }
 
-PieceType King::getPieceType() const {
-    return PieceType::king;
-}
-
 bool King::isKingMoveValid(const Move& move, const Board& board) const {
     // Calculate the difference in x and y coordinates
     int deltaX = abs(move.getFrom()->getX() - move.getTo()->getX());

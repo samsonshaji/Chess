@@ -12,10 +12,6 @@ Knight::Knight(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'N' : 'n';
 }
 
-PieceType Knight::getPieceType() const {
-    return PieceType::knight;
-}
-
 //fill the vector with all possible Moves a knight can make at any given time
 vector<Move> Knight::getValidMoves() const {
     vector<Move> validMoves;

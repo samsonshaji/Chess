@@ -12,10 +12,6 @@ Pawn::Pawn(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'P' : 'p';
 }
 
-PieceType Pawn::getPieceType() const {
-    return PieceType::pawn;
-}
-
 bool Pawn::isEnPassantValid(const Board &board, int side) const {
     int curX = square->getX();
     int curY = square->getY();

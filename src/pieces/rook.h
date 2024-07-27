@@ -11,7 +11,6 @@ private:
     void addStraightMoves(std::vector<Move>& moves, int xDir, int yDir) const;
 public:
     Rook(Colour c);
-    PieceType getPieceType() const override;
     std::vector<Move> getValidMoves() const override;
 };
 

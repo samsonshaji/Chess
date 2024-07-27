@@ -2,10 +2,6 @@
 
 Human::Human(Colour colour) : Player(colour) {}
 
-Colour Human::getColour() const {
-    return colour;
-}
-
 Move Human::makeMove(const Board &board) {
     int oldRow, oldCol, newRow, newCol;
     std::cout << "Enter your move (oldRow oldCol newRow newCol): ";

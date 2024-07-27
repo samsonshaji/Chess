@@ -10,7 +10,7 @@ class Player {
         Colour colour;
     public:
         Player(Colour c): colour{c} {}
-        virtual Colour getColour() const = 0;
+        Colour getColour() const { return colour; }
         virtual Move makeMove(const Board &board) = 0;
 };
 

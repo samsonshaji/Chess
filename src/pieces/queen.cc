@@ -6,10 +6,6 @@ Queen::Queen(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'Q' : 'q';
 }
 
-PieceType Queen::getPieceType() const {
-    return PieceType::queen;
-}
-
 void Queen::addDiagonalMoves(std::vector<Move>& moves, int xDir, int yDir) const {
     int x = square->getX() + xDir;
     int y = square->getY() + yDir;

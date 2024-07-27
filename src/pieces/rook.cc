@@ -7,10 +7,6 @@ Rook::Rook(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'R' : 'r';
 }
 
-PieceType Rook::getPieceType() const {
-    return PieceType::rook;
-}
-
 void Rook::addStraightMoves(vector<Move>& moves, int xDir, int yDir) const {
     int x = square->getX() + xDir;
     int y = square->getY() + yDir;
