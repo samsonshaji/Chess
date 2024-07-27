@@ -9,7 +9,7 @@ class Robot : public Player {
 public:
     Robot(Colour c, int level);
     virtual Colour getColour() const override;
-    virtual Move makeMove(const Board &board) override;
+    virtual Move makeMove(const Board &board) override = 0;
 };
 
 #endif

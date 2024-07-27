@@ -54,3 +54,9 @@ public:
 };
 
 #endif // BOARD_H
+
+
+// TODO:
+// movePiece (+ determine move type)
+// undo move
+// in check, stale, checkmate

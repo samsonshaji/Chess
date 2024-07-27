@@ -6,6 +6,9 @@
 #include "scoreboard.h"
 #include <vector>
 #include <string>
+
+class Player;
+
 class Controller {
     private:
         Player* player1;
