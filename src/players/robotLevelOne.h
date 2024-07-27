@@ -3,7 +3,6 @@
 
 #include "robot.h"
 
-
 class LevelOne : public Robot {
     public:
         LevelOne();

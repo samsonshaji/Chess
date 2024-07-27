@@ -19,7 +19,7 @@ OBJECTS = $(patsubst %.cc, $(OBJ_DIR)/%.o, $(SRCS))
 # Dependency files
 DEPENDS = $(OBJECTS:.o=.d)
 # Executable
-EXEC = $(BIN_DIR)/pp9k
+EXEC = $(BIN_DIR)/chess
 
 # Default target
 all: $(EXEC)
