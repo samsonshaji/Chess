@@ -36,15 +36,44 @@ void Rook::addStraightMoves(vector<Move>& moves, int xDir, int yDir) const {
     }
 }
 
-bool Rook::canCastle() const {
-    return !hasMoved;
-}
-
 vector<Move> Rook::getValidMoves() const {
     vector<Move> moves;
     addStraightMoves(moves, 1, 0);
     addStraightMoves(moves, -1, 0);
     addStraightMoves(moves, 0, 1);
     addStraightMoves(moves, 0, -1);
+
+    // castling - king side
+    if (board->canCastle(colour, true)) {
+        if (colour == Colour::White) {
+            if (board->getSquare(5, 0)->getPiece() == nullptr &&
+                board->getSquare(6, 0)->getPiece() == nullptr) {
+                moves.push_back(Move(square, board->getSquare(6, 0), MoveType::Castle));
+            }
+        } else {
+            if (board->getSquare(5, 7)->getPiece() == nullptr &&
+                board->getSquare(6, 7)->getPiece() == nullptr) {
+                moves.push_back(Move(square, board->getSquare(6, 7), MoveType::Castle));
+            }
+        }
+    }
+
+    // castling - queen side
+    if (board->canCastle(colour, false)) {
+        if (colour == Colour::White) {
+            if (board->getSquare(1, 0)->getPiece() == nullptr &&
+                board->getSquare(2, 0)->getPiece() == nullptr &&
+                board->getSquare(3, 0)->getPiece() == nullptr) {
+                moves.push_back(Move(square, board->getSquare(2, 0), MoveType::Castle));
+            }
+        } else {
+            if (board->getSquare(1, 7)->getPiece() == nullptr &&
+                board->getSquare(2, 7)->getPiece() == nullptr &&
+                board->getSquare(3, 7)->getPiece() == nullptr) {
+                moves.push_back(Move(square, board->getSquare(2, 7), MoveType::Castle));
+            }
+        }
+    }
+
     return moves;
 }
