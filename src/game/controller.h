@@ -24,9 +24,11 @@ class Controller {
         void endGame(bool resigned);
         void Controller::playTurn(Player* p);
         void setScoreBoard(ScoreBoard* sb);
+        
         PieceType getPromotedTo();
-        void setPromotedTo(std::string promotedType, Colour colour);
-        void handleCommand(const std::string command);
+        void setPromotedTo(std::string promotedType);
+        
+        void handleCommand(const std::string &command);
 };
 
 #endif
