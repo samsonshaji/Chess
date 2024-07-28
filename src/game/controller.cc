@@ -115,7 +115,6 @@ void Controller::handleCommand(const std::string &command) {
 
             Move move = Move(fromSquare, toSquare);
             runGame(*player1, *player2, move);
-            std::cout << "Move made" << std::endl;
         } else if (action == "setup") {
             setupMode();
         }

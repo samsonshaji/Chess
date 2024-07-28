@@ -238,6 +238,7 @@ bool Board::isValidSetup() const {
 
 bool Board::movePiece(const Move& move) {
     if (!isMoveLegal(move)) {
+        std::cout << "Illegal move, try again!" << std::endl;
         return false;
     }
 
