@@ -54,7 +54,7 @@ void Board::setupInitialBoard() {
     for (int i = 0; i < 8; i++) {
         std::vector<Square*> row;
         for (int j = 0; j < 8; j++) {
-            row.push_back(new Square(i, j));
+            row.push_back(new Square(j, i));
         }
         board.push_back(row);
     }
@@ -117,7 +117,7 @@ Square* Board::getSquare(int x, int y) const {
     if (x < 0 || x > 7 || y < 0 || y > 7) {
         return nullptr;
     }
-    return board[x][y];
+    return board[y][x];
 }
 
 void Board::setController(Controller* ctrl) {
@@ -131,7 +131,7 @@ Square* Board::findKing(Colour colour) const {
             Piece* piece = square->getPiece();
 
             if (piece == nullptr) {
-                std::cout << "Piece at square" << square->getX() << " " << square->getY() << " is nullptr" << std::endl;
+                // std::cout << "Piece at square" << square->getX() << " " << square->getY() << " is nullptr" << std::endl;
             }
 
             if (piece && piece->getColour() == colour && piece->getPieceType() == PieceType::king) {
@@ -237,6 +237,7 @@ bool Board::isValidSetup() const {
 
 
 bool Board::movePiece(const Move& move) {
+    std::cout << "CHECK #13P" << std::endl;
     if (!isMoveLegal(move)) {
         return false;
     }
@@ -245,7 +246,10 @@ bool Board::movePiece(const Move& move) {
     Square* to = move.getTo();
     Piece* piece = from->getPiece();
 
+    std::cout << "CHECK #90P" << std::endl;
+
     Move ourMove = move;
+    std::cout << "CHECK #10P" << std::endl;
 
     // Handle castling
     if (piece->getPieceType() == PieceType::king && !(piece->getHasMoved())) {
@@ -272,6 +276,7 @@ bool Board::movePiece(const Move& move) {
             ourMove.setMoveType(MoveType::Castling);
         }
     }
+    std::cout << "CHECK #10000P" << std::endl;
 
     // Handle en passant
     if (piece->getPieceType() == PieceType::pawn &&
@@ -286,19 +291,27 @@ bool Board::movePiece(const Move& move) {
         piece->getPieceType() == PieceType::rook) {
         piece->setHasMoved(true);
     }
+    std::cout << "CHECK #534P" << std::endl;
     if (piece->getPieceType() == PieceType::pawn &&
         abs(to->getY() - from->getY()) == 2) {
+            std::cout << "CHECK #898" << std::endl;
         // static_cast<Pawn*>(piece)->setDashed(true);
         piece->setHasMoved(true);
+        std::cout << "CHECK #4954P" << std::endl;
         ourMove.setMoveType(MoveType::DoublePawn);
+        std::cout << "CHECK #5394P" << std::endl;
     }
+    std::cout << "CHECK #0999P" << std::endl;
 
     to->setPiece(piece);
+    std::cout << "CHECK #999P" << std::endl;
     from->setPiece(nullptr);
+    std::cout << "CHECK #990P" << std::endl;
 
     // Handle promotion
     if (piece->getPieceType() == PieceType::pawn && (to->getY() == 0 || to->getY() == 7)) {
         PieceType promotionType = controller->getPromotedTo();
+        std::cout << "CHECK #590P" << std::endl;
 
         Piece* promotedPiece = nullptr;
         switch (promotionType) {
@@ -317,20 +330,31 @@ bool Board::movePiece(const Move& move) {
             default:
                 break;
         }
+        std::cout << "CHECK #634P" << std::endl;
         ourMove.setMoveType(MoveType::Promotion);
         to->setPiece(promotedPiece);
+        std::cout << "CHECK #30944P" << std::endl;
         delete piece;
+        std::cout << "SID BRO YOU MESSEED UP" << std::endl;
     }
+    std::cout << "CHECK #4009P" << std::endl;
 
     // Handle capture
     if (to->getPiece() != nullptr) {
+        std::cout << "CHECK #RINside 90579" << std::endl;
         ourMove.setMoveType(MoveType::Capture);
+        std::cout << "CHECK #SUIfnfin" << std::endl;
         ourMove.setCapturedPiece(to->getPiece());
+        std::cout << "CHECK 893284" << std::endl;
         delete to->getPiece();
+        std::cout << "CHECK #R950844" << std::endl;
     }
 
+    std::cout << "CHECK #R95083" << std::endl;
     addMoveToStack(ourMove);
     notifyObservers();
+    std::cout << "CHECK #K9058" << std::endl;
+    
 
     // Reset the moved state for pawns of the opposite color
     Colour oppositeColor = (piece->getColour() == Colour::White) ? Colour::Black : Colour::White;
@@ -343,6 +367,7 @@ bool Board::movePiece(const Move& move) {
             }
         }
     }
+    std::cout << "CHECK #PASSED MOVE ON LIL BRO" << std::endl;
     return true;
 }
 
@@ -501,16 +526,18 @@ Board& Board::operator=(const Board& other) {
 }
 
 bool Board::isInCheck(Colour colour) const {
+    std::cout << "I FOUDN IT ITD HERE" << std::endl;
     Square* kingSquare = findKing(colour);
+    std::cout << "SID BRO FIX UP MAN" << std::endl;
     for (const auto& row : board) {
         for (const auto& square : row) {
             Piece* piece = square->getPiece();
             if (piece && piece->getColour() != colour) {
-                std::cout << "Piece at square " << square->getX() << " " << square->getY() << " is " << piece->getSymbol() << std::endl;
+                // std::cout << "Piece at square " << square->getX() << " " << square->getY() << " is " << piece->getSymbol() << std::endl;
                 std::vector <Move> validMoves = piece->getValidMoves();
 
                 if (piece->getPieceType() == PieceType::pawn || piece->getPieceType() == PieceType::knight) {
-                    std::cout << "validMoves.size(): " << validMoves.size() << std::endl;
+                    // std::cout << "validMoves.size(): " << validMoves.size() << std::endl;
                 }
                 // std::cout << "validMoves.size(): " << validMoves.size() << std::endl; // ZERO ??????
                 for (const auto& move : validMoves) {
@@ -533,13 +560,16 @@ bool Board::isCheckmate(Colour colour) const {
     }
 
     std::cout << "Not in check" << std::endl;
+    std::cout << "SID IS A KING" << std::endl;
 
     for (const auto& row : board) {
         for (const auto& square : row) {
             Piece* piece = square->getPiece();
             // std::cout << "Piece: " << piece << std::endl;
             if (piece && piece->getColour() == colour) {
+                std::cout << "SID IS A KING" << std::endl;
                 std::vector<Move> validMoves = piece->getValidMoves();
+                std::cout << "SID IS A KING" << std::endl;
                 for (const auto& move : validMoves) {
                     Board copy = *this;
                     copy.movePiece(move);
@@ -550,6 +580,7 @@ bool Board::isCheckmate(Colour colour) const {
             }
         }
     }
+    std::cout << "SID IS A SUPERSTAIR" << std::endl;
     return true;
 }
 
