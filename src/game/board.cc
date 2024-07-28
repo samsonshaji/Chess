@@ -23,6 +23,20 @@ Board::~Board() {
     }
 }
 
+void Board::print() const {
+    for (int i = 7; i >= 0; i--) {
+        std::cout << i+1 << " ";
+        for (int j = 0; j < 8; j++) {
+            if (board[i][j]->getPiece() == nullptr) {
+                std::cout << "_";
+            } else {
+                std::cout << board[i][j]->getPiece()->getSymbol();
+            }
+        }
+        std::cout << std::endl;
+    }
+}
+
 void Board::clearBoard() {
     for (auto& row : board) {
         for (auto& square : row) {
@@ -97,9 +111,15 @@ void Board::setController(Controller* ctrl) {
 }
 
 Square* Board::findKing(Colour colour) const {
+    std::cout << "findKing called" << std::endl;
     for (const auto& row : board) {
         for (const auto& square : row) {
             Piece* piece = square->getPiece();
+
+            if (piece == nullptr) {
+                std::cout << "Piece at square" << square->getX() << " " << square->getY() << " is nullptr" << std::endl;
+            }
+
             if (piece && piece->getColour() == colour && piece->getPieceType() == PieceType::king) {
                 return square;
             }
@@ -122,7 +142,21 @@ Move Board::getLastMove() const {
 }
 
 bool Board::isMoveLegal(const Move& move) const {
+    Piece *piece = move.getFrom()->getPiece();
+
+    if (piece == nullptr) {
+        return false;
+    }
+
+    // print();
+
+    // if (piece == nullptr) {
+    //     std::cout << "piece is nullptr" << std::endl;
+    // }
+
     std::vector<Move> validMoves = move.getFrom()->getPiece()->getValidMoves();
+    // std::cout << "validMoves.size(): " << validMoves.size() << std::endl;
+
     // check if move is in validMoves
     return std::find(validMoves.begin(), validMoves.end(), move) != validMoves.end();
 }
@@ -454,11 +488,14 @@ Board& Board::operator=(const Board& other) {
 
 bool Board::isInCheck(Colour colour) const {
     Square* kingSquare = findKing(colour);
+
+    std::cout << "Colour: " << colour << " King square: " << kingSquare->getX() << " " << kingSquare->getY() << std::endl;
+
+
     for (const auto& row : board) {
         for (const auto& square : row) {
             Piece* piece = square->getPiece();
             if (piece && piece->getColour() != colour) {
-                // if piece->canMoveTo() king.square
                 std::vector <Move> validMoves = piece->getValidMoves();
                 for (const auto& move : validMoves) {
                     if (move.getTo() == kingSquare) {
@@ -472,22 +509,20 @@ bool Board::isInCheck(Colour colour) const {
 }
 
 bool Board::isCheckmate(Colour colour) const {
+    std::cout << "isCheckMate called" << std::endl;
     if (!isInCheck(colour)) {
         return false;
     }
 
+    std::cout << "Not in check" << std::endl;
+
     for (const auto& row : board) {
         for (const auto& square : row) {
             Piece* piece = square->getPiece();
+            // std::cout << "Piece: " << piece << std::endl;
             if (piece && piece->getColour() == colour) {
                 std::vector<Move> validMoves = piece->getValidMoves();
                 for (const auto& move : validMoves) {
-                    // Board copy = getState();
-                    // copy.movePiece(move);
-                    // if (!copy.isInCheck(colour)) {
-                    //     return false;
-                    // }
-
                     Board copy = *this;
                     copy.movePiece(move);
                     if (!copy.isInCheck(colour)) {

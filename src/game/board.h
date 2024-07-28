@@ -45,6 +45,8 @@ public:
     bool isCheckmate(Colour colour) const;
     bool isStalemate(Colour colour) const;
 
+    void print() const;
+
     // copy constructor
     Board(const Board& other);
     // assignment operator

@@ -22,6 +22,7 @@ Controller::Controller(Player *player1, Player *player2) : player1(player1), pla
 
     // for now -- only textdisplay
     new TextObserver(*board);
+    // new GraphicsObserver(*board);
 }
 
 bool Controller::getGameEnded() {
@@ -36,20 +37,18 @@ Square *Controller::stringToSquare(std::string squarestring) {
     if (squarestring.length() != 2) {
         return nullptr;
     }
+
     char file = squarestring[0];
     char rank = squarestring[1];
+
     if (file < 'a' || file > 'h' || rank < '1' || rank > '8') {
         return nullptr;
     }
-
     // find corresponding square in board
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            if (board->getSquare(i, j)->getX() == file - 'a' && board->getSquare(i, j)->getY() == rank - '1') {
-                return board->getSquare(i, j);
-            }
-        }
-    }
+    int x = file - 'a';
+    int y = rank - '1';
+
+    return board->getSquare(x, y);
 }
 
 void Controller::setScoreBoard(ScoreBoard *sb) {
@@ -113,6 +112,7 @@ void Controller::handleCommand(const std::string &command) {
             }
             Square *fromSquare = stringToSquare(from);
             Square *toSquare = stringToSquare(to);
+
             Move move = Move(fromSquare, toSquare);
             runGame(*player1, *player2, move);
         } else if (action == "setup") {
@@ -134,7 +134,15 @@ void Controller::startGame(Player &p1, Player &p2) {
 }
 
 void Controller::checkWin() {
-    if (board->isCheckmate(currentPlayer->getColour())) {
+    std::cout << "checkWin" << std::endl;
+    Colour colour = currentPlayer->getColour();
+    std::cout << "colour: " << colour << std::endl;
+
+    bool checkmate = board->isCheckmate(colour);
+    // std::cout << "checkmate done" << std::endl;
+    bool stalemate = board->isStalemate(colour);
+    // std::cout << "stalemate done" << std::endl;
+    if (checkmate) {
         gameEnded = true;
         std::cout << "Checkmate! ";
         if (currentPlayer == player1) {
@@ -144,7 +152,7 @@ void Controller::checkWin() {
             std::cout << "Player 1 wins!" << std::endl;
             return;
         }
-    } else if (board->isStalemate(currentPlayer->getColour())) {
+    } else if (stalemate) {
         gameEnded = true;
         std::cout << "Stalemate!" << std::endl;
     }
@@ -154,16 +162,14 @@ void Controller::playTurn(Player *p) {
     Move move = p->makeMove(*board);
     board->movePiece(move);
     MoveHistory.push_back(move);
-    std::cout << "Player " << (p == player1 ? "1" : "2") << "made a move" << std::endl;
+    std::cout << "Player " << (p == player1 ? "1" : "2") << " made a move" << std::endl;
 }
 
 void Controller::runGame(Player &p1, Player &p2, const Move &move) {
-    while (!gameEnded) {
-        Move move = currentPlayer->makeMove(*board);
-        board->movePiece(move);
-        MoveHistory.push_back(move);
-        std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << "made a move" << std::endl;
-    }
+    // Move move = currentPlayer->makeMove(*board);
+    board->movePiece(move);
+    MoveHistory.push_back(move);
+    std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " made a move" << std::endl;
     checkWin();
     currentPlayer = (currentPlayer == player1) ? player2 : player1;
     board->notifyObservers();

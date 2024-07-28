@@ -7,7 +7,7 @@ class Square {
 private:
     int x;
     int y;
-    Piece* piece;
+    Piece* piece=nullptr;
     Board* board;
 
 public:
