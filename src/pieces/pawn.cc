@@ -46,12 +46,14 @@ std::vector<Move> Pawn::getValidMoves() const {
 
     if (!square || !board) return validMoves;
 
-    int curX = square->getX();
-    int curY = square->getY();
+    int curX = square->getY();
+    int curY = square->getX();
     int direction = (colour == Colour::White) ? 1 : -1;
 
     // Single move forward
     if (curY + direction >= 0 && curY + direction < 8) {
+        // std::cout << "FHWY WONT IT OWRK" << std::endl;
+        // std::cout << "curX: " << curX << " curY: " << curY << " direction: " << direction << std::endl;
         Square* forwardSquare = board->getSquare(curX, curY + direction);
         if (forwardSquare->getPiece() == nullptr) {
             validMoves.push_back(Move(square, forwardSquare, MoveType::Normal));
