@@ -1,29 +1,45 @@
 #include "robotLevelOne.h"
 #include "move.h"
 
-LevelOne::LevelOne() {}
+LevelOne::LevelOne(Colour c, Board *b) : Robot(c, b) {}
 
-Move LevelOne::makeMove(const Board& board) {
-    Move move(nullptr, nullptr);
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            Square *from = board.getSquare(i, j);
-            if (from->getPiece() && from->getPiece()->getColour() == Colour::White) {
-                for (int k = 0; k < 8; k++) {
-                    for (int l = 0; l < 8; l++) {
-                        Square *to = board.getSquare(k, l);
-
-                        std::vector<Move> validMoves = from->getPiece()->getValidMoves();
-                        for (Move m : validMoves) {
-                            if (m.getTo() == to) {
-                                move = m;
-                                return move;
-                            }
-                        }
-                    }
-                }
+void LevelOne::generateMoves() {
+    moveList.clear();
+    if (colour == Colour::White) {
+        for (std::vector<Piece*>::iterator it = board->getWhitePieces().begin(); it != board->getWhitePieces().end(); it++) {
+            //check if piece has a square
+            if ((*it)->getSquare() != nullptr) {
+                std::vector<Move> pieceMoves = (*it)->getValidMoves();
+                moveList.insert(moveList.end(), pieceMoves.begin(), pieceMoves.end());
             }
         }
     }
-    return move;
+    else {
+        for (std::vector<Piece*>::iterator it = board->getBlackPieces().begin(); it != board->getBlackPieces().end(); it++) {
+            //check if piece has a square
+            if ((*it)->getSquare() != nullptr) {
+                std::vector<Move> pieceMoves = (*it)->getValidMoves();
+                moveList.insert(moveList.end(), pieceMoves.begin(), pieceMoves.end());
+            }
+        }
+    }
+}
+
+Move LevelOne::makeMove(const Board &board, const string &to, const string &from, const string &promote) {
+    generateMoves();
+    //randomly select a move
+    std::srand(std::time(0));
+    int randomIndex = rand() % getMoveListSize();
+
+    //randomly select a char value from q, n, b, r
+    std::string promoteOptions = "qnbr";
+    int randomPromoteIndex = rand() % promoteOptions.size();
+    char promoteChar = promoteOptions[randomPromoteIndex];
+
+    //check if move is Promotion movetype
+    if (moveList[randomIndex].getMoveType() == MoveType::Promotion) {
+        moveList[randomIndex].setPromotedTo(promoteChar);
+    }
+
+    return moveList[randomIndex];
 }

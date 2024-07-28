@@ -4,6 +4,8 @@ Move::Move(Square* f, Square* t) : from(f), to(t) {}
 
 Move::Move(Square* f, Square* t, MoveType mt) : from(f), to(t), type(mt) {}
 
+Move::Move(Square* f, Square* t, MoveType mt, char p) : from(f), to(t), type(mt), promotedTo(p) {}
+
 MoveType Move::getMoveType() const {
     return type;
 }
@@ -20,21 +22,19 @@ Square* Move::getTo() const {
     return to;
 }
 
-Piece* Move::getCapturedPiece() const {
-    return capturedPiece;
+char Move::getPromotedTo() const {
+    return promotedTo;
 }
 
-void Move::setCapturedPiece(Piece* piece) {
-    capturedPiece = piece;
+void Move::setPromotedTo(char c) {
+    promotedTo = c;
 }
-
-Move::Move(const Move& m) : from(m.from), to(m.to), type(m.type), capturedPiece(m.capturedPiece) {}
 
 Move& Move::operator=(const Move& m) {
     from = m.from;
     to = m.to;
     type = m.type;
-    capturedPiece = m.capturedPiece;
+    promotedTo = m.promotedTo;
     return *this;
 }
 

@@ -25,6 +25,7 @@ public:
     Colour getColour() const;
     Piece(Colour c);
     void setSquare(Square *s);
+    Square *getSquare() const;
     void setBoard(Board *b);
     bool getHasMoved() const;
     void setHasMoved(bool m);

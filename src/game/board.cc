@@ -47,30 +47,42 @@ void Board::setupInitialBoard() {
 
     // calls square's setPiece function
     // white pieces
-    board[0][0]->setPiece(new Rook(Colour::White));
-    board[0][1]->setPiece(new Knight(Colour::White));
-    board[0][2]->setPiece(new Bishop(Colour::White));
-    board[0][3]->setPiece(new Queen(Colour::White));
-    board[0][4]->setPiece(new King(Colour::White));
-    board[0][5]->setPiece(new Bishop(Colour::White));
-    board[0][6]->setPiece(new Knight(Colour::White));
-    board[0][7]->setPiece(new Rook(Colour::White));
+    board[0][0]->setPiece(new Rook(Colour::Black));
+    board[0][1]->setPiece(new Knight(Colour::Black));
+    board[0][2]->setPiece(new Bishop(Colour::Black));
+    board[0][3]->setPiece(new Queen(Colour::Black));
+    board[0][4]->setPiece(new King(Colour::Black));
+    board[0][5]->setPiece(new Bishop(Colour::Black));
+    board[0][6]->setPiece(new Knight(Colour::Black));
+    board[0][7]->setPiece(new Rook(Colour::Black));
     for (int i = 0; i < 8; i++) {
-        board[1][i]->setPiece(new Pawn(Colour::White));
+        board[1][i]->setPiece(new Pawn(Colour::Black));
+        blackPieces.push_back(board[1][i]->getPiece());
+        blackPieces.push_back(board[0][i]->getPiece());
     }
 
     // black pieces
-    board[7][0]->setPiece(new Rook(Colour::Black));
-    board[7][1]->setPiece(new Knight(Colour::Black));
-    board[7][2]->setPiece(new Bishop(Colour::Black));
-    board[7][3]->setPiece(new Queen(Colour::Black));
-    board[7][4]->setPiece(new King(Colour::Black));
-    board[7][5]->setPiece(new Bishop(Colour::Black));
-    board[7][6]->setPiece(new Knight(Colour::Black));
-    board[7][7]->setPiece(new Rook(Colour::Black));
+    board[7][0]->setPiece(new Rook(Colour::White));
+    board[7][1]->setPiece(new Knight(Colour::White));
+    board[7][2]->setPiece(new Bishop(Colour::White));
+    board[7][3]->setPiece(new Queen(Colour::White));
+    board[7][4]->setPiece(new King(Colour::White));
+    board[7][5]->setPiece(new Bishop(Colour::White));
+    board[7][6]->setPiece(new Knight(Colour::White));
+    board[7][7]->setPiece(new Rook(Colour::White));
     for (int i = 0; i < 8; i++) {
-        board[6][i]->setPiece(new Pawn(Colour::Black));
+        board[6][i]->setPiece(new Pawn(Colour::White));
+        whitePieces.push_back(board[6][i]->getPiece());
+        whitePieces.push_back(board[7][i]->getPiece());
     }
+}
+
+std::vector<Piece*> Board::getWhitePieces() const {
+    return whitePieces;
+}
+
+std::vector<Piece*> Board::getBlackPieces() const {
+    return blackPieces;
 }
 
 void Board::addPiece(Piece* piece, Square* square) {
@@ -78,10 +90,7 @@ void Board::addPiece(Piece* piece, Square* square) {
 }
 
 void Board::removePiece(Square* square) {
-    if (square->getPiece() != nullptr) {
-        delete square->getPiece();
-    }
-    square->setPiece(nullptr);
+    square->removePiece();
 }
 
 std::vector<std::vector<Square*>> Board::getState() const {

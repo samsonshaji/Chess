@@ -20,6 +20,10 @@ Colour Piece::getColour() const {
 
 Piece::Piece(Colour c) : colour(c) {}
 
+Square *Piece::getSquare() const {
+    return square;
+}
+
 void Piece::setSquare(Square *s) {
     square = s;
 }

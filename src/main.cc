@@ -13,7 +13,10 @@ int main() {
     Controller controller(whitePlayer, blackPlayer);
 
     std::string command;
-    while(std::getline(std::cin, command)) {
+    while (true) {
+        std::cout << "> ";
+        std::getline(std::cin, command);
+
         controller.handleCommand(command);
     }
     return 0;

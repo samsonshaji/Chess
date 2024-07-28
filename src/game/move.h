@@ -13,11 +13,12 @@ class Move {
         Square* from;
         Square* to;
         MoveType type;
-        Piece *capturedPiece=nullptr;
+        char promotedTo;
 
     public:
         Move(Square* f, Square* t);
         Move(Square* f, Square* t, MoveType mt);
+        Move(Square* f, Square* t, MoveType mt, char p);
         
         Move(const Move& m);
         Move& operator=(const Move& m);
@@ -28,8 +29,8 @@ class Move {
         Square* getFrom() const;
         Square* getTo() const;
 
-        Piece* getCapturedPiece() const;
-        void setCapturedPiece(Piece* piece);
+        char getPromotedTo() const;
+        void setPromotedTo(char c);
 
         bool operator==(const Move& m) const;
 
