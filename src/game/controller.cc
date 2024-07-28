@@ -135,13 +135,11 @@ void Controller::startGame(Player &p1, Player &p2) {
 }
 
 void Controller::checkWin() {
-    std::cout << "checking win" << std::endl;
-    Colour colour = currentPlayer->getColour();
-
+    Colour colour = (currentPlayer == player1) ? Colour::White : Colour::Black;
     bool checkmate = board->isCheckmate(colour);
-    std::cout << "checkmate done" << std::endl;
+    std::cout << "Checkmate: " << checkmate << std::endl;
     bool stalemate = board->isStalemate(colour);
-    std::cout << "stalemate done" << std::endl;
+    std::cout << "Stalemate: " << stalemate << std::endl;
     
     if (checkmate) {
         gameEnded = true;
@@ -168,13 +166,12 @@ void Controller::playTurn(Player *p) {
 
 void Controller::runGame(Player &p1, Player &p2, const Move &move) {
     // Move move = currentPlayer->makeMove(*board);
-    std::cout << "PLEASE PRINT OUT" << std::endl;
     board->movePiece(move);
     MoveHistory.push_back(move);
     std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " made a move" << std::endl;
-    checkWin();
     currentPlayer = (currentPlayer == player1) ? player2 : player1;
-    board->notifyObservers();
+    // checkWin();
+    // board->notifyObservers();
 }
 
 void Controller::endGame(bool resigned) {

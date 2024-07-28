@@ -89,7 +89,5 @@ vector<Move> Rook::getValidMoves() const {
             }
         }
     }
-
-    std::cout << "Rook: " << moves.size() << std::endl;
     return moves;
 }
