@@ -509,6 +509,9 @@ bool Board::isInCheck(Colour colour) const {
                 std::cout << "Piece at square " << square->getX() << " " << square->getY() << " is " << piece->getSymbol() << std::endl;
                 std::vector <Move> validMoves = piece->getValidMoves();
 
+                if (piece->getPieceType() == PieceType::pawn || piece->getPieceType() == PieceType::knight) {
+                    std::cout << "validMoves.size(): " << validMoves.size() << std::endl;
+                }
                 // std::cout << "validMoves.size(): " << validMoves.size() << std::endl; // ZERO ??????
                 for (const auto& move : validMoves) {
                     if (move.getTo() == kingSquare) {
