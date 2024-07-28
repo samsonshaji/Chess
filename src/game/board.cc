@@ -85,6 +85,17 @@ void Board::setupInitialBoard() {
     for (int i = 0; i < 8; i++) {
         board[6][i]->setPiece(new Pawn(Colour::Black));
     }
+
+    // for each of the pieces, set board and square
+    for (const auto& row : board) {
+        for (const auto& square : row) {
+            Piece* piece = square->getPiece();
+            if (piece != nullptr) {
+                piece->setBoard(this);
+                piece->setSquare(square);
+            }
+        }
+    }
 }
 
 void Board::addPiece(Piece* piece, Square* square) {
@@ -103,6 +114,9 @@ std::vector<std::vector<Square*>> Board::getState() const {
 }
 
 Square* Board::getSquare(int x, int y) const {
+    if (x < 0 || x > 7 || y < 0 || y > 7) {
+        return nullptr;
+    }
     return board[x][y];
 }
 
@@ -111,7 +125,7 @@ void Board::setController(Controller* ctrl) {
 }
 
 Square* Board::findKing(Colour colour) const {
-    std::cout << "findKing called" << std::endl;
+    // std::cout << "findKing called" << std::endl;
     for (const auto& row : board) {
         for (const auto& square : row) {
             Piece* piece = square->getPiece();
@@ -488,28 +502,29 @@ Board& Board::operator=(const Board& other) {
 
 bool Board::isInCheck(Colour colour) const {
     Square* kingSquare = findKing(colour);
-
-    std::cout << "Colour: " << colour << " King square: " << kingSquare->getX() << " " << kingSquare->getY() << std::endl;
-
-
     for (const auto& row : board) {
         for (const auto& square : row) {
             Piece* piece = square->getPiece();
             if (piece && piece->getColour() != colour) {
+                std::cout << "Piece at square " << square->getX() << " " << square->getY() << " is " << piece->getSymbol() << std::endl;
                 std::vector <Move> validMoves = piece->getValidMoves();
+
+                // std::cout << "validMoves.size(): " << validMoves.size() << std::endl; // ZERO ??????
                 for (const auto& move : validMoves) {
                     if (move.getTo() == kingSquare) {
                         return true;
                     }
                 }
+                // std::cout << "nvm" << std::endl;
             }
         }
     }
+    // std::cout << "return reached" << std::endl;
     return false;
 }
 
 bool Board::isCheckmate(Colour colour) const {
-    std::cout << "isCheckMate called" << std::endl;
+
     if (!isInCheck(colour)) {
         return false;
     }

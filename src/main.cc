@@ -7,8 +7,8 @@
 // #include "robot.h"
 
 int main() {
-    Player* whitePlayer = nullptr;
-    Player* blackPlayer = nullptr;
+    Player* whitePlayer = new Human(Colour::White);
+    Player* blackPlayer = new Human(Colour::Black);
 
     Controller controller(whitePlayer, blackPlayer);
 

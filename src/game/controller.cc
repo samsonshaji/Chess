@@ -134,14 +134,13 @@ void Controller::startGame(Player &p1, Player &p2) {
 }
 
 void Controller::checkWin() {
-    std::cout << "checkWin" << std::endl;
     Colour colour = currentPlayer->getColour();
-    std::cout << "colour: " << colour << std::endl;
 
     bool checkmate = board->isCheckmate(colour);
     // std::cout << "checkmate done" << std::endl;
     bool stalemate = board->isStalemate(colour);
     // std::cout << "stalemate done" << std::endl;
+    
     if (checkmate) {
         gameEnded = true;
         std::cout << "Checkmate! ";
