@@ -46,22 +46,27 @@ std::vector<Move> Pawn::getValidMoves() const {
 
     if (!square || !board) return validMoves;
 
-    int curX = square->getY();
-    int curY = square->getX();
+    int curX = square->getX();
+    int curY = square->getY();
     int direction = (colour == Colour::White) ? 1 : -1;
 
     // Single move forward
     if (curY + direction >= 0 && curY + direction < 8) {
         // std::cout << "FHWY WONT IT OWRK" << std::endl;
-        // std::cout << "curX: " << curX << " curY: " << curY << " direction: " << direction << std::endl;
+        std::cout << "curX: " << curX << " curY: " << curY << " direction: " << direction << std::endl;
         Square* forwardSquare = board->getSquare(curX, curY + direction);
         if (forwardSquare->getPiece() == nullptr) {
             validMoves.push_back(Move(square, forwardSquare, MoveType::Normal));
 
             // Double move forward
+            std:: cout << "OUTSIDE NOT IN YET curY + 2 * direction: " << curY + 2 * direction << std::endl;
             if (!hasMoved && curY + 2 * direction >= 0 && curY + 2 * direction < 8) {
+                std:: cout << "curY + 2 * direction" << curY + 2 * direction << std::endl;
+                std::cout << "WE INNN SHOULD BE FOR 0 and 6" << std::endl;
                 Square* doubleForwardSquare = board->getSquare(curX, curY + 2 * direction);
+                std::cout << "SID IS A MONKEY" << std::endl;
                 if (doubleForwardSquare->getPiece() == nullptr) {
+                    std::cout << "SID IS A DONKEY" << std::endl;
                     validMoves.push_back(Move(square, doubleForwardSquare, MoveType::DoublePawn));
                 }
             }
@@ -84,6 +89,5 @@ std::vector<Move> Pawn::getValidMoves() const {
             }
         }
     }
-
     return validMoves;
 }
