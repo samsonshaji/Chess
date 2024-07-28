@@ -165,7 +165,10 @@ void Controller::playTurn(Player *p) {
 
 void Controller::runGame(Player &p1, Player &p2, const Move &move) {
     // Move move = currentPlayer->makeMove(*board);
-    board->movePiece(move);
+    bool legal = board->movePiece(move);
+    if (!legal) {
+        return;
+    }
     MoveHistory.push_back(move);
     std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " made a move" << std::endl;
     currentPlayer = (currentPlayer == player1) ? player2 : player1;
