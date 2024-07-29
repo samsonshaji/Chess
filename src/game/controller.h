@@ -20,11 +20,12 @@ class Controller {
         ScoreBoard* scoreBoard;
         std::string promotedTo;
         bool gameStarted = false;
+        Colour startTurnColour = Colour::White;
     public:
         Controller(Player* player1, Player* player2);
         void startGame(Player &p1, Player &p2);
         void checkWin();
-        void runGame(Player &p1, Player &p2, const Move &move);
+        void runGame( const Move &move);
         void endGame(bool resigned);
         void setScoreBoard(ScoreBoard* sb);
         
@@ -40,6 +41,9 @@ class Controller {
 
         bool getGameStarted();
         void setGameStarted(bool started);
+
+        void setStartTurnColour(Colour colour);
+        Colour getStartTurnColour();
 
         void setupMode();
 };

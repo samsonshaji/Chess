@@ -264,6 +264,14 @@ bool Board::isValidSetup() const {
         return false;
     }
 
+    // check if the kings are not next to each other from setup mode
+    Square* whiteKing = findKing(Colour::White);
+    Square* blackKing = findKing(Colour::Black);
+
+    if (whiteKing->getX() == blackKing->getX() && abs(whiteKing->getY() - blackKing->getY()) == 1) {
+        return false;
+    }
+
     // ensure neither king is in check
     if (isInCheck(Colour::White) || isInCheck(Colour::Black)) {
         return false;
