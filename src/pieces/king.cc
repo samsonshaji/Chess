@@ -29,10 +29,13 @@ std::vector<Move> King::getAllMoves() const {
                     Square *targetSquare = board->getSquare(newX, newY);
 
                     // Check if the target square is either empty or contains an opponent's piece
+                    Move m = Move(square, targetSquare);
                     if (targetSquare->getPiece() == nullptr) {
-                        validMoves.push_back(Move(square, targetSquare, MoveType::Normal));
+                        m.setMoveType(MoveType::Normal);
+                        validMoves.push_back(m);
                     } else if (targetSquare->getPiece()->getColour() != colour) {
-                        validMoves.push_back(Move(square, targetSquare, MoveType::Capture));
+                        m.setMoveType(MoveType::Capture);
+                        validMoves.push_back(m);
                     }
                 }
             }
@@ -44,7 +47,9 @@ std::vector<Move> King::getAllMoves() const {
         if(board->getSquare(5, curY)->getPiece() == nullptr && board->getSquare(6, curY)->getPiece() == nullptr){
             if(board->getSquare(7, curY)->getPiece()->getPieceType() == PieceType::rook && !board->getSquare(7, curY)->getPiece()->getHasMoved()){
                 if(board->getSquare(7, curY)->getPiece()->getColour() == colour){
-                    validMoves.push_back(Move(square, board->getSquare(6, curY), MoveType::Castling));
+                    Move m = Move(square, board->getSquare(6, curY));
+                    m.setMoveType(MoveType::Castling);
+                    validMoves.push_back(m);
                 }
             }
         }
@@ -52,7 +57,9 @@ std::vector<Move> King::getAllMoves() const {
         if(board->getSquare(3, curY)->getPiece() == nullptr && board->getSquare(2, curY)->getPiece() == nullptr && board->getSquare(1, curY)->getPiece() == nullptr){
             if(board->getSquare(0, curY)->getPiece()->getPieceType() == PieceType::rook && !board->getSquare(0, curY)->getPiece()->getHasMoved()){
                 if(board->getSquare(0, curY)->getPiece()->getColour() == colour){
-                    validMoves.push_back(Move(square, board->getSquare(2, curY), MoveType::Castling));
+                    Move m = Move(square, board->getSquare(2, curY));
+                    m.setMoveType(MoveType::Castling);
+                    validMoves.push_back(m);
                 }
             }
         }

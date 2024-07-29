@@ -184,15 +184,20 @@ Move Board::isMoveLegal(const Move& move) const {
     Piece* piece = move.getFrom()->getPiece();
 
     vector<Move> allMoves = piece->getAllMoves();
+    //print all moves
+    for (const auto& m : allMoves) {
+        std::cout << "Move: " << m.getFrom()->getX() << " " << m.getFrom()->getY() << " to " << m.getTo()->getX() << " " << m.getTo()->getY() << " " << m.getMoveType() << std::endl;
+    }
     //using find(), check if move is in allMoves
     auto it = find(allMoves.begin(), allMoves.end(), move);
     if (it != allMoves.end()) {
         it->setPromotedTo(move.getPromotedTo());
         //create a copy of the board
-        Board *test = new Board(*this);
-        bool x = test->movePiece(*it, true);
+        return *it;
+        // Board *test = new Board(*this);
+        // bool x = test->movePiece(*it, true);
     }
-    return Move(nullptr, nullptr, Invalid);
+    return Move(nullptr, nullptr);
 }
 
 bool Board::isValidSetup() const {
@@ -262,7 +267,7 @@ bool Board::movePiece(const Move& move, bool test) {
     if (!test) {
         ourMove = isMoveLegal(move);
 
-        if (ourMove.getMoveType() == MoveType::Invalid) {
+        if (ourMove.getFrom() == nullptr || ourMove.getTo() == nullptr) {
             cout << "Invalid move" << endl;
             return false;
         }

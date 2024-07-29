@@ -4,10 +4,6 @@ Move::Move() {}
 
 Move::Move(Square* f, Square* t) : from(f), to(t) {}
 
-Move::Move(Square* f, Square* t, MoveType mt) : from(f), to(t), type(mt) {}
-
-Move::Move(Square* f, Square* t, MoveType mt, char p) : from(f), to(t), type(mt), promotedTo(p) {}
-
 MoveType Move::getMoveType() const {
     return type;
 }

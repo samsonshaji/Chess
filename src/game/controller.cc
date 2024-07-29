@@ -119,10 +119,10 @@ void Controller::handleCommand(const std::string &command) {
             return;
         }
 
-        Move move = currentPlayer->makeMove(*board, from, to, promoteTo);
-
-        if (move.getMoveType() == MoveType::Invalid) {
-            std::cout << "Invalid move" << std::endl;
+        Move move;
+        move = currentPlayer->makeMove(*board, from, to, promoteTo);
+        if (move.getFrom() == nullptr || move.getTo() == nullptr) {
+            std::cout << "Invalid move" << currentPlayer->getColour() << std::endl;
             return;
         }
 
@@ -189,7 +189,7 @@ void Controller::playTurn(const Move &move) {
         return;
     }
     std::cout << "Player " << currentPlayer->getColour() + 1 << " made a move." << std::endl;
-    checkWin();
+    // checkWin();
     currentPlayer = (currentPlayer->getColour() == Colour::White) ? player2 : player1;
     std::cout << "Player " << currentPlayer->getColour() + 1 << " turn..." << std::endl;
 }

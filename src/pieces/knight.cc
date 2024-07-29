@@ -32,25 +32,29 @@ vector<Move> Knight::getAllMoves() const {
             int jumpx = x + 1;
             //get the square at the destination position
             Square* jump = board->getSquare(jumpx, jumpy);
+            Move m = Move(square, jump);
             //if the square is empty, add a normal move to the vector
             if (jump->getPiece() == nullptr) {
-                validMoves.push_back(Move(square, jump, MoveType::Normal));
+                m.setMoveType(MoveType::Normal);
             }
             //if the square is occupied by an enemy piece, add a capture move to the vector
             else if (jump->getPiece()->getColour() != colour) {
-                validMoves.push_back(Move(square, jump, MoveType::Capture));
+                m.setMoveType(MoveType::Capture);
             }
+            validMoves.push_back(m);
         }
         //check bounds for each move to make sure it is within the board
         if (x - 1 >= 0) {
             int jumpx = x - 1;
             Square* jump = board->getSquare(jumpx, jumpy);
+            Move m = Move(square, jump);
             if (jump->getPiece() == nullptr) {
-                validMoves.push_back(Move(square, jump, MoveType::Normal));
+                m.setMoveType(MoveType::Normal);
             }
             else if (jump->getPiece()->getColour() != colour) {
-                validMoves.push_back(Move(square, jump, MoveType::Capture));
+                m.setMoveType(MoveType::Capture);
             }
+            validMoves.push_back(m);
         }
     }
 
@@ -59,22 +63,26 @@ vector<Move> Knight::getAllMoves() const {
         if (x + 1 < 8) {
             int jumpx = x + 1;
             Square* jump = board->getSquare(jumpx, jumpy);
+            Move m = Move(square, jump);
             if (jump->getPiece() == nullptr) {
-                validMoves.push_back(Move(square, jump, MoveType::Normal));
+                m.setMoveType(MoveType::Normal);
             }
             else if (jump->getPiece()->getColour() != colour) {
-                validMoves.push_back(Move(square, jump, MoveType::Capture));
+                m.setMoveType(MoveType::Capture);
             }
+            validMoves.push_back(m);
         }
         if (x - 1 >= 0) {
             int jumpx = x - 1;
             Square* jump = board->getSquare(jumpx, jumpy);
+            Move m = Move(square, jump);
             if (jump->getPiece() == nullptr) {
-                validMoves.push_back(Move(square, jump, MoveType::Normal));
+                m.setMoveType(MoveType::Normal);
             }
             else if (jump->getPiece()->getColour() != colour) {
-                validMoves.push_back(Move(square, jump, MoveType::Capture));
+                m.setMoveType(MoveType::Capture);
             }
+            validMoves.push_back(m);
         }
     }
 
@@ -83,22 +91,26 @@ vector<Move> Knight::getAllMoves() const {
         if (y + 1 < 8) {
             int jumpy = y + 1;
             Square* jump = board->getSquare(jumpx, jumpy);
+            Move m = Move(square, jump);
             if (jump->getPiece() == nullptr) {
-                validMoves.push_back(Move(square, jump, MoveType::Normal));
+                m.setMoveType(MoveType::Normal);
             }
             else if (jump->getPiece()->getColour() != colour) {
-                validMoves.push_back(Move(square, jump, MoveType::Capture));
+                m.setMoveType(MoveType::Capture);
             }
+            validMoves.push_back(m);
         }
         if (y - 1 >= 0) {
             int jumpy = y - 1;
             Square* jump = board->getSquare(jumpx, jumpy);
+            Move m = Move(square, jump);
             if (jump->getPiece() == nullptr) {
-                validMoves.push_back(Move(square, jump, MoveType::Normal));
+                m.setMoveType(MoveType::Normal);
             }
             else if (jump->getPiece()->getColour() != colour) {
-                validMoves.push_back(Move(square, jump, MoveType::Capture));
+                m.setMoveType(MoveType::Capture);
             }
+            validMoves.push_back(m);
         }
     }
 
@@ -107,22 +119,26 @@ vector<Move> Knight::getAllMoves() const {
         if (y + 1 < 8) {
             int jumpy = y + 1;
             Square* jump = board->getSquare(jumpx, jumpy);
+            Move m = Move(square, jump);
             if (jump->getPiece() == nullptr) {
-                validMoves.push_back(Move(square, jump, MoveType::Normal));
+                m.setMoveType(MoveType::Normal);
             }
             else if (jump->getPiece()->getColour() != colour) {
-                validMoves.push_back(Move(square, jump, MoveType::Capture));
+                m.setMoveType(MoveType::Capture);
             }
+            validMoves.push_back(m);
         }
         if (y - 1 >= 0) {
             int jumpy = y - 1;
             Square* jump = board->getSquare(jumpx, jumpy);
+            Move m = Move(square, jump);
             if (jump->getPiece() == nullptr) {
-                validMoves.push_back(Move(square, jump, MoveType::Normal));
+                m.setMoveType(MoveType::Normal);
             }
             else if (jump->getPiece()->getColour() != colour) {
-                validMoves.push_back(Move(square, jump, MoveType::Capture));
+                m.setMoveType(MoveType::Capture);
             }
+            validMoves.push_back(m);
         }
     }
     

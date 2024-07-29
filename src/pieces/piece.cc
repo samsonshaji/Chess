@@ -55,12 +55,16 @@ void Piece::addDirectionalMoves(vector<Move>& moves, int xDir, int yDir) const {
     while (x >= 0 && x < 8 && y >= 0 && y < 8) {
         
         Square* targetSquare = board->getSquare(x, y);
+
+        Move m = Move(square, targetSquare);
         
         if (targetSquare->getPiece() == nullptr) {
-            moves.push_back(Move(square, targetSquare, MoveType::Normal));
+            m.setMoveType(MoveType::Normal);
+            moves.push_back(m);
         } 
         else if (targetSquare->getPiece()->getColour() != colour) {
-            moves.push_back(Move(square, targetSquare, MoveType::Capture));
+            m.setMoveType(MoveType::Capture);
+            moves.push_back(m);
             break;
         } else {
             break;
