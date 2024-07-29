@@ -260,13 +260,13 @@ void Controller::setupMode() {
             Colour colour = (piece[0] < 'a') ? Colour::White : Colour::Black;
             PieceType pieceType;
             Piece *piecePtr = nullptr;
-            if (piece[0] == 'K' || piece[0] == 'k') {
+            if ((piece[0] == 'K' || piece[0] == 'k') && board->findKing(colour) == nullptr) {
                 pieceType = PieceType::king;
                 piecePtr = new King(colour);
-            } else if (piece[0] == 'Q' || piece[0] == 'q') {
+            } else if ((piece[0] == 'Q' || piece[0] == 'q')) {
                 pieceType = PieceType::queen;
                 piecePtr = new Queen(colour);
-            } else if (piece[0] == 'R' || piece[0] == 'r') {
+            } else if ((piece[0] == 'R' || piece[0] == 'r')) {
                 pieceType = PieceType::rook;
                 piecePtr = new Rook(colour);
             } else if (piece[0] == 'B' || piece[0] == 'b') {
@@ -332,9 +332,12 @@ void Controller::setupMode() {
             }
             if (board->isValidSetup()) {
                 gameEnded = false;
-                std::cout << "Setup complete" << std::endl;
+                std::cout << "Setup complete..you can play as normal now!" << std::endl;
+                gameStarted = true;
+                return;
             } else {
-                std::cout << "Invalid setup" << std::endl;
+                std::cout << "Invalid setup.. " << std::endl;
+                std::cout << "Please make sure both kings are on the board and not in check" << std::endl;
             }
         }
 
