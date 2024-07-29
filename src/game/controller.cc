@@ -86,15 +86,19 @@ void Controller::setPromotedTo(std::string promotedType) {
 void Controller::handleCommand(const std::string &command) {
     std::istringstream iss(command);
     std::string action, extra;
-    while (iss >> action){
+    iss >> action;
         if (action == "game") {
+            if (gameStarted) {
+                std::cout << "Game has already started" << std::endl;
+                return;
+            }
             std::string whitePlayerType;
             std::string blackPlayerType;
             iss >> whitePlayerType >> blackPlayerType >> extra;
 
-            if (gameStarted) {
-                std::cout << "Game has already started" << std::endl;
-                break;
+            if (extra != "") {
+                std::cout << "Invalid command" << std::endl;
+                return;
             }
 
             if (whitePlayerType == "human") {
@@ -106,6 +110,10 @@ void Controller::handleCommand(const std::string &command) {
             // } else if (whitePlayerType == "computer3") {
             //     player1 = new Robot(Colour::White, 3);
             }
+            else {
+                std::cout << "Invalid player type" << std::endl;
+                return;
+            }
 
             if (blackPlayerType == "human") {
                 player2 = new Human(Colour::Black);
@@ -116,33 +124,57 @@ void Controller::handleCommand(const std::string &command) {
             // } else if (blackPlayerType == "computer3") {
             //     player2 = new Robot(Colour::Black, 3);
             }
+            else{
+                std::cout << "Invalid player type" << std::endl;
+                return;
+            }
             startGame(*player1, *player2);
         } else if (action == "resign") {
-            endGame(true);
-            break;
-        } else if (action == "move") {
-            if (gameStarted){
-                std::string from, to, promotePiece;
-                // std::cout << "INSIDE MOVE" << std::endl;
-                iss >> from >> to >> promotePiece >> extra;
-                if (promotePiece != "") {
-                    setPromotedTo(promotePiece);
-                }
-                std::cout << "ISSUE IS IN make move" << std::endl;
-                Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
-                // Move move = Move(fromSquare, toSquare);
-                std::cout << "ISSUE IS IN RUN GAME" << std::endl;
-                runGame(*player1, *player2, move);
-                } else {
-                    std::cout << "Game has not started yet" << std::endl;
+
+            if (!gameStarted) {
+                std::cout << "Game has not started yet" << std::endl;
+                return;
             }
+            iss >> extra;
+
+            if (extra != "") {
+                std::cout << "Invalid command" << std::endl;
+                return;
+            }
+            endGame(true);
+            return;
+        } else if (action == "move") {
+
+            if (!gameStarted) {
+                std::cout << "Game has not started yet" << std::endl;
+                return;
+            }
+            std::string from, to, promotePiece;
+            iss >> from >> to >> promotePiece >> extra;
+
+            if (extra != "") {
+                std::cout << "Invalid command" << std::endl;
+                return;
+            }
+            if (promotePiece != "") {
+                setPromotedTo(promotePiece);
+            }
+
+            Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
+
+            if(move.getFrom() == nullptr || move.getTo() == nullptr) {
+                std::cout << "Invalid move" << std::endl;
+                return;
+            }
+            // Move move = Move(fromSquare, toSquare);
+            runGame(*player1, *player2, move);
 
             } else if (action == "setup") {
                 setupMode();
             } else if (action == "undo") { // not necessary, but we still have it
                 if (MoveHistory.size() == 0) {
                     std::cout << "No moves to undo" << std::endl;
-                    continue;
+                    return;
                 }
                 board->undoMove();
                 MoveHistory.pop_back();
@@ -152,7 +184,6 @@ void Controller::handleCommand(const std::string &command) {
             } else {
                 // std::cout << "Invalid command - " << std::endl;
             }
-    }
 }
 
 void Controller::startGame(Player &p1, Player &p2) {
