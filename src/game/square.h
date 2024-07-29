@@ -13,6 +13,7 @@ private:
 public:
 
     Square(int x, int y);
+    ~Square();
 
     Piece* getPiece() const;
     void setPiece(Piece* p);

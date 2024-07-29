@@ -29,6 +29,8 @@ public:
     bool getHasMoved() const;
     void setHasMoved(bool m);
     char getSymbol() const;
+    Square *getSquare() const;
+    bool operator==(const Piece &other) const;
 };
 
 #endif 

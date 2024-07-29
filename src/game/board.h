@@ -17,6 +17,8 @@ private:
     Controller* controller;
     void setupInitialBoard();
     std::vector<Move> moveStack;
+    std::vector<Piece*> whitePieces;
+    std::vector<Piece*> blackPieces;
 public:
     Board();
     ~Board();
@@ -28,6 +30,9 @@ public:
     std::vector<Move> getMoveStack() const;
     Move getLastMove() const;
     
+    std::vector<Piece*> getWhitePieces() const;
+    std::vector<Piece*> getBlackPieces() const;
+
     void addMoveToStack(const Move& move);
     void undoMove();
 

@@ -4,9 +4,11 @@
 #include "robot.h"
 
 class LevelOne : public Robot {
+    private:
+        void generateMoves() override;
     public:
-        LevelOne();
-        virtual Move makeMove(const Board& board) override;
+        LevelOne(Colour c, Board *b);
+        virtual Move makeMove(const Board &board, const string &to, const string &from, const string &promote) override;
 };
 
 #endif

@@ -7,13 +7,16 @@
 // #include "robot.h"
 
 int main() {
-    Player* whitePlayer = new Human(Colour::White);
-    Player* blackPlayer = new Human(Colour::Black);
+    Player* whitePlayer = nullptr;
+    Player* blackPlayer = nullptr;
 
     Controller controller(whitePlayer, blackPlayer);
 
     std::string command;
-    while(std::getline(std::cin, command)) {
+    while (true) {
+        std::cout << "> ";
+        std::getline(std::cin, command);
+
         controller.handleCommand(command);
     }
     return 0;

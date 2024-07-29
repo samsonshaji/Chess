@@ -20,6 +20,10 @@ Colour Piece::getColour() const {
 
 Piece::Piece(Colour c) : colour(c) {}
 
+Square *Piece::getSquare() const {
+    return square;
+}
+
 void Piece::setSquare(Square *s) {
     square = s;
 }
@@ -38,4 +42,8 @@ void Piece::setHasMoved(bool m) {
 
 char Piece::getSymbol() const {
     return symbol;
+}
+
+bool Piece::operator==(const Piece &other) const {
+    return type == other.type && square->getX() == other.square->getX() && square->getY() == other.square->getY();
 }

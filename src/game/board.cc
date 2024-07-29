@@ -54,7 +54,9 @@ void Board::setupInitialBoard() {
     for (int i = 0; i < 8; i++) {
         std::vector<Square*> row;
         for (int j = 0; j < 8; j++) {
-            row.push_back(new Square(j, i));
+            Square* s = new Square(j, i);
+            s->setBoard(this);
+            row.push_back(s);
         }
         board.push_back(row);
     }
@@ -71,6 +73,8 @@ void Board::setupInitialBoard() {
     board[0][7]->setPiece(new Rook(Colour::White));
     for (int i = 0; i < 8; i++) {
         board[1][i]->setPiece(new Pawn(Colour::White));
+        whitePieces.push_back(board[1][i]->getPiece());
+        whitePieces.push_back(board[0][i]->getPiece());
     }
 
     // black pieces
@@ -84,18 +88,17 @@ void Board::setupInitialBoard() {
     board[7][7]->setPiece(new Rook(Colour::Black));
     for (int i = 0; i < 8; i++) {
         board[6][i]->setPiece(new Pawn(Colour::Black));
+        blackPieces.push_back(board[6][i]->getPiece());
+        blackPieces.push_back(board[7][i]->getPiece());
     }
+}
 
-    // for each of the pieces, set board and square
-    for (const auto& row : board) {
-        for (const auto& square : row) {
-            Piece* piece = square->getPiece();
-            if (piece != nullptr) {
-                piece->setBoard(this);
-                piece->setSquare(square);
-            }
-        }
-    }
+std::vector<Piece*> Board::getWhitePieces() const {
+    return whitePieces;
+}
+
+std::vector<Piece*> Board::getBlackPieces() const {
+    return blackPieces;
 }
 
 void Board::addPiece(Piece* piece, Square* square) {
