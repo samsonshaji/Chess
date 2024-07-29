@@ -1,2 +1,4 @@
 src/obj/*
 src/bin/*
+./vscode/*
+src/chess

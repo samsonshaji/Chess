@@ -135,10 +135,11 @@ void Controller::startGame(Player &p1, Player &p2) {
 
 void Controller::checkWin() {
     Colour colour = (currentPlayer == player1) ? Colour::White : Colour::Black;
+
+    // std::cout << "checking whether " << (colour == Colour::White ? "White" : "Black") << " is in checkmate" << std::endl;
     bool checkmate = board->isCheckmate(colour);
-    std::cout << "Checkmate: " << checkmate << std::endl;
+    // std::cout << "checking whether " << (colour == Colour::White ? "White" : "Black") << " is in stalemate" << std::endl;
     bool stalemate = board->isStalemate(colour);
-    std::cout << "Stalemate: " << stalemate << std::endl;
     
     if (checkmate) {
         gameEnded = true;
@@ -150,17 +151,11 @@ void Controller::checkWin() {
             std::cout << "Player 1 wins!" << std::endl;
             return;
         }
-    } else if (stalemate) {
+    } 
+    else if (stalemate) {
         gameEnded = true;
         std::cout << "Stalemate!" << std::endl;
     }
-}
-
-void Controller::playTurn(Player *p) {
-    Move move = p->makeMove(*board);
-    board->movePiece(move);
-    MoveHistory.push_back(move);
-    std::cout << "Player " << (p == player1 ? "1" : "2") << " made a move" << std::endl;
 }
 
 void Controller::runGame(Player &p1, Player &p2, const Move &move) {
@@ -172,7 +167,7 @@ void Controller::runGame(Player &p1, Player &p2, const Move &move) {
     MoveHistory.push_back(move);
     std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " made a move" << std::endl;
     currentPlayer = (currentPlayer == player1) ? player2 : player1;
-    // checkWin();
+    checkWin();
     // board->notifyObservers();
 }
 

@@ -505,12 +505,13 @@ Board& Board::operator=(const Board& other) {
 
 bool Board::isInCheck(Colour colour) const {
     Square* kingSquare = findKing(colour);
-    // print();
     for (const auto& row : board) {
         for (const auto& square : row) {
             Piece* piece = square->getPiece();
-            if (piece && piece->getColour() != colour) {
-                std::cout << "Piece at square (" << square->getX() << ", " << square->getY() << ") is " << piece->getSymbol() << std::endl;
+
+            if (piece && piece->getColour() == colour) {
+
+                // std::cout << "Piece at square (" << square->getX() << ", " << square->getY() << ") is " << piece->getSymbol() << std::endl;
                 std::vector <Move> validMoves = piece->getValidMoves();
 
                 // if (piece->getPieceType() == PieceType::pawn || piece->getPieceType() == PieceType::knight) {
@@ -522,7 +523,6 @@ bool Board::isInCheck(Colour colour) const {
                         return true;
                     }
                 }
-                // std::cout << "nvm" << std::endl;
             }
         }
     }
@@ -536,53 +536,63 @@ bool Board::isCheckmate(Colour colour) const {
         return false;
     }
 
-    std::cout << "Not in check" << std::endl;
+    // we know that the king is in check
+    // we need to check if the king can move to a square that is not in check
+    Square* kingSquare = findKing(colour);
+    Piece* king = kingSquare->getPiece();
+    std::vector<Move> validMoves = king->getValidMoves();
 
-    for (const auto& row : board) {
-        for (const auto& square : row) {
-            Piece* piece = square->getPiece();
-            // std::cout << "Piece: " << piece << std::endl;
-            if (piece && piece->getColour() == colour) {
-                std::vector<Move> validMoves = piece->getValidMoves();
-                for (const auto& move : validMoves) {
-                    Board copy = *this;
-                    copy.movePiece(move);
-                    if (!copy.isInCheck(colour)) {
-                        return false;
-                    }
-                }
+    for (const auto& move : validMoves) {
+        if (move.getTo()->getPiece() == nullptr) {
+            // move king to empty square
+            Board tempBoard = *this;
+            tempBoard.movePiece(move);
+            if (!tempBoard.isInCheck(colour)) {
+                return false;
+            }
+        } else {
+            // capture the piece
+            Board tempBoard = *this;
+            tempBoard.movePiece(move);
+            if (!tempBoard.isInCheck(colour)) {
+                return false;
             }
         }
     }
+
     return true;
 }
 
 bool Board::isStalemate(Colour colour) const {
-    if (isInCheck(colour)) {
-        return false;
-    }
+    bool turn = (colour == Colour::White) ? true : false;
+	std::vector<Move> moveList;
 
-    for (const auto& row : board) {
-        for (const auto& square : row) {
-            Piece* piece = square->getPiece();
-            if (piece && piece->getColour() == colour) {
-                std::vector<Move> validMoves = piece->getValidMoves();
-                for (const auto& move : validMoves) {
-                    // Board copy = getState();
-                    // copy.movePiece(move);
-                    // if (!copy.isInCheck(colour)) {
-                    //     return false;
-                    // }
-
-                    Board copy = *this;
-                    copy.movePiece(move);
-                    if (!copy.isInCheck(colour)) {
-                        return false;
-                    }
-
+	if (turn) {
+        for (const auto& row : board) {
+            for (const auto& square : row) {
+                Piece* piece = square->getPiece();
+                if (piece && piece->getColour() == Colour::Black) {
+                    std::vector<Move> temp = piece->getValidMoves();
+                    moveList.insert(moveList.end(), temp.begin(), temp.end());
                 }
             }
         }
+
+	} else {
+        for (const auto& row : board) {
+            for (const auto& square : row) {
+                Piece* piece = square->getPiece();
+                if (piece && piece->getColour() == Colour::White) {
+                    std::vector<Move> temp = piece->getValidMoves();
+                    moveList.insert(moveList.end(), temp.begin(), temp.end());
+                }
+            }
+        }
+	}
+
+    if (moveList.size() == 0) {
+        return true;
     }
-    return true;
+
+	return false;
 }
