@@ -31,13 +31,13 @@ Move LevelOne::makeMove(const Board &board, const string &to, const string &from
     std::srand(std::time(0));
     int randomIndex = rand() % getMoveListSize();
 
-    //randomly select a char value from q, n, b, r
-    std::string promoteOptions = "qnbr";
-    int randomPromoteIndex = rand() % promoteOptions.size();
-    char promoteChar = promoteOptions[randomPromoteIndex];
 
     //check if move is Promotion movetype
     if (moveList[randomIndex].getMoveType() == MoveType::Promotion) {
+        //randomly select a char value from q, n, b, r
+        std::string promoteOptions = "qnbr";
+        int randomPromoteIndex = rand() % promoteOptions.size();
+        char promoteChar = promoteOptions[randomPromoteIndex];
         moveList[randomIndex].setPromotedTo(promoteChar);
     }
 

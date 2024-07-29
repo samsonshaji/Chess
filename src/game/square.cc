@@ -14,6 +14,7 @@ Piece* Square::getPiece() const {
 
 void Square::setPiece(Piece* p) {
     this->piece = p;
+    if (p == nullptr) return;
     p->setSquare(this);
     p->setBoard(board);
 }

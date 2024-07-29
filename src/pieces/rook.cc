@@ -10,23 +10,22 @@ Rook::Rook(Colour c) : Piece(c) {
 void Rook::addStraightMoves(vector<Move>& moves, int xDir, int yDir) const {
     int x = square->getX() + xDir;
     int y = square->getY() + yDir;
-    
+
     while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-        
+
         Square* targetSquare = board->getSquare(x, y);
-        
-        if (targetSquare->getPiece() == nullptr) {
-            moves.push_back(Move(square, targetSquare, MoveType::Normal));
-        } 
-        else if (targetSquare->getPiece()->getColour() != colour) {
-            if (targetSquare->getPiece()->getPieceType() == PieceType::king) {
-                board->isInCheck(targetSquare->getPiece()->getColour());
+        Piece *thisPiece = targetSquare->getPiece();
+
+
+        if (targetSquare->getPiece() != nullptr) {
+            if (targetSquare->getPiece()->getColour() != colour) {
+                moves.push_back(Move(square, targetSquare));
             }
-            moves.push_back(Move(square, targetSquare, MoveType::Capture));
-            break;
-        } else {
             break;
         }
+
+        std::cout << "Pushing move" << std::endl;
+        moves.push_back(Move(square, targetSquare));
         x += xDir;
         y += yDir;
     }
@@ -91,5 +90,6 @@ vector<Move> Rook::getValidMoves() const {
         }
     }
 
+    std::cout << "Rook: " << moves.size() << std::endl;
     return moves;
 }

@@ -23,6 +23,20 @@ Board::~Board() {
     }
 }
 
+void Board::print() const {
+    for (int i = 7; i >= 0; i--) {
+        std::cout << i+1 << " ";
+        for (int j = 0; j < 8; j++) {
+            if (board[i][j]->getPiece() == nullptr) {
+                std::cout << "_";
+            } else {
+                std::cout << board[i][j]->getPiece()->getSymbol();
+            }
+        }
+        std::cout << std::endl;
+    }
+}
+
 void Board::clearBoard() {
     for (auto& row : board) {
         for (auto& square : row) {
@@ -40,40 +54,42 @@ void Board::setupInitialBoard() {
     for (int i = 0; i < 8; i++) {
         std::vector<Square*> row;
         for (int j = 0; j < 8; j++) {
-            row.push_back(new Square(i, j));
+            Square* s = new Square(j, i);
+            s->setBoard(this);
+            row.push_back(s);
         }
         board.push_back(row);
     }
 
     // calls square's setPiece function
     // white pieces
-    board[0][0]->setPiece(new Rook(Colour::Black));
-    board[0][1]->setPiece(new Knight(Colour::Black));
-    board[0][2]->setPiece(new Bishop(Colour::Black));
-    board[0][3]->setPiece(new Queen(Colour::Black));
-    board[0][4]->setPiece(new King(Colour::Black));
-    board[0][5]->setPiece(new Bishop(Colour::Black));
-    board[0][6]->setPiece(new Knight(Colour::Black));
-    board[0][7]->setPiece(new Rook(Colour::Black));
+    board[0][0]->setPiece(new Rook(Colour::White));
+    board[0][1]->setPiece(new Knight(Colour::White));
+    board[0][2]->setPiece(new Bishop(Colour::White));
+    board[0][3]->setPiece(new Queen(Colour::White));
+    board[0][4]->setPiece(new King(Colour::White));
+    board[0][5]->setPiece(new Bishop(Colour::White));
+    board[0][6]->setPiece(new Knight(Colour::White));
+    board[0][7]->setPiece(new Rook(Colour::White));
     for (int i = 0; i < 8; i++) {
-        board[1][i]->setPiece(new Pawn(Colour::Black));
-        blackPieces.push_back(board[1][i]->getPiece());
-        blackPieces.push_back(board[0][i]->getPiece());
+        board[1][i]->setPiece(new Pawn(Colour::White));
+        whitePieces.push_back(board[1][i]->getPiece());
+        whitePieces.push_back(board[0][i]->getPiece());
     }
 
     // black pieces
-    board[7][0]->setPiece(new Rook(Colour::White));
-    board[7][1]->setPiece(new Knight(Colour::White));
-    board[7][2]->setPiece(new Bishop(Colour::White));
-    board[7][3]->setPiece(new Queen(Colour::White));
-    board[7][4]->setPiece(new King(Colour::White));
-    board[7][5]->setPiece(new Bishop(Colour::White));
-    board[7][6]->setPiece(new Knight(Colour::White));
-    board[7][7]->setPiece(new Rook(Colour::White));
+    board[7][0]->setPiece(new Rook(Colour::Black));
+    board[7][1]->setPiece(new Knight(Colour::Black));
+    board[7][2]->setPiece(new Bishop(Colour::Black));
+    board[7][3]->setPiece(new Queen(Colour::Black));
+    board[7][4]->setPiece(new King(Colour::Black));
+    board[7][5]->setPiece(new Bishop(Colour::Black));
+    board[7][6]->setPiece(new Knight(Colour::Black));
+    board[7][7]->setPiece(new Rook(Colour::Black));
     for (int i = 0; i < 8; i++) {
-        board[6][i]->setPiece(new Pawn(Colour::White));
-        whitePieces.push_back(board[6][i]->getPiece());
-        whitePieces.push_back(board[7][i]->getPiece());
+        board[6][i]->setPiece(new Pawn(Colour::Black));
+        blackPieces.push_back(board[6][i]->getPiece());
+        blackPieces.push_back(board[7][i]->getPiece());
     }
 }
 
@@ -93,12 +109,33 @@ void Board::removePiece(Square* square) {
     square->removePiece();
 }
 
+void Board::deletePiece(Square* square) {
+    //remove piece from blackPieces or whitePieces
+    Piece* piece = square->getPiece();
+    if (piece->getColour() == Colour::White) {
+        auto it = std::find(whitePieces.begin(), whitePieces.end(), piece);
+        if (it != whitePieces.end()) {
+            whitePieces.erase(it);
+        }
+    } else {
+        auto it = std::find(blackPieces.begin(), blackPieces.end(), piece);
+        if (it != blackPieces.end()) {
+            blackPieces.erase(it);
+        }
+    }
+    square->deletePiece();
+    
+}
+
 std::vector<std::vector<Square*>> Board::getState() const {
     return board;
 }
 
 Square* Board::getSquare(int x, int y) const {
-    return board[x][y];
+    if (x < 0 || x > 7 || y < 0 || y > 7) {
+        return nullptr;
+    }
+    return board[y][x];
 }
 
 void Board::setController(Controller* ctrl) {
@@ -106,9 +143,15 @@ void Board::setController(Controller* ctrl) {
 }
 
 Square* Board::findKing(Colour colour) const {
+    // std::cout << "findKing called" << std::endl;
     for (const auto& row : board) {
         for (const auto& square : row) {
             Piece* piece = square->getPiece();
+
+            if (piece == nullptr) {
+                // std::cout << "Piece at square" << square->getX() << " " << square->getY() << " is nullptr" << std::endl;
+            }
+
             if (piece && piece->getColour() == colour && piece->getPieceType() == PieceType::king) {
                 return square;
             }
@@ -131,7 +174,21 @@ Move Board::getLastMove() const {
 }
 
 bool Board::isMoveLegal(const Move& move) const {
+    Piece *piece = move.getFrom()->getPiece();
+
+    if (piece == nullptr) {
+        return false;
+    }
+
+    // print();
+
+    // if (piece == nullptr) {
+    //     std::cout << "piece is nullptr" << std::endl;
+    // }
+
     std::vector<Move> validMoves = move.getFrom()->getPiece()->getValidMoves();
+    // std::cout << "validMoves.size(): " << validMoves.size() << std::endl;
+
     // check if move is in validMoves
     return std::find(validMoves.begin(), validMoves.end(), move) != validMoves.end();
 }
@@ -198,6 +255,7 @@ bool Board::isValidSetup() const {
 
 
 bool Board::movePiece(const Move& move) {
+
     if (!isMoveLegal(move)) {
         return false;
     }
@@ -205,6 +263,7 @@ bool Board::movePiece(const Move& move) {
     Square* from = move.getFrom();
     Square* to = move.getTo();
     Piece* piece = from->getPiece();
+
 
     Move ourMove = move;
 
@@ -292,6 +351,7 @@ bool Board::movePiece(const Move& move) {
 
     addMoveToStack(ourMove);
     notifyObservers();
+    
 
     // Reset the moved state for pawns of the opposite color
     Colour oppositeColor = (piece->getColour() == Colour::White) ? Colour::Black : Colour::White;
@@ -467,36 +527,40 @@ bool Board::isInCheck(Colour colour) const {
         for (const auto& square : row) {
             Piece* piece = square->getPiece();
             if (piece && piece->getColour() != colour) {
-                // if piece->canMoveTo() king.square
+                // std::cout << "Piece at square " << square->getX() << " " << square->getY() << " is " << piece->getSymbol() << std::endl;
                 std::vector <Move> validMoves = piece->getValidMoves();
+
+                if (piece->getPieceType() == PieceType::pawn || piece->getPieceType() == PieceType::knight) {
+                    // std::cout << "validMoves.size(): " << validMoves.size() << std::endl;
+                }
+                // std::cout << "validMoves.size(): " << validMoves.size() << std::endl; // ZERO ??????
                 for (const auto& move : validMoves) {
                     if (move.getTo() == kingSquare) {
                         return true;
                     }
                 }
+                // std::cout << "nvm" << std::endl;
             }
         }
     }
+    // std::cout << "return reached" << std::endl;
     return false;
 }
 
 bool Board::isCheckmate(Colour colour) const {
+
     if (!isInCheck(colour)) {
         return false;
     }
 
+
     for (const auto& row : board) {
         for (const auto& square : row) {
             Piece* piece = square->getPiece();
+            // std::cout << "Piece: " << piece << std::endl;
             if (piece && piece->getColour() == colour) {
                 std::vector<Move> validMoves = piece->getValidMoves();
                 for (const auto& move : validMoves) {
-                    // Board copy = getState();
-                    // copy.movePiece(move);
-                    // if (!copy.isInCheck(colour)) {
-                    //     return false;
-                    // }
-
                     Board copy = *this;
                     copy.movePiece(move);
                     if (!copy.isInCheck(colour)) {

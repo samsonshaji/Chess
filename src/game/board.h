@@ -38,6 +38,7 @@ public:
 
     void addPiece(Piece* piece, Square* square);
     void removePiece(Square* square);
+    void deletePiece(Square* square);
     void clearBoard();
 
     bool isValidSetup() const;
@@ -49,6 +50,8 @@ public:
     bool isInCheck(Colour colour) const;
     bool isCheckmate(Colour colour) const;
     bool isStalemate(Colour colour) const;
+
+    void print() const;
 
     // copy constructor
     Board(const Board& other);

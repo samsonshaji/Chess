@@ -33,13 +33,13 @@ Move Human::makeMove(const Board &board, const string &from, const string &to, c
         return Move(nullptr, nullptr, Invalid);
     }
 
-    int frow = '8' - from[1];
-    int fcol = from[0] - 'a';
-    int trow = '8' - to[1];
-    int tcol = to[0] - 'a';
+    int fy = from[1] - '1';
+    int fx = from[0] - 'a';
+    int ty = to[1] - '1';
+    int tx = to[0] - 'a';
 
-    Square *fromSquare = board.getSquare(frow, fcol);
-    Square *toSquare = board.getSquare(trow, tcol);
+    Square *fromSquare = board.getSquare(fx, fy);
+    Square *toSquare = board.getSquare(tx, ty);
 
     if (fromSquare->getPiece() == nullptr) {
         return Move(nullptr, nullptr, Invalid);
