@@ -51,6 +51,7 @@
         "typeinfo": "cpp",
         "numbers": "cpp",
         "deque": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "valarray": "cpp"
     }
 }

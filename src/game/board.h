@@ -46,8 +46,11 @@ public:
 
     // false if move is illegal, true + updates board otherwise
     bool movePiece(const Move& move);
+    bool overrideMovePiece(const Move& move);
+    
+
     bool isInCheck(Colour colour) const;
-    bool isCheckmate(Colour colour) const;
+    bool isCheckmate(Colour colour);
     bool isStalemate(Colour colour) const;
 
     void print() const;
@@ -57,7 +60,7 @@ public:
     // assignment operator
     Board& operator=(const Board& other);
 
-    bool isMoveLegal(const Move& move) const;
+    bool isMoveLegal(const Move& move);
 };
 
 #endif // BOARD_H

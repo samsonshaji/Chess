@@ -22,6 +22,7 @@ public:
     virtual ~Piece();
     PieceType getPieceType() const;
     virtual std::vector<Move> getValidMoves() const = 0;
+    void addMovesInDirection(std::vector<Move>& moves, int xDir, int yDir) const;
     Colour getColour() const;
     Piece(Colour c);
     void setSquare(Square *s);
