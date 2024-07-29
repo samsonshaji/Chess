@@ -536,7 +536,7 @@ void Board::undoMove() {
 
     piece->setHasMoved(hasMoved);
 
-    notifyObservers();
+    // notifyObservers();
 }
 
 // copy constructor

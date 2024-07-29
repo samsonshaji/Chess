@@ -41,12 +41,12 @@ void Controller::setGameStarted(bool started) {
 }
 
 Square *Controller::stringToSquare(std::string squarestring) {
-    std::cout << "THIS SHOUDL PRINT PRINTED RIGHT BEFORE GET SQUARE2" << std::endl;
-    std::cout << "squarestring: " << squarestring << std::endl;
+    // std::cout << "THIS SHOUDL PRINT PRINTED RIGHT BEFORE GET SQUARE2" << std::endl;
+    // std::cout << "squarestring: " << squarestring << std::endl;
     if (squarestring.length() != 2) {
         return nullptr;
     }
-    std::cout << "THIS SHOUDL PRINT PRINTED RIGHT BEFORE GET SQUARE1" << std::endl;
+    // std::cout << "THIS SHOUDL PRINT PRINTED RIGHT BEFORE GET SQUARE1" << std::endl;
 
     char file = squarestring[0];
     char rank = squarestring[1];
@@ -54,7 +54,7 @@ Square *Controller::stringToSquare(std::string squarestring) {
     if (file < 'a' || file > 'h' || rank < '1' || rank > '8') {
         return nullptr;
     }
-    std::cout << "THIS SHOUDL PRINT PRINTED RIGHT BEFORE GET SQUARE5" << std::endl;
+    // std::cout << "THIS SHOUDL PRINT PRINTED RIGHT BEFORE GET SQUARE5" << std::endl;
     // find corresponding square in board
     int x = file - 'a';
     int y = rank - '1';
@@ -127,6 +127,18 @@ void Controller::handleCommand(const std::string &command) {
             runGame(*player1, *player2, move);
         } else if (action == "setup") {
             setupMode();
+        } else if (action == "undo") { // not necessary, but we still have it
+            if (MoveHistory.size() == 0) {
+                std::cout << "No moves to undo" << std::endl;
+                continue;
+            }
+            board->undoMove();
+            MoveHistory.pop_back();
+            std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " called undo" << std::endl;
+            currentPlayer = (currentPlayer == player1) ? player2 : player1;
+            board->notifyObservers();
+        } else {
+            std::cout << "Invalid command" << std::endl;
         }
     }
 }
@@ -172,23 +184,6 @@ void Controller::checkWin() {
             std::cout << "Stalemate!" << std::endl;
         }
     }
-    
-
-    // if (checkmate) {
-    //     gameEnded = true;
-    //     std::cout << "Checkmate! ";
-    //     if (currentPlayer == player1) {
-    //         std::cout << "Player 2 wins!" << std::endl;
-    //         return;
-    //     } else {
-    //         std::cout << "Player 1 wins!" << std::endl;
-    //         return;
-    //     }
-    // } 
-    // else if (stalemate) {
-    //     gameEnded = true;
-    //     std::cout << "Stalemate!" << std::endl;
-    // }
 }
 
 void Controller::runGame(Player &p1, Player &p2, const Move &move) {
@@ -291,7 +286,7 @@ void Controller::setupMode() {
         }
 
         else if (command == "-") {
-            std::cout << "INSide the function here " << std::endl;
+            // std::cout << "INSide the function here " << std::endl;
             std::string square;
             std::cin >> square;
             Square *targetSquare = stringToSquare(square);
