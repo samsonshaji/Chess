@@ -165,7 +165,7 @@ void Controller::handleCommand(const std::string &command) {
             Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
 
             if(move.getFrom() == nullptr || move.getTo() == nullptr) {
-                std::cout << "Invalid move" << std::endl;
+                std::cout << "Invalid move - Is it your turn?" << std::endl;
                 return;
             }
             // Move move = Move(fromSquare, toSquare);
@@ -199,6 +199,11 @@ void Controller::startGame(Player &p1, Player &p2) {
     gameStarted = true;
     std::cout << "Game started! (between Player 1 and Player2)" << std::endl;
     board->notifyObservers();
+    if (currentPlayer->getColour() == Colour::White) {
+        std::cout << "It is player 1's turn..." << std::endl;
+    } else if (currentPlayer->getColour() == Colour::Black) {
+        std::cout << "It is player 2's turn..." << std::endl;
+    }
 }
 
 void Controller::checkWin() {
@@ -283,15 +288,16 @@ void Controller::setupMode() {
 
             Square *targetSquare = stringToSquare(square);
 
+            if (targetSquare->getX() < 0 || targetSquare->getX() > 7 || targetSquare->getY() < 0 || targetSquare->getY() > 7) {
+                std::cout << "Invalid square (Out of Bounds)" << std::endl;
+                continue;
+            }
+
             int x = targetSquare->getX();
             int y = targetSquare->getY();
 
             if (targetSquare != nullptr) {
                 targetSquare->deletePiece();
-            }
-            if (targetSquare->getX() < 0 || targetSquare->getX() > 7 || targetSquare->getY() < 0 || targetSquare->getY() > 7) {
-                std::cout << "Invalid square (Out of Bounds)" << std::endl;
-                continue;
             }
 
             Colour colour = (piece[0] < 'a') ? Colour::White : Colour::Black;
@@ -354,10 +360,10 @@ void Controller::setupMode() {
             std::cin >> colour;
             if (colour == "white") {
                 currentPlayer = player1;
-                std::cout << "current player is set to " << currentPlayer->getColour() << std::endl;
+                std::cout << "current player is set to player 1 (white)" << std::endl;
             } else if (colour == "black") {
                 currentPlayer = player2;
-                std::cout << "current player is set to " << currentPlayer->getColour() << std::endl;
+                 std::cout << "current player is set to player 2 (black)" << std::endl;
             } else {
                 std::cout << "Invalid colour" << std::endl;
             }
