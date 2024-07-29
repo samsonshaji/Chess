@@ -230,7 +230,6 @@ void Controller::checkWin() {
 }
 
 void Controller::runGame(Player &p1, Player &p2, const Move &move) {
-    // Move move = currentPlayer->makeMove(*board);
     if (gameEnded){
         std::cout << "Game has ended, who you think you foolin?" << std::endl;
         return;
@@ -242,6 +241,7 @@ void Controller::runGame(Player &p1, Player &p2, const Move &move) {
     MoveHistory.push_back(move);
     std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " made a move" << std::endl;
     currentPlayer = (currentPlayer == player1) ? player2 : player1;
+    std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << "'s turn now..." << std::endl;
     checkWin();
 }
 
@@ -334,24 +334,25 @@ void Controller::setupMode() {
         }
 
         else if (command == "-") {
-            // std::cout << "INSide the function here " << std::endl;
             std::string square;
             std::cin >> square;
-            Square *targetSquare = stringToSquare(square);
 
-            // if (targetSquare == nullptr) {
-            //     std::cout << "Invalid square" << std::endl;
-            //     continue;
-            // }
+            if (square.length() != 2) {
+                std::cout << "Invalid command (Make sure to it is in proper format)" << std::endl;
+                continue;
+            }
+            Square *targetSquare = stringToSquare(square);
+            if (targetSquare == nullptr) {
+                std::cout << "Invalid square" << std::endl;
+                continue;
+            }
+
             int x = targetSquare->getX();
             int y = targetSquare->getY();
-            std::cout << "x and y: " << x << " " << y << std::endl;
-            std::cout << "Right before remove piece" << std::endl;
-
             if ((board->getSquare(x, y)) && board->getSquare(x, y)->getPiece() == nullptr) {
                 std::cout << "No piece to remove here" << std::endl;
             }
-            std::cout << "Right before remove piece" << std::endl;
+
             board->removePiece(targetSquare);
             board->notifyObservers();
         }
