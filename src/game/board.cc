@@ -163,7 +163,9 @@ bool Board::isMoveLegal(const Move& move) const {
         return false;
     }
 
+    std::cout << "isMoveLegal: piece at " << move.getFrom()->getX() << " " << move.getFrom()->getY() << " is " << piece->getSymbol() << std::endl;
     std::vector<Move> validMoves = move.getFrom()->getPiece()->getValidMoves();
+    std::cout << "isMoveLegal: validMoves.size(): " << validMoves.size() << std::endl;
 
     // std::cout << "validMoves.size(): " << validMoves.size() << std::endl;
 
@@ -494,7 +496,7 @@ bool Board::isInCheck(Colour colour) const {
         return false;
     }
 
-    std::cout << "found king at " << kingSquare->getX() << " " << kingSquare->getY() << std::endl;
+    // std::cout << "found king at " << kingSquare->getX() << " " << kingSquare->getY() << std::endl;
 
     std::vector<Move> allValidMoves;
 
@@ -503,10 +505,10 @@ bool Board::isInCheck(Colour colour) const {
             Piece* piece = square->getPiece();
             if (piece && piece->getColour() != colour) {
 
-                std::cout << std::endl;
-                std::cout << "getting valid moves for piece at " << square->getX() << " " << square->getY() << std::endl;
-                std::cout << "piece is " << piece->getSymbol() << std::endl;
-                std::cout << std::endl;
+                // std::cout << std::endl;
+                // std::cout << "getting valid moves for piece at " << square->getX() << " " << square->getY() << std::endl;
+                // std::cout << "piece is " << piece->getSymbol() << std::endl;
+                // std::cout << std::endl;
 
                 // error getting valid moves for most-recently moved piece
 
@@ -547,7 +549,7 @@ bool Board::isCheckmate(Colour colour) const {
         }
     }
 
-    std::cout << "checkmate fine till here, validMoves size: " << validMoves.size() << std::endl;
+    // std::cout << "checkmate fine till here, validMoves size: " << validMoves.size() << std::endl;
 
     for (const auto& move : validMoves) {
         // Board tempBoard = *this;
@@ -561,30 +563,30 @@ bool Board::isCheckmate(Colour colour) const {
 
         Board *tempBoard = new Board(*this);
 
-        std::cout << "tempBoard created" << std::endl;
-        std::cout << "----------------------" << std::endl;
-        tempBoard->print();
-        std::cout << "----------------------" << std::endl;
+        // std::cout << "tempBoard created" << std::endl;
+        // std::cout << "----------------------" << std::endl;
+        // tempBoard->print();
+        // std::cout << "----------------------" << std::endl;
         tempBoard->overrideMove(move);
 
-        std::cout << "move overridden" << std::endl; // NOT being overridden
-        std::cout << "----------------------" << std::endl;
-        tempBoard->print();
-        std::cout << "----------------------" << std::endl;
+        // std::cout << "move overridden" << std::endl;
+        // std::cout << "----------------------" << std::endl;
+        // tempBoard->print();
+        // std::cout << "----------------------" << std::endl;
 
         Colour checkColour = (colour == Colour::White) ? Colour::Black : Colour::White;
-        bool tempCheck = tempBoard->isInCheck(checkColour); // need to check OTHER colour => fix
-        std::cout << "tempCheck: " << tempCheck << std::endl;
+        bool tempCheck = tempBoard->isInCheck(checkColour);
+        // std::cout << "tempCheck: " << tempCheck << std::endl;
 
         delete tempBoard;
 
         if (!tempCheck) {
-            std::cout << "checkmate is fine" << std::endl;
+            // std::cout << "checkmate is fine" << std::endl;
             return false;
         }
     }
 
-    std::cout << "checkmate is fine" << std::endl;
+    // std::cout << "checkmate is fine" << std::endl;
     return true;
 }
 

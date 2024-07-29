@@ -8,7 +8,7 @@ Rook::Rook(Colour c) : Piece(c) {
 }
 
 vector<Move> Rook::getValidMoves() const {
-    std::cout << "Rook::getValidMoves()" << std::endl;
+    // std::cout << "Rook::getValidMoves()" << std::endl;
     vector<Move> moves;
     
     // std::cout << "adding moves in direction 1, 0" << std::endl;
