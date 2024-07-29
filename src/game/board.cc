@@ -27,14 +27,18 @@ void Board::print() const {
     for (int i = 7; i >= 0; i--) {
         std::cout << i+1 << " ";
         for (int j = 0; j < 8; j++) {
-            if (board[i][j]->getPiece() == nullptr) {
+            if (board[i][j]->getPiece() == nullptr && (i+j)%2 == 0) {
                 std::cout << "_";
-            } else {
+            } else if (board[i][j]->getPiece() == nullptr && (i+j)%2 == 1) {
+                std::cout << " ";
+            }
+            else {
                 std::cout << board[i][j]->getPiece()->getSymbol();
             }
         }
         std::cout << std::endl;
     }
+    std::cout << "  abcdefgh" << std::endl;
 }
 
 void Board::clearBoard() {
@@ -103,10 +107,12 @@ void Board::addPiece(Piece* piece, Square* square) {
 }
 
 void Board::removePiece(Square* square) {
+    std::cout << "removePiece called" << std::endl;
     if (square->getPiece() != nullptr) {
         delete square->getPiece();
     }
     square->setPiece(nullptr);
+    std::cout << "done removepiece called" << std::endl;
 }
 
 std::vector<std::vector<Square*>> Board::getState() const {
