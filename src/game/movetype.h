@@ -7,8 +7,7 @@ enum MoveType {
     EnPassant,
     Castling,
     DoublePawn,
-    Promotion,
-    Invalid
+    Promotion
 };
 
 #endif 

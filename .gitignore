@@ -2,3 +2,4 @@ src/obj/*
 src/bin/*
 ./vscode/*
 src/chess
+src/chess.exe

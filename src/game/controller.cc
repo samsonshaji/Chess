@@ -127,13 +127,9 @@ void Controller::handleCommand(const std::string &command) {
                 setPromotedTo(promotePiece);
             }
 
-            Square *fromSquare = stringToSquare(from);
-            Square *toSquare = stringToSquare(to);
-
-            Move move = Move(fromSquare, toSquare);
+            Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
+            // Move move = Move(fromSquare, toSquare);
             runGame(*player1, *player2, move);
-
-            // Move move = currentPlayer->makeMove(*board, from, to, promoteTo);
 
             } else if (action == "setup") {
                 setupMode();

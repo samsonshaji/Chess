@@ -30,7 +30,7 @@ bool Human::validMoveCmd(const string &from, const string &to, const string &pro
 
 Move Human::makeMove(const Board &board, const string &from, const string &to, const string &promote) {
     if (!validMoveCmd(from, to, promote)) {
-        return Move(nullptr, nullptr, Invalid);
+        return Move(nullptr, nullptr);
     }
 
     int fy = from[1] - '1';
@@ -42,7 +42,7 @@ Move Human::makeMove(const Board &board, const string &from, const string &to, c
     Square *toSquare = board.getSquare(tx, ty);
 
     if (fromSquare->getPiece() == nullptr) {
-        return Move(nullptr, nullptr, Invalid);
+        return Move(nullptr, nullptr);
     }
 
     if (promote != "") {
