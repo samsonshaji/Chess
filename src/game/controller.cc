@@ -22,7 +22,7 @@ Controller::Controller(Player *player1, Player *player2) : player1(player1), pla
     board->setController(this);
     scoreBoard = new ScoreBoard();
     new TextObserver(*board);
-    // new GraphicsObserver(*board);
+    new GraphicsObserver(*board);
 }
 
 bool Controller::getGameEnded() {
@@ -173,7 +173,7 @@ void Controller::handleCommand(const std::string &command) {
                 return;
             }
             // Move move = Move(fromSquare, toSquare);
-            runGame(*player1, *player2, move);
+            runGame(move);
 
             } else if (action == "setup") {
                 setupMode();
@@ -239,7 +239,7 @@ void Controller::checkWin() {
     }
 }
 
-void Controller::runGame(Player &p1, Player &p2, const Move &move) {
+void Controller::runGame(const Move &move) {
     if (gameEnded){
         std::cout << "Game has ended, who you think you foolin?" << std::endl;
         return;
@@ -299,9 +299,6 @@ void Controller::setupMode() {
                 std::cout << "Invalid square (Out of Bounds)" << std::endl;
                 continue;
             }
-
-            int x = targetSquare->getX();
-            int y = targetSquare->getY();
 
             if (targetSquare != nullptr) {
                 targetSquare->deletePiece();
