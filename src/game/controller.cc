@@ -22,7 +22,7 @@ Controller::Controller(Player *player1, Player *player2) : player1(player1), pla
     board->setController(this);
     scoreBoard = new ScoreBoard();
     new TextObserver(*board);
-    // new GraphicsObserver(*board);
+    new GraphicsObserver(*board);
 }
 
 bool Controller::getGameEnded() {
@@ -41,17 +41,23 @@ void Controller::setGameStarted(bool started) {
     gameStarted = started;
 }
 
+Colour Controller::getStartTurnColour() {
+    return startTurnColour;
+}
+
+void Controller::setStartTurnColour(Colour colour) {
+    startTurnColour = colour;
+}
+
 Player *Controller::getCurrentPlayer() {
     return currentPlayer;
 }
 
 Square *Controller::stringToSquare(std::string squarestring) {
-    // std::cout << "THIS SHOUDL PRINT PRINTED RIGHT BEFORE GET SQUARE2" << std::endl;
-    // std::cout << "squarestring: " << squarestring << std::endl;
+
     if (squarestring.length() != 2) {
         return nullptr;
     }
-    // std::cout << "THIS SHOUDL PRINT PRINTED RIGHT BEFORE GET SQUARE1" << std::endl;
 
     char file = squarestring[0];
     char rank = squarestring[1];
@@ -59,8 +65,6 @@ Square *Controller::stringToSquare(std::string squarestring) {
     if (file < 'a' || file > 'h' || rank < '1' || rank > '8') {
         return nullptr;
     }
-    // std::cout << "THIS SHOUDL PRINT PRINTED RIGHT BEFORE GET SQUARE5" << std::endl;
-    // find corresponding square in board
     int x = file - 'a';
     int y = rank - '1';
     return board->getSquare(x, y);
@@ -142,7 +146,7 @@ void Controller::handleCommand(const std::string &command) {
             iss >> extra;
 
             if (extra != "") {
-                std::cout << "Invalid command" << std::endl;
+                std::cout << "Invalid command - extra commands found" << std::endl;
                 return;
             }
             endGame(true);
@@ -161,12 +165,15 @@ void Controller::handleCommand(const std::string &command) {
                 return;
             }
 
-            if (extra != "") {
+            if (promotePiece != "") {
+                setPromotedTo(promotePiece);
+            }
+            if (from.length() != 2 || to.length() != 2) {
                 std::cout << "Invalid command" << std::endl;
                 return;
             }
-            if (promotePiece != "") {
-                setPromotedTo(promotePiece);
+            if (currentPlayer == nullptr) {
+                std::cout << "No current player" << std::endl;
             }
 
             Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
@@ -198,21 +205,25 @@ void Controller::handleCommand(const std::string &command) {
                 currentPlayer = (currentPlayer == player1) ? player2 : player1;
                 board->notifyObservers();
             } else {
-                std::cout << "Invalid command" << std::endl;
+                // std::cout << "Invalid command - " << std::endl;
             }
 }
 
 void Controller::startGame(Player &p1, Player &p2) {
     player1 = &p1;
     player2 = &p2;
-    currentPlayer = player1;
-    gameEnded = false;
     MoveHistory.clear();
+    gameEnded = false;
     gameStarted = true;
     std::cout << "Game started! (between Player 1 and Player2)" << std::endl;
-
-    // display via text display
     board->notifyObservers();
+    if (getStartTurnColour() == Colour::White) {
+        currentPlayer = player1;
+        std::cout << "It is player 1's turn..." << std::endl;
+    } else if (getStartTurnColour() == Colour::Black) {
+        currentPlayer = player2;
+        std::cout << "It is player 2's turn..." << std::endl;
+    }
 }
 
 void Controller::checkWin() {
@@ -245,8 +256,7 @@ void Controller::checkWin() {
     }
 }
 
-void Controller::runGame(Player &p1, Player &p2, const Move &move) {
-    // Move move = currentPlayer->makeMove(*board);
+void Controller::runGame(const Move &move) {
     if (gameEnded){
         std::cout << "Game has ended, who you think you foolin?" << std::endl;
         return;
@@ -290,25 +300,24 @@ void Controller::setupMode() {
             std::string piece, square;
             std::cin >> piece >> square;
 
-            // std::cout << "piece[0]" << piece[0] << std::endl;
-            // std::cout << "piece[1]" << square << std::endl;
+            if (piece.length() != 1 || square.length() != 2) {
+                std::cout << "Invalid command (Make sure you follow the right format)" << std::endl;
+                continue;
+            }
 
             Square *targetSquare = stringToSquare(square);
-            std::cout << "targetSquare: " << targetSquare->getPiece() << std::endl;
-            std::cout << "targetSquare x and y :  " << targetSquare->getX() << " " << targetSquare->getY() << std::endl;
-
-            int x = targetSquare->getX();
-            int y = targetSquare->getY();
-
-            if (board->getSquare(x, y) && board->getSquare(x, y)->getPiece() == nullptr) {
-                std::cout << "SAMSON BRO YOU ARE RIGHT" << std::endl;
+            if (targetSquare == nullptr) {
+                std::cout << "Invalid square (Out of Bounds)" << std::endl;
+                continue;
             }
+
+            if (targetSquare->getX() < 0 || targetSquare->getX() > 7 || targetSquare->getY() < 0 || targetSquare->getY() > 7) {
+                std::cout << "Invalid square (Out of Bounds)" << std::endl;
+                continue;
+            }
+
             if (targetSquare != nullptr) {
                 targetSquare->deletePiece();
-            }
-            if (targetSquare->getX() < 0 || targetSquare->getX() > 7 || targetSquare->getY() < 0 || targetSquare->getY() > 7) {
-                std::cout << "Invalid square" << std::endl;
-                continue;
             }
 
             Colour colour = (piece[0] < 'a') ? Colour::White : Colour::Black;
@@ -339,30 +348,29 @@ void Controller::setupMode() {
             targetSquare->setPiece(piecePtr);
             board -> addPiece(piecePtr, targetSquare);
             piecePtr->setBoard(board);
-            // std::cout << "NOTIFYING OBSERVERS BELOW THIS" << std::endl;
-            // std::cout << " ___________________ ___________________" << std::endl;
             board->notifyObservers();
         }
 
         else if (command == "-") {
-            // std::cout << "INSide the function here " << std::endl;
             std::string square;
             std::cin >> square;
-            Square *targetSquare = stringToSquare(square);
 
-            // if (targetSquare == nullptr) {
-            //     std::cout << "Invalid square" << std::endl;
-            //     continue;
-            // }
+            if (square.length() != 2) {
+                std::cout << "Invalid command (Make sure to it is in proper format)" << std::endl;
+                continue;
+            }
+            Square *targetSquare = stringToSquare(square);
+            if (targetSquare == nullptr) {
+                std::cout << "Invalid square" << std::endl;
+                continue;
+            }
+
             int x = targetSquare->getX();
             int y = targetSquare->getY();
-            std::cout << "x and y: " << x << " " << y << std::endl;
-            std::cout << "Right before remove piece" << std::endl;
-
             if ((board->getSquare(x, y)) && board->getSquare(x, y)->getPiece() == nullptr) {
                 std::cout << "No piece to remove here" << std::endl;
             }
-            std::cout << "Right before remove piece" << std::endl;
+
             board->removePiece(targetSquare);
             board->notifyObservers();
         }
@@ -371,30 +379,29 @@ void Controller::setupMode() {
             std::string colour;
             std::cin >> colour;
             if (colour == "white") {
-                currentPlayer = player1;
+                setStartTurnColour(Colour::White);
+                std::cout << "starting turn colour set to player 1 (white)" << std::endl;
             } else if (colour == "black") {
-                currentPlayer = player2;
+                setStartTurnColour(Colour::Black);
+                std::cout << "starting turn colour set to player 2 (black)" << std::endl;
             } else {
                 std::cout << "Invalid colour" << std::endl;
+                continue;
             }
         }
-
         else if (command == "done") {
             if (board == nullptr) {
                 std::cout << "No board" << std::endl;
                 continue;
             }
             if (board->isValidSetup()) {
-                gameEnded = false;
-                std::cout << "Setup complete..you can play as normal now!" << std::endl;
-                gameStarted = true;
+                std::cout << "Setup complete...you can play as normal now (don't forget to start a game)!" << std::endl;
                 return;
             } else {
-                std::cout << "Invalid setup.. " << std::endl;
+                std::cout << "Invalid setup... " << std::endl;
                 std::cout << "Please make sure both kings are on the board and not in check" << std::endl;
             }
         }
-
         else {
             std::cout << "Invalid command" << std::endl;
         }

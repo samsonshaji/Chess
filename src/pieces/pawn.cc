@@ -81,12 +81,12 @@ std::vector<Move> Pawn::getValidMoves() const {
         }
     }
 
-    // // en passant
-    // for (int i = -1; i <= 1; i += 2) {
-    //     if (isEnPassantValid(*board, i)) {
-    //         validMoves.push_back(Move(square, board->getSquare(curX + i, curY + direction), MoveType::EnPassant));
-    //     }
-    // }
+    // en passant
+    for (int i = -1; i <= 1; i += 2) {
+        if (isEnPassantValid(*board, i)) {
+            validMoves.push_back(Move(square, board->getSquare(curX + i, curY + direction), MoveType::EnPassant));
+        }
+    }
 
     return validMoves;
 }
