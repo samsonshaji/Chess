@@ -17,11 +17,11 @@ class Move {
         MoveType pawnSecondary;
 
     public:
+        Move();
         Move(Square* f, Square* t);
         Move(Square* f, Square* t, MoveType mt);
         Move(Square* f, Square* t, MoveType mt, char p);
         
-        Move(const Move& m);
         Move& operator=(const Move& m);
 
         MoveType getMoveType() const;

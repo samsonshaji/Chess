@@ -1,5 +1,7 @@
 #include "move.h"
 
+Move::Move() {}
+
 Move::Move(Square* f, Square* t) : from(f), to(t) {}
 
 Move::Move(Square* f, Square* t, MoveType mt) : from(f), to(t), type(mt) {}

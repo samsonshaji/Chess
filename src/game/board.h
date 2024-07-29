@@ -34,7 +34,7 @@ public:
 
     bool isValidSetup() const;
 
-    virtual ::vector<std::vector<Square*>> getState() const override;
+    virtual std::vector<std::vector<Square*>> getState() const override;
 
     // false if move is illegal, true + updates board otherwise
     bool movePiece(const Move& move, bool test = false);

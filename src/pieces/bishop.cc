@@ -16,10 +16,10 @@ vector<Move> Bishop::getAllMoves() const {
     vector<Move> moves;
     if (square == nullptr) return moves;
     
-    addDiagonalMoves(moves, 1, 1);
-    addDiagonalMoves(moves, 1, -1);
-    addDiagonalMoves(moves, -1, 1);
-    addDiagonalMoves(moves, -1, -1);
+    addDirectionalMoves(moves, 1, 1);
+    addDirectionalMoves(moves, 1, -1);
+    addDirectionalMoves(moves, -1, 1);
+    addDirectionalMoves(moves, -1, -1);
     return moves;
 }
 

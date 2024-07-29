@@ -257,7 +257,8 @@ bool Board::isValidSetup() const {
 
 
 bool Board::movePiece(const Move& move, bool test) {
-    Move ourMove = move;
+    Move ourMove;
+    ourMove = move;
     if (!test) {
         ourMove = isMoveLegal(move);
 

@@ -41,5 +41,8 @@ Move LevelOne::makeMove(const Board &board, const string &to, const string &from
         moveList[randomIndex].setPromotedTo(promoteChar);
     }
 
-    return moveList[randomIndex];
+    Move m;
+    m = moveList[randomIndex];
+
+    return m;
 }

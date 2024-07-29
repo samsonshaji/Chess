@@ -12,7 +12,10 @@ SRCS = main.cc \
        game/controller.cc game/move.cc game/board.cc game/scoreboard.cc game/square.cc game/subject.cc \
        pieces/king.cc pieces/knight.cc pieces/pawn.cc pieces/piece.cc pieces/queen.cc pieces/rook.cc pieces/bishop.cc \
        observers/graphicsobserver.cc observers/textobserver.cc observers/window.cc \
-       players/human.cc
+       players/human.cc \
+	   players/robot.cc \
+	   players/robotLevelOne.cc \
+	   players/player.cc \
 
 # Object files
 OBJECTS = $(patsubst %.cc, $(OBJ_DIR)/%.o, $(SRCS))
