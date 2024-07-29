@@ -1,4 +1,5 @@
 #include "move.h"
+#include <iostream>
 
 Move::Move(Square* f, Square* t) : from(f), to(t) {}
 
@@ -38,7 +39,15 @@ void Move::setPromotedTo(char p) {
     promotedTo = p;
 }
 
-Move::Move(const Move& m) : from(m.from), to(m.to), type(m.type), promotedTo(m.promotedTo), capturedPiece(m.capturedPiece) {}
+Piece* Move::getPromotedPawn() {
+    return promotedPawn;
+}
+
+void Move::setPromotedPawn(Piece* piece) {
+    this->promotedPawn = piece;
+}
+
+Move::Move(const Move& m) : from(m.from), to(m.to), type(m.type), promotedTo(m.promotedTo), capturedPiece(m.capturedPiece), promotedPawn(m.promotedPawn) {}
 
 Move& Move::operator=(const Move& m) {
     from = m.from;
@@ -46,6 +55,7 @@ Move& Move::operator=(const Move& m) {
     type = m.type;
     capturedPiece = m.capturedPiece;
     promotedTo = m.promotedTo;
+    promotedPawn = m.promotedPawn;
     return *this;
 }
 

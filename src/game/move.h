@@ -15,6 +15,7 @@ class Move {
         MoveType type;
         char promotedTo;
         Piece *capturedPiece=nullptr;
+        Piece *promotedPawn=nullptr;
 
     public:
         Move(Square* f, Square* t);
@@ -35,6 +36,9 @@ class Move {
 
         Piece* getCapturedPiece() const;
         void setCapturedPiece(Piece* piece);
+
+        Piece* getPromotedPawn();
+        void setPromotedPawn(Piece* piece);
 
         bool operator==(const Move& m) const;
 
