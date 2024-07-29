@@ -9,7 +9,7 @@ Square::~Square() {
 }
 
 Piece* Square::getPiece() const {
-    return piece;
+    return (piece) ? piece : nullptr;
 }
 
 void Square::setPiece(Piece* p) {
@@ -25,11 +25,6 @@ void Square::setBoard(Board* b) {
 
 void Square::removePiece() {
     piece->setSquare(nullptr);
-    piece = nullptr;
-}
-
-void Square::deletePiece() {
-    delete piece;
     piece = nullptr;
 }
 

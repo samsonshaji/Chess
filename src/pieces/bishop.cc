@@ -12,33 +12,10 @@ Bishop::Bishop(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'B' : 'b';
 }
 
-void Bishop::addDiagonalMoves(vector<Move>& moves, int xDir, int yDir) const {
-    int x = square->getX() + xDir;
-    int y = square->getY() + yDir;
-    
-    while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-        
-        Square* targetSquare = board->getSquare(x, y);
-        
-        if (targetSquare->getPiece() == nullptr) {
-            moves.push_back(Move(square, targetSquare, MoveType::Normal));
-        } 
-        else if (targetSquare->getPiece()->getColour() != colour) {
-            if (targetSquare->getPiece()->getPieceType() == PieceType::king) {
-                board->isInCheck(targetSquare->getPiece()->getColour());
-            }
-            moves.push_back(Move(square, targetSquare, MoveType::Capture));
-            break;
-        } else {
-            break;
-        }
-        x += xDir;
-        y += yDir;
-    }
-}
-
-vector<Move> Bishop::getValidMoves() const {
+vector<Move> Bishop::getAllMoves() const {
     vector<Move> moves;
+    if (square == nullptr) return moves;
+    
     addDiagonalMoves(moves, 1, 1);
     addDiagonalMoves(moves, 1, -1);
     addDiagonalMoves(moves, -1, 1);

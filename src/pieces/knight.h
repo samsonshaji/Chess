@@ -7,7 +7,7 @@
 class Knight : public Piece {
 public:
     Knight(Colour c);
-    std::vector<Move> getValidMoves() const override;
+    std::vector<Move> getAllMoves() const override;
 };
 
 #endif 

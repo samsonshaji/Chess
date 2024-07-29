@@ -21,7 +21,7 @@ Colour Piece::getColour() const {
 Piece::Piece(Colour c) : colour(c) {}
 
 Square *Piece::getSquare() const {
-    return square;
+    return (square) ? square : nullptr;
 }
 
 void Piece::setSquare(Square *s) {
@@ -46,4 +46,34 @@ char Piece::getSymbol() const {
 
 bool Piece::operator==(const Piece &other) const {
     return type == other.type && square->getX() == other.square->getX() && square->getY() == other.square->getY();
+}
+
+void Piece::addDirectionalMoves(vector<Move>& moves, int xDir, int yDir) const {
+    int x = square->getX() + xDir;
+    int y = square->getY() + yDir;
+    
+    while (x >= 0 && x < 8 && y >= 0 && y < 8) {
+        
+        Square* targetSquare = board->getSquare(x, y);
+        
+        if (targetSquare->getPiece() == nullptr) {
+            moves.push_back(Move(square, targetSquare, MoveType::Normal));
+        } 
+        else if (targetSquare->getPiece()->getColour() != colour) {
+            moves.push_back(Move(square, targetSquare, MoveType::Capture));
+            break;
+        } else {
+            break;
+        }
+        x += xDir;
+        y += yDir;
+    }
+}
+
+bool Piece::getEnPassantable() const {
+    return enPassantable;
+}
+
+void Piece::setEnPassantable(bool e) {
+    enPassantable = e;
 }

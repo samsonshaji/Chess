@@ -14,6 +14,7 @@ class Move {
         Square* to;
         MoveType type;
         char promotedTo;
+        MoveType pawnSecondary;
 
     public:
         Move(Square* f, Square* t);
@@ -25,6 +26,9 @@ class Move {
 
         MoveType getMoveType() const;
         void setMoveType(MoveType t);
+
+        MoveType getPawnSecondary() const;
+        void setPawnSecondary(MoveType t);
 
         Square* getFrom() const;
         Square* getTo() const;

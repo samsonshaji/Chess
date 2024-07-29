@@ -12,82 +12,84 @@ Pawn::Pawn(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'P' : 'p';
 }
 
-bool Pawn::isEnPassantValid(const Board &board, int side) const {
-    int curX = square->getX();
-    int curY = square->getY();
-    int direction = (colour == Colour::White) ? 1 : -1;
-
-    if (curX + side < 0 || curX + side >= 8 || curY + direction < 0 || curY + direction >= 8) {
-        return false;
-    }
-
-    Square* adjacentSquare = board.getSquare(curX + side, curY);
-    Square* targetSquare = board.getSquare(curX + side, curY + direction);
-
-    if (adjacentSquare->getPiece() &&
-        adjacentSquare->getPiece()->getPieceType() == PieceType::pawn &&
-        adjacentSquare->getPiece()->getColour() != colour &&
-        targetSquare->getPiece() == nullptr) {
-
-        // Check if the adjacent pawn moved two squares in the previous movex
-        Move lastMove = board.getLastMove();
-        if (lastMove.getTo()->getPiece()->getPieceType() == PieceType::pawn &&
-            lastMove.getTo() == adjacentSquare &&
-            abs(lastMove.getFrom()->getY() - lastMove.getTo()->getY()) == 2) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-std::vector<Move> Pawn::getValidMoves() const {
+std::vector<Move> Pawn::getAllMoves() const {
     std::vector<Move> validMoves;
 
-    if (!square || !board) return validMoves;
+    if (!square) return validMoves;
 
     int curX = square->getX();
     int curY = square->getY();
     int direction = (colour == Colour::White) ? 1 : -1;
 
-    // Single move forward
     if (curY + direction >= 0 && curY + direction < 8) {
-        // std::cout << "FHWY WONT IT OWRK" << std::endl;
-        std::cout << "curX: " << curX << " curY: " << curY << " direction: " << direction << std::endl;
-        Square* forwardSquare = board->getSquare(curX, curY + direction);
-        if (forwardSquare->getPiece() == nullptr) {
-            validMoves.push_back(Move(square, forwardSquare, MoveType::Normal));
-
-            // Double move forward
-            std:: cout << "OUTSIDE NOT IN YET curY + 2 * direction: " << curY + 2 * direction << std::endl;
-            if (!hasMoved && curY + 2 * direction >= 0 && curY + 2 * direction < 8) {
-                std:: cout << "curY + 2 * direction" << curY + 2 * direction << std::endl;
-                std::cout << "WE INNN SHOULD BE FOR 0 and 6" << std::endl;
-                Square* doubleForwardSquare = board->getSquare(curX, curY + 2 * direction);
-                std::cout << "SID IS A MONKEY" << std::endl;
-                if (doubleForwardSquare->getPiece() == nullptr) {
-                    std::cout << "SID IS A DONKEY" << std::endl;
-                    validMoves.push_back(Move(square, doubleForwardSquare, MoveType::DoublePawn));
+        if(colour == Colour::White) {
+            if (board->getSquare(curX, curY + direction)->getPiece() == nullptr) {
+                if (curY + direction == 7) {
+                    validMoves.push_back(Move(square, board->getSquare(curX, curY + direction), MoveType::Promotion));
+                } else {
+                    validMoves.push_back(Move(square, board->getSquare(curX, curY + direction), MoveType::Normal));
+                }
+            if (curY == 1 && board->getSquare(curX, curY + 2 * direction)->getPiece() == nullptr && board->getSquare(curX, curY + direction)->getPiece() == nullptr && !getHasMoved()){
+                validMoves.push_back(Move(square, board->getSquare(curX, curY + 2 * direction), MoveType::DoublePawn));
+            }
+            if (curX - 1 >= 0 && board->getSquare(curX - 1, curY + direction)->getPiece() != nullptr && board->getSquare(curX - 1, curY + direction)->getPiece()->getColour() != colour) {
+                Move m = Move(square, board->getSquare(curX - 1, curY + direction), MoveType::Capture);
+                if (curY + direction == 7) {
+                    m.setPawnSecondary(MoveType::Promotion);
+                } 
+                validMoves.push_back(m);
+            }
+            if (curX + 1 < 8 && board->getSquare(curX + 1, curY + direction)->getPiece() != nullptr && board->getSquare(curX + 1, curY + direction)->getPiece()->getColour() != colour) {
+                Move m = Move(square, board->getSquare(curX - 1, curY + direction), MoveType::Capture);
+                if (curY + direction == 7) {
+                    m.setPawnSecondary(MoveType::Promotion);
+                } 
+                validMoves.push_back(m);
+            }
+            if (curY == 4) {
+                if (curX - 1 >= 0 && board->getSquare(curX - 1, curY)->getPiece() != nullptr && board->getSquare(curX - 1, curY)->getPiece()->getPieceType() == PieceType::pawn && board->getSquare(curX - 1, curY)->getPiece()->getColour() != colour && board->getSquare(curX - 1, curY)->getPiece()->getEnPassantable()) {
+                    validMoves.push_back(Move(square, board->getSquare(curX - 1, curY + direction), MoveType::EnPassant));
+                }
+                if (curX + 1 < 8 && board->getSquare(curX + 1, curY)->getPiece() != nullptr && board->getSquare(curX + 1, curY)->getPiece()->getPieceType() == PieceType::pawn && board->getSquare(curX + 1, curY)->getPiece()->getColour() != colour && board->getSquare(curX + 1, curY)->getPiece()->getEnPassantable()) {
+                    validMoves.push_back(Move(square, board->getSquare(curX + 1, curY + direction), MoveType::EnPassant));
                 }
             }
-        }
-    }
 
-    // Captures and En Passant
-    for (int side : {-1, 1}) {
-        if (curX + side >= 0 && curX + side < 8 && curY + direction >= 0 && curY + direction < 8) {
-            Square* captureSquare = board->getSquare(curX + side, curY + direction);
-            if (captureSquare->getPiece() && captureSquare->getPiece()->getColour() != colour) {
-                if (captureSquare->getPiece()->getPieceType() == PieceType::king) {
-                    board->isInCheck(captureSquare->getPiece()->getColour());
+        } else {
+            if (board->getSquare(curX, curY + direction)->getPiece() == nullptr) {
+                if (curY + direction == 0) {
+                    validMoves.push_back(Move(square, board->getSquare(curX, curY + direction), MoveType::Promotion));
+                } else {
+                    validMoves.push_back(Move(square, board->getSquare(curX, curY + direction), MoveType::Normal));
                 }
-                validMoves.push_back(Move(square, captureSquare, MoveType::Capture));
+            if (curY == 6 && board->getSquare(curX, curY + 2 * direction)->getPiece() == nullptr && board->getSquare(curX, curY + direction)->getPiece() == nullptr && !getHasMoved()){
+                validMoves.push_back(Move(square, board->getSquare(curX, curY + 2 * direction), MoveType::DoublePawn));
             }
-            if (isEnPassantValid(*board, side)) {
-                Square* enPassantSquare = board->getSquare(curX + side, curY + direction);
-                validMoves.push_back(Move(square, enPassantSquare, MoveType::EnPassant));
+            if (curX - 1 >= 0 && board->getSquare(curX - 1, curY + direction)->getPiece() != nullptr && board->getSquare(curX - 1, curY + direction)->getPiece()->getColour() != colour) {
+                Move m = Move(square, board->getSquare(curX - 1, curY + direction), MoveType::Capture);
+                if (curY + direction == 0) {
+                    m.setPawnSecondary(MoveType::Promotion);
+                } 
+                validMoves.push_back(m);
             }
+            if (curX + 1 < 8 && board->getSquare(curX + 1, curY + direction)->getPiece() != nullptr && board->getSquare(curX + 1, curY + direction)->getPiece()->getColour() != colour) {
+                Move m = Move(square, board->getSquare(curX - 1, curY + direction), MoveType::Capture);
+                if (curY + direction == 0) {
+                    m.setPawnSecondary(MoveType::Promotion);
+                } 
+                validMoves.push_back(m);
+            }
+            if (curY == 3) {
+                if (curX - 1 >= 0 && board->getSquare(curX - 1, curY)->getPiece() != nullptr && board->getSquare(curX - 1, curY)->getPiece()->getPieceType() == PieceType::pawn && board->getSquare(curX - 1, curY)->getPiece()->getColour() != colour && board->getSquare(curX - 1, curY)->getPiece()->getEnPassantable()) {
+                    validMoves.push_back(Move(square, board->getSquare(curX - 1, curY + direction), MoveType::EnPassant));
+                }
+                if (curX + 1 < 8 && board->getSquare(curX + 1, curY)->getPiece() != nullptr && board->getSquare(curX + 1, curY)->getPiece()->getPieceType() == PieceType::pawn && board->getSquare(curX + 1, curY)->getPiece()->getColour() != colour && board->getSquare(curX + 1, curY)->getPiece()->getEnPassantable()) {
+                    validMoves.push_back(Move(square, board->getSquare(curX + 1, curY + direction), MoveType::EnPassant));
+                }
         }
     }
     return validMoves;
+    }
+}
+    }
 }

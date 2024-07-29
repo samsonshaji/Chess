@@ -15,28 +15,23 @@ class Controller {
         Player* player2;
         Player* currentPlayer;
         Board* board;
-        bool gameEnded = false;
-        std::vector<Move> MoveHistory;
+        bool gameStarted = false;
         ScoreBoard* scoreBoard;
-        std::string promotedTo;
+        bool setUp = false;
     public:
         Controller(Player* player1, Player* player2);
         void startGame(Player &p1, Player &p2);
         void checkWin();
-        void runGame(Player &p1, Player &p2, const Move &move);
+        void playTurn(const Move &move);
         void endGame(bool resigned);
-        void playTurn(Player* p);
         void setScoreBoard(ScoreBoard* sb);
-        
-        PieceType getPromotedTo();
-        void setPromotedTo(std::string promotedType);
         
         void handleCommand(const std::string &command);
 
-        Square* stringToSquare(std::string squarestring);
+        bool getGameStarted();
+        void setGameStarted(bool started);
 
-        bool getGameEnded();
-        void setGameEnded(bool ended);
+        Player* getCurrentPlayer() const;
 
         void setupMode();
 };

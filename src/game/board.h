@@ -16,7 +16,6 @@ private:
     std::vector<std::vector<Square*>> board;
     Controller* controller;
     void setupInitialBoard();
-    std::vector<Move> moveStack;
     std::vector<Piece*> blackPieces;
     std::vector<Piece*> whitePieces;
 public:
@@ -27,26 +26,18 @@ public:
     void setController(Controller* ctrl);
     Square* getSquare(int x, int y) const;
 
-    std::vector<Move> getMoveStack() const;
-    Move getLastMove() const;
-
     std::vector<Piece*> getBlackPieces() const;
     std::vector<Piece*> getWhitePieces() const;
-    
-    void addMoveToStack(const Move& move);
-    void undoMove();
 
-    void addPiece(Piece* piece, Square* square);
     void removePiece(Square* square);
-    void deletePiece(Square* square);
     void clearBoard();
 
     bool isValidSetup() const;
 
-    std::vector<std::vector<Square*>> getState() const override;
+    virtual ::vector<std::vector<Square*>> getState() const override;
 
     // false if move is illegal, true + updates board otherwise
-    bool movePiece(const Move& move);
+    bool movePiece(const Move& move, bool test = false);
     bool isInCheck(Colour colour) const;
     bool isCheckmate(Colour colour) const;
     bool isStalemate(Colour colour) const;
@@ -58,7 +49,7 @@ public:
     // assignment operator
     Board& operator=(const Board& other);
 
-    bool isMoveLegal(const Move& move) const;
+    Move isMoveLegal(const Move& move) const;
 };
 
 #endif // BOARD_H

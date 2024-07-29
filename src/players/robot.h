@@ -12,9 +12,10 @@ protected:
     std::vector<Move> moveList;
     virtual void generateMoves() = 0;
 public:
-    Robot(Colour c, Board *b): Player{c}, board{b} {};
+    Robot(Colour c, Board *b);
     virtual Move makeMove(const Board &board, const string &to, const string &from, const string &promote) = 0;
     int getMoveListSize();
+    virtual ~Robot();
 };
 
 #endif

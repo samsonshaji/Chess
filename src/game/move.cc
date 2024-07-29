@@ -14,12 +14,20 @@ void Move::setMoveType(MoveType t) {
     type = t;
 }
 
+MoveType Move::getPawnSecondary() const {
+    return pawnSecondary;
+}
+
+void Move::setPawnSecondary(MoveType t) {
+    pawnSecondary = t;
+}
+
 Square* Move::getFrom() const {
-    return from;
+    return (from) ? from : nullptr;
 }
 
 Square* Move::getTo() const {
-    return to;
+    return (to) ? to : nullptr;
 }
 
 char Move::getPromotedTo() const {
@@ -35,6 +43,7 @@ Move& Move::operator=(const Move& m) {
     to = m.to;
     type = m.type;
     promotedTo = m.promotedTo;
+    pawnSecondary = m.pawnSecondary;
     return *this;
 }
 

@@ -9,7 +9,7 @@ void LevelOne::generateMoves() {
         for (std::vector<Piece*>::iterator it = board->getWhitePieces().begin(); it != board->getWhitePieces().end(); it++) {
             //check if piece has a square
             if ((*it)->getSquare() != nullptr) {
-                std::vector<Move> pieceMoves = (*it)->getValidMoves();
+                std::vector<Move> pieceMoves = (*it)->getAllMoves();
                 moveList.insert(moveList.end(), pieceMoves.begin(), pieceMoves.end());
             }
         }
@@ -18,7 +18,7 @@ void LevelOne::generateMoves() {
         for (std::vector<Piece*>::iterator it = board->getBlackPieces().begin(); it != board->getBlackPieces().end(); it++) {
             //check if piece has a square
             if ((*it)->getSquare() != nullptr) {
-                std::vector<Move> pieceMoves = (*it)->getValidMoves();
+                std::vector<Move> pieceMoves = (*it)->getAllMoves();
                 moveList.insert(moveList.end(), pieceMoves.begin(), pieceMoves.end());
             }
         }

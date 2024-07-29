@@ -8,23 +8,10 @@ King::King(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'K' : 'k';
 }
 
-bool King::isKingMoveValid(const Move& move, const Board& board) const {
-    // Calculate the difference in x and y coordinates
-    int deltaX = abs(move.getFrom()->getX() - move.getTo()->getX());
-    int deltaY = abs(move.getFrom()->getY() - move.getTo()->getY());
-
-    // The King can move one square in any direction
-    if (deltaX <= 1 && deltaY <= 1) {
-        // Ensure the move does not put the King in check
-        return !(board.isMoveLegal(move));
-    }
-    return false;
-}
-
-std::vector<Move> King::getValidMoves() const {
+std::vector<Move> King::getAllMoves() const {
     std::vector<Move> validMoves;
 
-    if (!square || !board) return validMoves;
+    if (!square) return validMoves;
 
     int curX = square->getX();
     int curY = square->getY();
@@ -45,9 +32,6 @@ std::vector<Move> King::getValidMoves() const {
                     if (targetSquare->getPiece() == nullptr) {
                         validMoves.push_back(Move(square, targetSquare, MoveType::Normal));
                     } else if (targetSquare->getPiece()->getColour() != colour) {
-                        if (targetSquare->getPiece()->getPieceType() == PieceType::king) {
-                            board->isInCheck(targetSquare->getPiece()->getColour());
-                        }
                         validMoves.push_back(Move(square, targetSquare, MoveType::Capture));
                     }
                 }
@@ -56,64 +40,20 @@ std::vector<Move> King::getValidMoves() const {
     }
 
     // Castling logic
-    if (!hasMoved) {
-        // Check for kingside castling
-
-        bool kingside_1, kingside_2, kingside_3, kingside_4 = false;
-
-        if (board->getSquare(curX + 1, curY) != nullptr) {
-            kingside_1 = board->getSquare(curX + 1, curY)->getPiece() == nullptr;
-        }
-        if (board->getSquare(curX + 2, curY) != nullptr) {
-            kingside_2 = board->getSquare(curX + 2, curY)->getPiece() == nullptr;
-        }
-        if (board->getSquare(curX + 3, curY) != nullptr) {
-            kingside_3 = board->getSquare(curX + 3, curY)->getPiece() != nullptr;
-        }
-        if (board->getSquare(curX + 3, curY) != nullptr) {
-            if (board->getSquare(curX + 3, curY)->getPiece() != nullptr) {
-                kingside_4 = board->getSquare(curX + 3, curY)->getPiece()->getPieceType() == PieceType::rook;
+    if (!getHasMoved()){
+        if(board->getSquare(5, curY)->getPiece() == nullptr && board->getSquare(6, curY)->getPiece() == nullptr){
+            if(board->getSquare(7, curY)->getPiece()->getPieceType() == PieceType::rook && !board->getSquare(7, curY)->getPiece()->getHasMoved()){
+                if(board->getSquare(7, curY)->getPiece()->getColour() == colour){
+                    validMoves.push_back(Move(square, board->getSquare(6, curY), MoveType::Castling));
+                }
             }
         }
 
-        if (kingside_1 && kingside_2 && kingside_3 && kingside_4) {
-            // Additional checks to ensure the King is not in check, doesn't move through check, and doesn't end in check
-            if (!board->isInCheck(colour) &&
-                isKingMoveValid(Move(square, board->getSquare(curX + 1, curY)), *board) &&
-                isKingMoveValid(Move(square, board->getSquare(curX + 2, curY)), *board)) {
-                validMoves.push_back(Move(square, board->getSquare(curX + 2, curY), MoveType::Castling));
-            }
-        }
-
-        bool queenside_1, queenside_2, queenside_3, queenside_4, queenside_5 = false;
-        if (board->getSquare(curX - 1, curY) != nullptr) {
-            queenside_1 = board->getSquare(curX - 1, curY)->getPiece() == nullptr;
-        }
-
-        if (board->getSquare(curX - 2, curY) != nullptr) {
-            queenside_2 = board->getSquare(curX - 2, curY)->getPiece() == nullptr;
-        }
-
-        if (board->getSquare(curX - 3, curY) != nullptr) {
-            queenside_3 = board->getSquare(curX - 3, curY)->getPiece() == nullptr;
-        }
-
-        if (board->getSquare(curX - 4, curY) != nullptr) {
-            queenside_4 = board->getSquare(curX - 4, curY)->getPiece() != nullptr;
-        }
-
-        if (board->getSquare(curX - 4, curY) != nullptr) {
-            if (board->getSquare(curX - 4, curY)->getPiece() != nullptr) {
-                queenside_5 = board->getSquare(curX - 4, curY)->getPiece()->getPieceType() == PieceType::rook;
-            }
-        }
-
-        if (queenside_1 && queenside_2 && queenside_3 && queenside_4 && queenside_5) {
-            // Additional checks to ensure the King is not in check, doesn't move through check, and doesn't end in check
-            if (!board->isInCheck(colour) &&
-                isKingMoveValid(Move(square, board->getSquare(curX - 1, curY)), *board) &&
-                isKingMoveValid(Move(square, board->getSquare(curX - 2, curY)), *board)) {
-                validMoves.push_back(Move(square, board->getSquare(curX - 2, curY), MoveType::Castling));
+        if(board->getSquare(3, curY)->getPiece() == nullptr && board->getSquare(2, curY)->getPiece() == nullptr && board->getSquare(1, curY)->getPiece() == nullptr){
+            if(board->getSquare(0, curY)->getPiece()->getPieceType() == PieceType::rook && !board->getSquare(0, curY)->getPiece()->getHasMoved()){
+                if(board->getSquare(0, curY)->getPiece()->getColour() == colour){
+                    validMoves.push_back(Move(square, board->getSquare(2, curY), MoveType::Castling));
+                }
             }
         }
     }

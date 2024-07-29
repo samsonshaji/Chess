@@ -19,7 +19,6 @@ public:
     void setPiece(Piece* p);
     void setBoard(Board* b);
     void removePiece();
-    void deletePiece();
     int getX() const;
     int getY() const;
 };

@@ -4,12 +4,9 @@
 #include "piece.h"
 
 class Pawn : public Piece {
-private:
-    bool isEnPassantValid(const Board &b, int side) const;
-
 public:
     Pawn(Colour c);
-    std::vector<Move> getValidMoves() const override;
+    std::vector<Move> getAllMoves() const override;
 };
 
 #endif 

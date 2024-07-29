@@ -18,6 +18,7 @@ int main() {
         std::getline(std::cin, command);
 
         controller.handleCommand(command);
+        cout << "" << endl;
     }
     return 0;
 }

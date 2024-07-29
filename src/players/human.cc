@@ -41,7 +41,11 @@ Move Human::makeMove(const Board &board, const string &from, const string &to, c
     Square *fromSquare = board.getSquare(fx, fy);
     Square *toSquare = board.getSquare(tx, ty);
 
-    if (fromSquare->getPiece() == nullptr) {
+    if (fromSquare->getPiece() == nullptr || fromSquare->getPiece()->getColour() != colour) {
+        return Move(nullptr, nullptr, Invalid);
+    }
+
+    if (fy == ty && fx == tx) {
         return Move(nullptr, nullptr, Invalid);
     }
 

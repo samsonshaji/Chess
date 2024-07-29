@@ -11,45 +11,66 @@
 #include "move.h"
 #include "square.h"
 
+using namespace std;
+
 Board::Board() {
     setupInitialBoard();
 }
 
 Board::~Board() {
+    clearBoard();
     for (auto& row : board) {
-        for (auto& square : row) {
-            delete square;
+        for (auto& s : row) {
+            delete s;
         }
     }
 }
 
 void Board::print() const {
+    string space = " ";
+    cout << " " << endl;
+    cout << "    abcdefgh" << endl;
+    cout << " " << endl;
     for (int i = 7; i >= 0; i--) {
-        std::cout << i+1 << " ";
+        std::cout << i+1 << "   ";
         for (int j = 0; j < 8; j++) {
             if (board[i][j]->getPiece() == nullptr) {
-                std::cout << "_";
+                std::cout << space;
             } else {
                 std::cout << board[i][j]->getPiece()->getSymbol();
             }
+            space = (space == " ") ? "_" : " ";
         }
-        std::cout << std::endl;
+        std::cout << "" << std::endl;
+        space = (space == " ") ? "_" : " ";
     }
+    cout << " " << endl;
 }
 
 void Board::clearBoard() {
-    for (auto& row : board) {
-        for (auto& square : row) {
-            if (square->getPiece() != nullptr) {
-                delete square->getPiece();
-            }
-            square->setPiece(nullptr);
+
+    for (auto row : board) {
+        for (auto square : row) {
+            square->removePiece();
         }
     }
+
+    if (whitePieces.size() != 0 || blackPieces.size() != 0) {
+        //loop through whitePieces and blackPieces and delete each piece
+        for (auto piece : whitePieces) {
+            delete piece;
+        }
+        for (auto piece : blackPieces) {
+            delete piece;
+        }
+    }
+
+    //clear whitePieces and blackPieces
+    whitePieces.clear();
+    blackPieces.clear();
 }
 
 void Board::setupInitialBoard() {
-    clearBoard();
 
     for (int i = 0; i < 8; i++) {
         std::vector<Square*> row;
@@ -101,31 +122,27 @@ std::vector<Piece*> Board::getBlackPieces() const {
     return blackPieces;
 }
 
-void Board::addPiece(Piece* piece, Square* square) {
-    square->setPiece(piece);
-}
-
 void Board::removePiece(Square* square) {
     square->removePiece();
 }
 
-void Board::deletePiece(Square* square) {
-    //remove piece from blackPieces or whitePieces
-    Piece* piece = square->getPiece();
-    if (piece->getColour() == Colour::White) {
-        auto it = std::find(whitePieces.begin(), whitePieces.end(), piece);
-        if (it != whitePieces.end()) {
-            whitePieces.erase(it);
-        }
-    } else {
-        auto it = std::find(blackPieces.begin(), blackPieces.end(), piece);
-        if (it != blackPieces.end()) {
-            blackPieces.erase(it);
-        }
-    }
-    square->deletePiece();
+// void Board::deletePiece(Square* square) {
+//     //remove piece from blackPieces or whitePieces
+//     Piece* piece = square->getPiece();
+//     if (piece->getColour() == Colour::White) {
+//         auto it = std::find(whitePieces.begin(), whitePieces.end(), piece);
+//         if (it != whitePieces.end()) {
+//             whitePieces.erase(it);
+//         }
+//     } else {
+//         auto it = std::find(blackPieces.begin(), blackPieces.end(), piece);
+//         if (it != blackPieces.end()) {
+//             blackPieces.erase(it);
+//         }
+//     }
+//     square->deletePiece();
     
-}
+// }
 
 std::vector<std::vector<Square*>> Board::getState() const {
     return board;
@@ -144,16 +161,17 @@ void Board::setController(Controller* ctrl) {
 
 Square* Board::findKing(Colour colour) const {
     // std::cout << "findKing called" << std::endl;
-    for (const auto& row : board) {
-        for (const auto& square : row) {
-            Piece* piece = square->getPiece();
-
-            if (piece == nullptr) {
-                // std::cout << "Piece at square" << square->getX() << " " << square->getY() << " is nullptr" << std::endl;
+    if (colour == Colour::White) {
+        for (const auto& piece : whitePieces) {
+            if (piece->getPieceType() == PieceType::king) {
+                return piece->getSquare();
             }
-
-            if (piece && piece->getColour() == colour && piece->getPieceType() == PieceType::king) {
-                return square;
+        }
+    }
+    else{
+        for (const auto& piece : blackPieces) {
+            if (piece->getPieceType() == PieceType::king) {
+                return piece->getSquare();
             }
         }
     }
@@ -161,36 +179,20 @@ Square* Board::findKing(Colour colour) const {
     return nullptr;
 }
 
-void Board::addMoveToStack(const Move& move) {
-    moveStack.push_back(move);
-}
+Move Board::isMoveLegal(const Move& move) const {
+    Colour current = controller->getCurrentPlayer()->getColour();
+    Piece* piece = move.getFrom()->getPiece();
 
-std::vector<Move> Board::getMoveStack() const {
-    return moveStack;
-}
-
-Move Board::getLastMove() const {
-    return moveStack.back();
-}
-
-bool Board::isMoveLegal(const Move& move) const {
-    Piece *piece = move.getFrom()->getPiece();
-
-    if (piece == nullptr) {
-        return false;
+    vector<Move> allMoves = piece->getAllMoves();
+    //using find(), check if move is in allMoves
+    auto it = find(allMoves.begin(), allMoves.end(), move);
+    if (it != allMoves.end()) {
+        it->setPromotedTo(move.getPromotedTo());
+        //create a copy of the board
+        Board *test = new Board(*this);
+        bool x = test->movePiece(*it, true);
     }
-
-    // print();
-
-    // if (piece == nullptr) {
-    //     std::cout << "piece is nullptr" << std::endl;
-    // }
-
-    std::vector<Move> validMoves = move.getFrom()->getPiece()->getValidMoves();
-    // std::cout << "validMoves.size(): " << validMoves.size() << std::endl;
-
-    // check if move is in validMoves
-    return std::find(validMoves.begin(), validMoves.end(), move) != validMoves.end();
+    return Move(nullptr, nullptr, Invalid);
 }
 
 bool Board::isValidSetup() const {
@@ -254,179 +256,167 @@ bool Board::isValidSetup() const {
 }
 
 
-bool Board::movePiece(const Move& move) {
+bool Board::movePiece(const Move& move, bool test) {
+    Move ourMove = move;
+    if (!test) {
+        ourMove = isMoveLegal(move);
 
-    if (!isMoveLegal(move)) {
-        return false;
+        if (ourMove.getMoveType() == MoveType::Invalid) {
+            cout << "Invalid move" << endl;
+            return false;
+        }
     }
 
-    Square* from = move.getFrom();
-    Square* to = move.getTo();
+    Colour current = controller->getCurrentPlayer()->getColour();
+
+    Square* from = ourMove.getFrom();
+    Square* to = ourMove.getTo();
     Piece* piece = from->getPiece();
+    piece->setHasMoved(true);
 
-
-    Move ourMove = move;
 
     // Handle castling
-    if (piece->getPieceType() == PieceType::king && !(piece->getHasMoved())) {
+    if (ourMove.getMoveType() == MoveType::Castling) {
         if (to->getX() == from->getX() + 2) {
             // Kingside castling
             Square* rookFrom = getSquare(7, from->getY());
             Square* rookTo = getSquare(5, from->getY());
             Piece* rook = rookFrom->getPiece();
-            rookFrom->setPiece(nullptr);
+            rookFrom->removePiece();
             rookTo->setPiece(rook);
             rook->setHasMoved(true);
-
-            ourMove.setMoveType(MoveType::Castling);
-
         } else if (to->getX() == from->getX() - 2) {
             // Queenside castling
             Square* rookFrom = getSquare(0, from->getY());
             Square* rookTo = getSquare(3, from->getY());
             Piece* rook = rookFrom->getPiece();
-            rookFrom->setPiece(nullptr);
+            rookFrom->removePiece();
             rookTo->setPiece(rook);
             rook->setHasMoved(true);
-
-            ourMove.setMoveType(MoveType::Castling);
         }
     }
 
     // Handle en passant
-    if (piece->getPieceType() == PieceType::pawn &&
-        from->getX() != to->getX() && to->getPiece() == nullptr) {
-        Square* target = getSquare(to->getX(), from->getY());
-        target->setPiece(nullptr);
-        ourMove.setMoveType(MoveType::EnPassant);
+    if (ourMove.getMoveType() == MoveType::EnPassant) {
+        Square* captured = getSquare(to->getX(), to->getY() - (piece->getColour() == Colour::White ? 1 : -1));
+        captured->removePiece();
     }
 
-    // Set piece as moved
-    if (piece->getPieceType() == PieceType::king ||
-        piece->getPieceType() == PieceType::rook) {
-        piece->setHasMoved(true);
+    
+    if (ourMove.getMoveType() == MoveType::DoublePawn) {
+        piece->setEnPassantable(true);
     }
-    if (piece->getPieceType() == PieceType::pawn &&
-        abs(to->getY() - from->getY()) == 2) {
-        // static_cast<Pawn*>(piece)->setDashed(true);
-        piece->setHasMoved(true);
-        ourMove.setMoveType(MoveType::DoublePawn);
+
+    from->removePiece();
+
+    if (ourMove.getMoveType() == MoveType::Capture) {
+        to->removePiece();
     }
 
     to->setPiece(piece);
-    from->setPiece(nullptr);
 
     // Handle promotion
-    if (piece->getPieceType() == PieceType::pawn && (to->getY() == 0 || to->getY() == 7)) {
-        PieceType promotionType = controller->getPromotedTo();
-
-        Piece* promotedPiece = nullptr;
-        switch (promotionType) {
-            case PieceType::queen:
-                promotedPiece = new Queen(piece->getColour());
-                break;
-            case PieceType::rook:
-                promotedPiece = new Rook(piece->getColour());
-                break;
-            case PieceType::bishop:
-                promotedPiece = new Bishop(piece->getColour());
-                break;
-            case PieceType::knight:
-                promotedPiece = new Knight(piece->getColour());
-                break;
-            default:
-                break;
+    if (ourMove.getMoveType() == MoveType::Promotion || ourMove.getPawnSecondary() == MoveType::Promotion) {
+        to->removePiece();
+        if (ourMove.getPromotedTo() == 'Q' || ourMove.getPromotedTo() == 'q') {
+            to->setPiece(new Queen(current));
         }
-        ourMove.setMoveType(MoveType::Promotion);
-        to->setPiece(promotedPiece);
-        delete piece;
+        else if (ourMove.getPromotedTo() == 'R' || ourMove.getPromotedTo() == 'r') {
+            to->setPiece(new Rook(current));
+        }
+        else if (ourMove.getPromotedTo() == 'B' || ourMove.getPromotedTo() == 'b') {
+            to->setPiece(new Bishop(current));
+        }
+        else if (ourMove.getPromotedTo() == 'N' || ourMove.getPromotedTo() == 'n') {
+            to->setPiece(new Knight(current));
+        }
+        to->getPiece()->setHasMoved(true);
     }
 
-    // Handle capture
-    if (to->getPiece() != nullptr) {
-        ourMove.setMoveType(MoveType::Capture);
-        ourMove.setCapturedPiece(to->getPiece());
-        delete to->getPiece();
-    }
-
-    addMoveToStack(ourMove);
-    notifyObservers();
-    
-
-    // Reset the moved state for pawns of the opposite color
-    Colour oppositeColor = (piece->getColour() == Colour::White) ? Colour::Black : Colour::White;
-    for (auto& row : board) {
-        for (auto& square : row) {
-            Piece* p = square->getPiece();
-            if (p && p->getColour() == oppositeColor && p->getPieceType() == PieceType::pawn) {
-                // static_cast<Pawn*>(p)->setDashed(false);
-                p->setHasMoved(false);
+    if (current == Colour::Black){
+        //loop through whitePieces, find all pawns that are en passantable, set to false
+        for (vector<Piece*>::iterator it = whitePieces.begin(); it != whitePieces.end(); ++it) {
+            if ((*it)->getPieceType() == PieceType::pawn) {
+                (*it)->setEnPassantable(false);
             }
         }
     }
-    return true;
-}
-
-void Board::undoMove() {
-    if (moveStack.empty()) {
-        return;
-    }
-
-    Move lastMove = moveStack.back();
-    Square* from = lastMove.getFrom();
-    Square* to = lastMove.getTo();
-
-    Piece* piece = to->getPiece();
-    from->setPiece(piece);
-
-    // Handle capture
-    if (lastMove.getCapturedPiece() != nullptr) {
-        to->setPiece(lastMove.getCapturedPiece());
-    } else {
-        to->setPiece(nullptr);
-    }
-
-    // Handle castling
-    if (piece->getPieceType() == PieceType::king && abs(from->getX() - to->getX()) == 2) {
-        if (to->getX() == from->getX() + 2) {
-            // Kingside castling
-            Square* rookFrom = getSquare(5, from->getY());
-            Square* rookTo = getSquare(7, from->getY());
-            Piece* rook = rookTo->getPiece();
-            rookTo->setPiece(nullptr);
-            rookFrom->setPiece(rook);
-        } else if (to->getX() == from->getX() - 2) {
-            // Queenside castling
-            Square* rookFrom = getSquare(3, from->getY());
-            Square* rookTo = getSquare(0, from->getY());
-            Piece* rook = rookTo->getPiece();
-            rookTo->setPiece(nullptr);
-            rookFrom->setPiece(rook);
+    else{
+        //loop through blackPieces, find all pawns that are en passantable, set to false
+        for (vector<Piece*>::iterator it = blackPieces.begin(); it != blackPieces.end(); ++it) {
+            if ((*it)->getPieceType() == PieceType::pawn) {
+                (*it)->setEnPassantable(false);
+            }
         }
     }
 
-    // Handle en passant
-    if (piece->getPieceType() == PieceType::pawn &&
-        from->getX() != to->getX() && to->getPiece() == nullptr) {
-        Square* target = getSquare(to->getX(), from->getY());
-        target->setPiece(new Pawn(piece->getColour()));
+    if (!test) {
+        notifyObservers();
     }
 
-    // Reset piece's moved state
-    if (piece->getPieceType() == PieceType::king ||
-        piece->getPieceType() == PieceType::rook) {
-        piece->setHasMoved(false);
-    }
-
-    // Handle promotion
-    if (piece->getPieceType() == PieceType::pawn && (to->getY() == 0 || to->getY() == 7)) {
-        delete piece;
-        to->setPiece(new Pawn(piece->getColour()));
-    }
-
-    moveStack.pop_back();
-    notifyObservers();
+    return true;
 }
+
+// void Board::undoMove() {
+//     if (moveStack.empty()) {
+//         return;
+//     }
+
+//     Move lastMove = moveStack.back();
+//     Square* from = lastMove.getFrom();
+//     Square* to = lastMove.getTo();
+
+//     Piece* piece = to->getPiece();
+//     from->setPiece(piece);
+
+//     // Handle capture
+//     if (lastMove.getCapturedPiece() != nullptr) {
+//         to->setPiece(lastMove.getCapturedPiece());
+//     } else {
+//         to->setPiece(nullptr);
+//     }
+
+//     // Handle castling
+//     if (piece->getPieceType() == PieceType::king && abs(from->getX() - to->getX()) == 2) {
+//         if (to->getX() == from->getX() + 2) {
+//             // Kingside castling
+//             Square* rookFrom = getSquare(5, from->getY());
+//             Square* rookTo = getSquare(7, from->getY());
+//             Piece* rook = rookTo->getPiece();
+//             rookTo->setPiece(nullptr);
+//             rookFrom->setPiece(rook);
+//         } else if (to->getX() == from->getX() - 2) {
+//             // Queenside castling
+//             Square* rookFrom = getSquare(3, from->getY());
+//             Square* rookTo = getSquare(0, from->getY());
+//             Piece* rook = rookTo->getPiece();
+//             rookTo->setPiece(nullptr);
+//             rookFrom->setPiece(rook);
+//         }
+//     }
+
+//     // Handle en passant
+//     if (piece->getPieceType() == PieceType::pawn &&
+//         from->getX() != to->getX() && to->getPiece() == nullptr) {
+//         Square* target = getSquare(to->getX(), from->getY());
+//         target->setPiece(new Pawn(piece->getColour()));
+//     }
+
+//     // Reset piece's moved state
+//     if (piece->getPieceType() == PieceType::king ||
+//         piece->getPieceType() == PieceType::rook) {
+//         piece->setHasMoved(false);
+//     }
+
+//     // Handle promotion
+//     if (piece->getPieceType() == PieceType::pawn && (to->getY() == 0 || to->getY() == 7)) {
+//         delete piece;
+//         to->setPiece(new Pawn(piece->getColour()));
+//     }
+
+//     moveStack.pop_back();
+//     notifyObservers();
+// }
 
 // copy constructor
 Board::Board(const Board& other) {
@@ -434,6 +424,7 @@ Board::Board(const Board& other) {
         std::vector<Square*> newRow;
         for (const auto& square : row) {
             Square* newSquare = new Square(square->getX(), square->getY());
+            newSquare->setBoard(this);
             if (square->getPiece() != nullptr) {
                 Piece* piece = square->getPiece();
                 Piece* newPiece = nullptr;
@@ -460,7 +451,13 @@ Board::Board(const Board& other) {
                         break;
                 }
                 newPiece->setHasMoved(piece->getHasMoved());
+                newPiece->setEnPassantable(piece->getEnPassantable());
                 newSquare->setPiece(newPiece);
+                if (newPiece->getColour() == Colour::White) {
+                    whitePieces.push_back(newPiece);
+                } else {
+                    blackPieces.push_back(newPiece);
+                }
             }
             newRow.push_back(newSquare);
         }
@@ -528,7 +525,7 @@ bool Board::isInCheck(Colour colour) const {
             Piece* piece = square->getPiece();
             if (piece && piece->getColour() != colour) {
                 // std::cout << "Piece at square " << square->getX() << " " << square->getY() << " is " << piece->getSymbol() << std::endl;
-                std::vector <Move> validMoves = piece->getValidMoves();
+                std::vector <Move> validMoves = piece->getAllMoves();
 
                 if (piece->getPieceType() == PieceType::pawn || piece->getPieceType() == PieceType::knight) {
                     // std::cout << "validMoves.size(): " << validMoves.size() << std::endl;
@@ -559,7 +556,7 @@ bool Board::isCheckmate(Colour colour) const {
             Piece* piece = square->getPiece();
             // std::cout << "Piece: " << piece << std::endl;
             if (piece && piece->getColour() == colour) {
-                std::vector<Move> validMoves = piece->getValidMoves();
+                std::vector<Move> validMoves = piece->getAllMoves();
                 for (const auto& move : validMoves) {
                     Board copy = *this;
                     copy.movePiece(move);
@@ -582,7 +579,7 @@ bool Board::isStalemate(Colour colour) const {
         for (const auto& square : row) {
             Piece* piece = square->getPiece();
             if (piece && piece->getColour() == colour) {
-                std::vector<Move> validMoves = piece->getValidMoves();
+                std::vector<Move> validMoves = piece->getAllMoves();
                 for (const auto& move : validMoves) {
                     
                     // Board copy = getState();

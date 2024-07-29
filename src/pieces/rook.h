@@ -7,11 +7,9 @@
 #include "piecetype.h"
 
 class Rook : public Piece {
-private:
-    void addStraightMoves(std::vector<Move>& moves, int xDir, int yDir) const;
 public:
     Rook(Colour c);
-    std::vector<Move> getValidMoves() const override;
+    std::vector<Move> getAllMoves() const override;
 };
 
 #endif
