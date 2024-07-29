@@ -6,8 +6,6 @@
 class King : public Piece {
 private:
     bool isKingMoveValid(const Move& move, const Board& board) const;
-    bool canCastle(const Board& b) const;
-
 public:
     King(Colour c);
     std::vector<Move> getValidMoves() const override;

@@ -16,7 +16,8 @@ bool King::isKingMoveValid(const Move& move, const Board& board) const {
     // The King can move one square in any direction
     if (deltaX <= 1 && deltaY <= 1) {
         // Ensure the move does not put the King in check
-        return !(board.isMoveLegal(move));
+        // return !(board.isMoveLegal(move));
+        return true;
     }
     return false;
 }
