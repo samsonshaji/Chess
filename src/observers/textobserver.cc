@@ -22,4 +22,5 @@ void TextObserver::notify() {
         }
         out << std::endl;
     }
+    out << "  abcdefgh" << std::endl;
 }

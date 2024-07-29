@@ -135,27 +135,48 @@ void Controller::startGame(Player &p1, Player &p2) {
 
 void Controller::checkWin() {
     Colour colour = (currentPlayer == player1) ? Colour::White : Colour::Black;
+    bool isInCheck = board->isInCheck(colour);
 
-    // std::cout << "checking whether " << (colour == Colour::White ? "White" : "Black") << " is in checkmate" << std::endl;
-    bool checkmate = board->isCheckmate(colour);
-    // std::cout << "checking whether " << (colour == Colour::White ? "White" : "Black") << " is in stalemate" << std::endl;
-    bool stalemate = board->isStalemate(colour);
-    
-    if (checkmate) {
-        gameEnded = true;
-        std::cout << "Checkmate! ";
-        if (currentPlayer == player1) {
-            std::cout << "Player 2 wins!" << std::endl;
-            return;
+    if (isInCheck) {
+        bool checkmate = board->isCheckmate(colour);
+        if (checkmate) {
+            gameEnded = true;
+            std::cout << "Checkmate! ";
+            if (currentPlayer == player1) {
+                std::cout << "Player 2 wins!" << std::endl;
+                return;
+            } else {
+                std::cout << "Player 1 wins!" << std::endl;
+                return;
+            }
         } else {
-            std::cout << "Player 1 wins!" << std::endl;
-            return;
+            std::cout << "Check!" << std::endl;
         }
-    } 
-    else if (stalemate) {
-        gameEnded = true;
-        std::cout << "Stalemate!" << std::endl;
     }
+    else {
+        bool stalemate = board->isStalemate(colour);
+        if (stalemate) {
+            gameEnded = true;
+            std::cout << "Stalemate!" << std::endl;
+        }
+    }
+    
+
+    // if (checkmate) {
+    //     gameEnded = true;
+    //     std::cout << "Checkmate! ";
+    //     if (currentPlayer == player1) {
+    //         std::cout << "Player 2 wins!" << std::endl;
+    //         return;
+    //     } else {
+    //         std::cout << "Player 1 wins!" << std::endl;
+    //         return;
+    //     }
+    // } 
+    // else if (stalemate) {
+    //     gameEnded = true;
+    //     std::cout << "Stalemate!" << std::endl;
+    // }
 }
 
 void Controller::runGame(Player &p1, Player &p2, const Move &move) {

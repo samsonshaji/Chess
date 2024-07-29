@@ -53,6 +53,8 @@ public:
     Board& operator=(const Board& other);
 
     bool isMoveLegal(const Move& move) const;
+
+    void overrideMove(const Move& move);
 };
 
 #endif // BOARD_H
