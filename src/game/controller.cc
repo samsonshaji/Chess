@@ -121,15 +121,21 @@ void Controller::handleCommand(const std::string &command) {
             endGame(true);
             break;
         } else if (action == "move") {
-            std::string from, to, promotePiece;
-            iss >> from >> to >> promotePiece >> extra;
-            if (promotePiece != "") {
-                setPromotedTo(promotePiece);
+            if (gameStarted){
+                std::string from, to, promotePiece;
+                // std::cout << "INSIDE MOVE" << std::endl;
+                iss >> from >> to >> promotePiece >> extra;
+                if (promotePiece != "") {
+                    setPromotedTo(promotePiece);
+                }
+                std::cout << "ISSUE IS IN make move" << std::endl;
+                Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
+                // Move move = Move(fromSquare, toSquare);
+                std::cout << "ISSUE IS IN RUN GAME" << std::endl;
+                runGame(*player1, *player2, move);
+                } else {
+                    std::cout << "Game has not started yet" << std::endl;
             }
-
-            Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
-            // Move move = Move(fromSquare, toSquare);
-            runGame(*player1, *player2, move);
 
             } else if (action == "setup") {
                 setupMode();
@@ -144,7 +150,7 @@ void Controller::handleCommand(const std::string &command) {
                 currentPlayer = (currentPlayer == player1) ? player2 : player1;
                 board->notifyObservers();
             } else {
-                std::cout << "Invalid command" << std::endl;
+                // std::cout << "Invalid command - " << std::endl;
             }
     }
 }
@@ -236,6 +242,11 @@ void Controller::setupMode() {
         if (command == "+") {
             std::string piece, square;
             std::cin >> piece >> square;
+
+            if (piece.length() != 1 || square.length() != 2) {
+                std::cout << "Invalid command (Make sure you follow the right format)" << std::endl;
+                continue;
+            }
 
             // std::cout << "piece[0]" << piece[0] << std::endl;
             // std::cout << "piece[1]" << square << std::endl;
@@ -331,17 +342,15 @@ void Controller::setupMode() {
                 std::cout << "No board" << std::endl;
                 continue;
             }
+            // std::cout << "IS VALID SETUP IS WROGN" << std::endl;
             if (board->isValidSetup()) {
-                gameEnded = false;
                 std::cout << "Setup complete..you can play as normal now!" << std::endl;
-                gameStarted = true;
                 return;
             } else {
                 std::cout << "Invalid setup.. " << std::endl;
                 std::cout << "Please make sure both kings are on the board and not in check" << std::endl;
             }
         }
-
         else {
             std::cout << "Invalid command" << std::endl;
         }
