@@ -41,13 +41,19 @@ void Controller::setGameStarted(bool started) {
     gameStarted = started;
 }
 
+Colour Controller::getStartTurnColour() {
+    return startTurnColour;
+}
+
+void Controller::setStartTurnColour(Colour colour) {
+    startTurnColour = colour;
+}
+
 Square *Controller::stringToSquare(std::string squarestring) {
-    // std::cout << "THIS SHOUDL PRINT PRINTED RIGHT BEFORE GET SQUARE2" << std::endl;
-    // std::cout << "squarestring: " << squarestring << std::endl;
+
     if (squarestring.length() != 2) {
         return nullptr;
     }
-    // std::cout << "THIS SHOUDL PRINT PRINTED RIGHT BEFORE GET SQUARE1" << std::endl;
 
     char file = squarestring[0];
     char rank = squarestring[1];
@@ -55,8 +61,6 @@ Square *Controller::stringToSquare(std::string squarestring) {
     if (file < 'a' || file > 'h' || rank < '1' || rank > '8') {
         return nullptr;
     }
-    // std::cout << "THIS SHOUDL PRINT PRINTED RIGHT BEFORE GET SQUARE5" << std::endl;
-    // find corresponding square in board
     int x = file - 'a';
     int y = rank - '1';
     return board->getSquare(x, y);
@@ -85,7 +89,7 @@ void Controller::setPromotedTo(std::string promotedType) {
 
 void Controller::handleCommand(const std::string &command) {
     std::istringstream iss(command);
-    std::string action, promotionPeice;
+    std::string action, extra;
     iss >> action;
         if (action == "game") {
             if (gameStarted) {
@@ -94,9 +98,9 @@ void Controller::handleCommand(const std::string &command) {
             }
             std::string whitePlayerType;
             std::string blackPlayerType;
-            iss >> whitePlayerType >> blackPlayerType >> promotionPeice;
+            iss >> whitePlayerType >> blackPlayerType >> extra;
 
-            if (promotionPeice != "") {
+            if (extra != "") {
                 std::cout << "Invalid command" << std::endl;
                 return;
             }
@@ -135,10 +139,10 @@ void Controller::handleCommand(const std::string &command) {
                 std::cout << "Game has not started yet" << std::endl;
                 return;
             }
-            iss >> promotionPeice;
+            iss >> extra;
 
-            if (promotionPeice != "") {
-                std::cout << "Invalid command" << std::endl;
+            if (extra != "") {
+                std::cout << "Invalid command - extra commands found" << std::endl;
                 return;
             }
             endGame(true);
@@ -149,7 +153,7 @@ void Controller::handleCommand(const std::string &command) {
                 return;
             }
             std::string from, to, promotePiece;
-            iss >> from >> to >> promotePiece >> promotionPeice;
+            iss >> from >> to >> promotePiece >> promotePiece;
 
             if (promotePiece != "") {
                 setPromotedTo(promotePiece);
@@ -165,7 +169,7 @@ void Controller::handleCommand(const std::string &command) {
             Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
 
             if(move.getFrom() == nullptr || move.getTo() == nullptr) {
-                std::cout << "Invalid move - Is it your turn?" << std::endl;
+                std::cout << "Invalid move" << std::endl;
                 return;
             }
             // Move move = Move(fromSquare, toSquare);
@@ -192,16 +196,15 @@ void Controller::startGame(Player &p1, Player &p2) {
     player1 = &p1;
     player2 = &p2;
     MoveHistory.clear();
-    if (currentPlayer == nullptr) {
-        currentPlayer = player1;
-    }
     gameEnded = false;
     gameStarted = true;
     std::cout << "Game started! (between Player 1 and Player2)" << std::endl;
     board->notifyObservers();
-    if (currentPlayer->getColour() == Colour::White) {
+    if (getStartTurnColour() == Colour::White) {
+        currentPlayer = player1;
         std::cout << "It is player 1's turn..." << std::endl;
-    } else if (currentPlayer->getColour() == Colour::Black) {
+    } else if (getStartTurnColour() == Colour::Black) {
+        currentPlayer = player2;
         std::cout << "It is player 2's turn..." << std::endl;
     }
 }
@@ -287,6 +290,10 @@ void Controller::setupMode() {
             }
 
             Square *targetSquare = stringToSquare(square);
+            if (targetSquare == nullptr) {
+                std::cout << "Invalid square (Out of Bounds)" << std::endl;
+                continue;
+            }
 
             if (targetSquare->getX() < 0 || targetSquare->getX() > 7 || targetSquare->getY() < 0 || targetSquare->getY() > 7) {
                 std::cout << "Invalid square (Out of Bounds)" << std::endl;
@@ -359,13 +366,14 @@ void Controller::setupMode() {
             std::string colour;
             std::cin >> colour;
             if (colour == "white") {
-                currentPlayer = player1;
-                std::cout << "current player is set to player 1 (white)" << std::endl;
+                setStartTurnColour(Colour::White);
+                std::cout << "starting turn colour set to player 1 (white)" << std::endl;
             } else if (colour == "black") {
-                currentPlayer = player2;
-                 std::cout << "current player is set to player 2 (black)" << std::endl;
+                setStartTurnColour(Colour::Black);
+                std::cout << "starting turn colour set to player 2 (black)" << std::endl;
             } else {
                 std::cout << "Invalid colour" << std::endl;
+                continue;
             }
         }
         else if (command == "done") {
