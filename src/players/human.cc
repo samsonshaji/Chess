@@ -4,6 +4,10 @@
 
 Human::Human(Colour colour) : Player(colour) {}
 
+bool Human::isRobot() {
+    return false;
+}
+
 bool Human::validMoveCmd(const string &from, const string &to, const string &promote) {
     if (to.length() != 2 || from.length() != 2) {
         return false;
@@ -28,7 +32,7 @@ bool Human::validMoveCmd(const string &from, const string &to, const string &pro
     return true;
 }
 
-Move Human::makeMove(const Board &board, const string &from, const string &to, const string &promote) {
+Move Human::makeMove(Board &board, const string &from, const string &to, const string &promote) {
     if (!validMoveCmd(from, to, promote)) {
         return Move(nullptr, nullptr);
     }
@@ -50,6 +54,14 @@ Move Human::makeMove(const Board &board, const string &from, const string &to, c
     }
 
     if (promote != "") {
+        if (fromSquare->getPiece()->getPieceType() != PieceType::pawn) {
+            if (colour == Colour::White && ty != 7) {
+                return Move(nullptr, nullptr);
+            }
+            if (colour == Colour::Black && ty != 0) {
+                return Move(nullptr, nullptr);
+            }
+        }
         return Move(fromSquare, toSquare, Promotion, promote[0]);
     }
     

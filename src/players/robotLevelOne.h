@@ -8,7 +8,7 @@ class LevelOne : public Robot {
         void generateMoves() override;
     public:
         LevelOne(Colour c, Board *b);
-        virtual Move makeMove(const Board &board, const string &to, const string &from, const string &promote) override;
+        virtual Move makeMove(Board &board, const string &to, const string &from, const string &promote) override;
 };
 
 #endif

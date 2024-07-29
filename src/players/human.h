@@ -9,7 +9,8 @@ private:
     bool validMoveCmd(const string &from, const string &to, const string &promote);
 public:
     Human(Colour colour);
-    virtual Move makeMove(const Board &board, const string &from, const string &to, const string &promote) override;
+    virtual Move makeMove(Board &board, const string &from, const string &to, const string &promote) override;
+    virtual bool isRobot() override;
 };
 
 #endif 

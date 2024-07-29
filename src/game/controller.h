@@ -42,6 +42,7 @@ class Controller {
         void setGameStarted(bool started);
 
         void setupMode();
+        Player* getCurrentPlayer();
 };
 
 #endif

@@ -14,8 +14,9 @@ class Player {
     public:
         Player(Colour c);
         Colour getColour() const;
-        virtual Move makeMove(const Board &board, const string &to, const string &from, const string &promote) = 0;
+        virtual Move makeMove(Board &board, const string &to, const string &from, const string &promote) = 0;
         virtual ~Player();
+        virtual bool isRobot() = 0;
 };
 
 #endif 

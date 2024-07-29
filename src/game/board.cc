@@ -371,9 +371,11 @@ bool Board::overrideMovePiece(const Move& move) {
 
 bool Board::movePiece(const Move& move) {
     // std::cout << "movePiece called" << std::endl;
+    if(!controller->getCurrentPlayer()->isRobot()) {
     if (!isMoveLegal(move)) {
         std::cout << "Illegal move, try again!" << std::endl;
         return false;
+        }
     }
 
     Square* from = move.getFrom();

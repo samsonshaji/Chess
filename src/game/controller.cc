@@ -41,6 +41,10 @@ void Controller::setGameStarted(bool started) {
     gameStarted = started;
 }
 
+Player *Controller::getCurrentPlayer() {
+    return currentPlayer;
+}
+
 Square *Controller::stringToSquare(std::string squarestring) {
     // std::cout << "THIS SHOUDL PRINT PRINTED RIGHT BEFORE GET SQUARE2" << std::endl;
     // std::cout << "squarestring: " << squarestring << std::endl;
@@ -144,13 +148,18 @@ void Controller::handleCommand(const std::string &command) {
             endGame(true);
             return;
         } else if (action == "move") {
-
             if (!gameStarted) {
                 std::cout << "Game has not started yet" << std::endl;
                 return;
             }
             std::string from, to, promotePiece;
             iss >> from >> to >> promotePiece >> extra;
+
+            //check if current player is human
+            if (currentPlayer->isRobot() && from != "") {
+                std::cout << "Invalid command" << std::endl;
+                return;
+            }
 
             if (extra != "") {
                 std::cout << "Invalid command" << std::endl;
@@ -162,11 +171,18 @@ void Controller::handleCommand(const std::string &command) {
 
             Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
 
+            if (currentPlayer->isRobot() && (move.getPromotedTo() == 'q' || move.getPromotedTo() == 'n' || move.getPromotedTo() == 'b' || move.getPromotedTo() == 'r')) {
+                string s;
+                s.push_back(move.getPromotedTo());
+                setPromotedTo(s);
+            }
+
             if(move.getFrom() == nullptr || move.getTo() == nullptr) {
                 std::cout << "Invalid move" << std::endl;
                 return;
             }
             // Move move = Move(fromSquare, toSquare);
+
             runGame(*player1, *player2, move);
 
             } else if (action == "setup") {
@@ -241,7 +257,7 @@ void Controller::runGame(Player &p1, Player &p2, const Move &move) {
     }
     MoveHistory.push_back(move);
     std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " made a move" << std::endl;
-    currentPlayer = (currentPlayer == player1) ? player2 : player1;
+    currentPlayer = (currentPlayer->getColour() == White) ? player2 : player1;
     checkWin();
 }
 

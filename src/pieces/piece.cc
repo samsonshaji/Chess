@@ -21,7 +21,7 @@ Colour Piece::getColour() const {
 Piece::Piece(Colour c) : colour(c) {}
 
 Square *Piece::getSquare() const {
-    return square;
+    return (square) ? square : nullptr;
 }
 
 void Piece::setSquare(Square *s) {

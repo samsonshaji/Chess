@@ -17,6 +17,7 @@ class Move {
         Piece *capturedPiece=nullptr;
 
     public:
+        Move();
         Move(Square* f, Square* t);
         Move(Square* f, Square* t, MoveType mt);
         Move(Square* f, Square* t, MoveType mt, char p);
