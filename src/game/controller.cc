@@ -121,7 +121,7 @@ void Controller::handleCommand(const std::string &command) {
         Move move = currentPlayer->makeMove(*board, from, to, promoteTo);
 
         if (move.getMoveType() == MoveType::Invalid) {
-            std::cout << "Invalid move" << std::endl;
+            std::cout << "Invalid move3" << std::endl;
             return;
         }
 
