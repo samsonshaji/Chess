@@ -22,7 +22,7 @@ Controller::Controller(Player *player1, Player *player2) : player1(player1), pla
     board->setController(this);
     scoreBoard = new ScoreBoard();
     new TextObserver(*board);
-    new GraphicsObserver(*board);
+    // new GraphicsObserver(*board);
 }
 
 bool Controller::getGameEnded() {
