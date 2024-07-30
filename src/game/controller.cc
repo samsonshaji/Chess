@@ -12,6 +12,9 @@
 #include "queen.h"
 #include "robot.h"
 #include "robotLevelOne.h"
+#include "robotLevelTwo.h"
+#include "robotLevelThree.h"
+#include "scoreboard.h"
 #include "rook.h"
 #include "square.h"
 #include "textobserver.h"
@@ -117,8 +120,8 @@ void Controller::handleCommand(const std::string &command) {
                 player1 = new Human(Colour::White);
             } else if (whitePlayerType == "computer1") {
                 player1 = new LevelOne(Colour::White, board);
-            // } else if (whitePlayerType == "computer2") {
-            //     player1 = new Robot(Colour::White, 2);
+            } else if (whitePlayerType == "computer2") {
+                player1 = new LevelTwo(Colour::White, board);
             // } else if (whitePlayerType == "computer3") {
             //     player1 = new Robot(Colour::White, 3);
             }
@@ -131,8 +134,8 @@ void Controller::handleCommand(const std::string &command) {
                 player2 = new Human(Colour::Black);
             } else if (blackPlayerType == "computer1") {
                 player2 = new LevelOne(Colour::Black, board);
-            // } else if (blackPlayerType == "computer2") {
-            //     player2 = new Robot(Colour::Black, 2);
+            } else if (blackPlayerType == "computer2") {
+                player2 = new LevelTwo(Colour::Black, board);
             // } else if (blackPlayerType == "computer3") {
             //     player2 = new Robot(Colour::Black, 3);
             }
