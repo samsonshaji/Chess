@@ -13,8 +13,9 @@
 #include "queen.h"
 #include "robot.h"
 #include "robotLevelOne.h"
-#include "robotLevelThree.h"
 #include "robotLevelTwo.h"
+#include "robotLevelThree.h"
+#include "robotLevelFour.h"
 #include "rook.h"
 #include "scoreboard.h"
 #include "square.h"
@@ -136,8 +137,10 @@ void Controller::handleCommand(const std::string &command) {
             player1 = new LevelOne(Colour::White, board);
         } else if (whitePlayerType == "computer2") {
             player1 = new LevelTwo(Colour::White, board);
-            // } else if (whitePlayerType == "computer3") {
-            //     player1 = new Robot(Colour::White, 3);
+        } else if (whitePlayerType == "computer3") {
+            player1 = new LevelThree(Colour::White, board);
+        } else if (whitePlayerType == "computer4") {
+            player1 = new LevelFour(Colour::White, board);
         } else {
             std::cout << "Invalid player type" << std::endl;
             return;
@@ -146,13 +149,13 @@ void Controller::handleCommand(const std::string &command) {
         if (blackPlayerType == "human") {
             player2 = new Human(Colour::Black);
         } else if (blackPlayerType == "computer1") {
-            std::cout << "SMASON HERE SHOUDL BE HERE" << std::endl;
             player2 = new LevelOne(Colour::Black, board);
-            std::cout << "I GOT EMMM" << player2->getColour() << std::endl;
         } else if (blackPlayerType == "computer2") {
             player2 = new LevelTwo(Colour::Black, board);
-            // } else if (blackPlayerType == "computer3") {
-            //     player2 = new Robot(Colour::Black, 3);
+        } else if (blackPlayerType == "computer3") {
+            player2 = new LevelThree(Colour::Black, board);
+        } else if (blackPlayerType == "computer4") {
+            player2 = new LevelFour(Colour::Black, board);
         } else {
             std::cout << "Invalid player type" << std::endl;
             return;
@@ -197,10 +200,6 @@ void Controller::handleCommand(const std::string &command) {
         }
 
         Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
-        // bool state = currentPlayer->isRobot();
-        // if (state){
-        //     std::cout << "Samson this is it, the colour: " << currentPlayer->getColour() << std::endl;
-        // }
         if (currentPlayer->isRobot() && (move.getPromotedTo() == 'q' || move.getPromotedTo() == 'n' || move.getPromotedTo() == 'b' || move.getPromotedTo() == 'r')) {
             string s;
             s.push_back(move.getPromotedTo());
@@ -250,7 +249,9 @@ void Controller::startGame(Player &p1, Player &p2) {
 
 void Controller::checkWin() {
     Colour colour = (currentPlayer == player1) ? Colour::White : Colour::Black;
+    std::cout << "Checking whether " << ((colour == Colour::White) ? "White" : "Black") << " is in check" << std::endl;
     bool isInCheck = board->isInCheck(colour);
+    std::cout << "Check: " << isInCheck << std::endl;
 
     if (isInCheck) {
         // std::cout << (colour == White ? "White" : "Black") << " is in check." << std::endl;

@@ -39,7 +39,6 @@ Move LevelTwo::makeMove(Board &board, const string &to, const string &from, cons
     }
 
     int randomIndex = rand() % legalMoves.size();
-    Move currMove = legalMoves[randomIndex];
 
     vector<Move> checks;
     vector<Move> captures;

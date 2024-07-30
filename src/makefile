@@ -12,6 +12,8 @@ SRCS = main.cc \
        players/human.cc \
 	   players/robotLevelOne.cc \
 	   players/robotLevelTwo.cc \
+	   players/robotLevelThree.cc \
+	   players/robotLevelFour.cc \
 	   players/robot.cc \
 	   players/player.cc \
 
