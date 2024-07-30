@@ -14,9 +14,6 @@ public:
     ~GraphicsObserver();
 
     void notify() override;
-
-    // void update();
-    // void update(int x, int y);
 };
 
-#endif // GRAPHICSOBSERVER_H
+#endif 

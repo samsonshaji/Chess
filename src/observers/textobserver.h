@@ -15,4 +15,4 @@ public:
     void notify() override;
 };
 
-#endif // TEXTOBSERVER_H
+#endif
