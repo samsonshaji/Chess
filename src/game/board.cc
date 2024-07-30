@@ -203,10 +203,11 @@ bool Board::isMoveLegal(const Move& move) {
         return false;
     }
 
+    bool isCheck1 = isInCheck(colour);
     std::cout << "isMoveLegal: overriding move" << std::endl;
     bool valid = overrideMovePiece(move);
     std::cout << "isMoveLegal: calling isCheck " << valid << std::endl;
-    bool isCheck = isInCheck(colour);
+    bool isCheck2 = isInCheck(colour);
     std::cout << "isMoveLegal: undoing move" << std::endl;
     undoMove();
     std::cout << "isMoveLegal: done undoing move" << std::endl;
@@ -214,7 +215,7 @@ bool Board::isMoveLegal(const Move& move) {
     // std::cout << "after move undoed" << std::endl;
     // print();
 
-    if (isCheck) {
+    if (isCheck1 || isCheck2) {
         return false;
     }
 
@@ -397,30 +398,35 @@ bool Board::overrideMovePiece(const Move& move) {
             // rook->setHasMoved(true);
         }
     } else if (currMove.getMoveType() == MoveType::Promotion) {
+        std::cout << "promotion move" << std::endl;
         // check for capture first
         if (capturedPiece != nullptr) {
+            std::cout << "promotion with captured piece set to: " << std::endl;
+            std::cout << capturedPiece->getSymbol() << std::endl;
             currMove.setCapturedPiece(capturedPiece);
         }
 
         Piece *newPiece = nullptr;
-        PieceType promotedType = controller->getPromotedTo();
-        switch (promotedType) {
-            case PieceType::queen:
+        // PieceType promotedType = controller->getPromotedTo();
+        char promotedTo = currMove.getPromotedTo();
+        switch (promotedTo) {
+            case 'q':
                 newPiece = new Queen(piece->getColour());
                 break;
-            case PieceType::rook:
+            case 'r':
                 newPiece = new Rook(piece->getColour());
                 break;
-            case PieceType::bishop:
+            case 'b':
                 newPiece = new Bishop(piece->getColour());
                 break;
-            case PieceType::knight:
+            case 'n':
                 newPiece = new Knight(piece->getColour());
                 break;
             default:
                 break;
         }
 
+        std::cout << "promotedType: " << promotedTo << std::endl;
         currMove.setPromotedPawn(piece);
 
         to->setPiece(newPiece);
@@ -561,25 +567,20 @@ bool Board::movePiece(const Move& move) {
         }
 
         Piece *newPiece = nullptr;
-        PieceType promotedType = controller->getPromotedTo();
-        std::cout << "promotedType: " << promotedType << std::endl;
-        switch (promotedType) {
-            case PieceType::queen:
-                newPiece = new Queen(piece->getColour());
-                break;
-            case PieceType::rook:
-                newPiece = new Rook(piece->getColour());
-                break;
-            case PieceType::bishop:
-                newPiece = new Bishop(piece->getColour());
-                break;
-            case PieceType::knight:
-                newPiece = new Knight(piece->getColour());
-                break;
-            default:
-                break;
+        // PieceType promotedType = controller->getPromotedTo();
+        char promotedTo = currMove.getPromotedTo();
+
+        if (promotedTo == 'q' || promotedTo == 'Q') {
+            newPiece = new Queen(piece->getColour());
+        } else if (promotedTo == 'r' || promotedTo == 'R') {
+            newPiece = new Rook(piece->getColour());
+        } else if (promotedTo == 'b' || promotedTo == 'B') {
+            newPiece = new Bishop(piece->getColour());
+        } else if (promotedTo == 'n' || promotedTo == 'N') {
+            newPiece = new Knight(piece->getColour());
         }
-        
+
+        std::cout << "promotedType: " << promotedTo << std::endl;
         currMove.setPromotedPawn(piece);
 
         to->setPiece(newPiece);
@@ -622,7 +623,11 @@ void Board::undoMove() {
                   lastMove.getMoveType() == 2 ? "EnPassant" : 
                   lastMove.getMoveType() == 3 ? "Castling" : 
                   lastMove.getMoveType() == 4 ? "DoublePawn" : "Promotion") << std::endl;
+    std::cout << "state of board BEFORE undo" << std::endl;
+    print();
     std::cout << std::endl;
+
+
 
     if (lastMove.getMoveType() == MoveType::Normal) {
         from->setPiece(piece);
@@ -686,6 +691,8 @@ void Board::undoMove() {
         }
 
         std::cout << "AFTER undoing castling: " << std::endl;
+        print();
+        std::cout << std::endl;
 
     } else if (lastMove.getMoveType() == MoveType::Promotion) {
         delete piece;
@@ -727,8 +734,9 @@ void Board::undoMove() {
     }
 
     piece->setHasMoved(hasMoved);
-    std::cout << "undoMove done" << std::endl;
-    // notifyObservers();
+    std::cout << "state of board AFTER undo" << std::endl;
+    print();
+    std::cout << std::endl;
 }
 
 // copy constructor
@@ -829,10 +837,11 @@ bool Board::isInCheck(Colour colour) const {
     // check if the king of the given colour is in check
     Square* kingSquare = findKing(colour);
     if (kingSquare == nullptr) {
+        std::cout << "king not found!!!" << std::endl;
         return false;
     }
-
-    // std::cout << "found king at " << kingSquare->getX() << " " << kingSquare->getY() << std::endl;
+    std::cout << "found king at " << kingSquare->getX() << " " << kingSquare->getY() << std::endl;
+    std::cout << "colour: " << colour << std::endl;
 
     std::vector<Move> allValidMoves;
 
@@ -846,8 +855,7 @@ bool Board::isInCheck(Colour colour) const {
                 // std::cout << "piece is " << piece->getSymbol() << std::endl;
                 // std::cout << std::endl;
 
-                // error getting valid moves for most-recently moved piece
-
+                std::cout << "getting valid moves for piece: " << piece->getSymbol() << std::endl;
                 std::vector<Move> validMoves = piece->getValidMoves();
                 // std::cout << "validMoves.size(): " << validMoves.size() << std::endl;
                 // std::cout << std::endl;
@@ -856,6 +864,8 @@ bool Board::isInCheck(Colour colour) const {
             }
         }
     }
+
+    std::cout << "allValidMoves.size(): " << allValidMoves.size() << std::endl;
 
     for (const auto& move : allValidMoves) {
         if (move.getTo() == kingSquare) {

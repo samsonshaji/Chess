@@ -2,7 +2,7 @@
 
 LevelTwo::LevelTwo(Colour c, Board *b) : Robot(c, b) {}
 
-void LevelTwo::generateMoves() {
+void LevelTwo::generateMoves(std::vector<Move> &allValidMoves) {
     moveList.clear();
 
     vector<Move> moves;
@@ -36,7 +36,8 @@ void LevelTwo::generateMoves() {
 }
 
 Move LevelTwo::makeMove(Board &board, const string &to, const string &from, const string &promote) {
-    generateMoves();
+    std::vector<Move> allValidMoves;
+    generateMoves(allValidMoves);
     bool legal = false;
     Move m;
 

@@ -81,18 +81,18 @@ void Controller::setScoreBoard(ScoreBoard *sb) {
     scoreBoard = sb;
 }
 
-PieceType Controller::getPromotedTo() {
-    if (promotedTo == "Q" || promotedTo == "q") {
-        return PieceType::queen;
-    } else if (promotedTo == "R" || promotedTo == "r") {
-        return PieceType::rook;
-    } else if (promotedTo == "B" || promotedTo == "b") {
-        return PieceType::bishop;
-    } else if (promotedTo == "N" || promotedTo == "n") {
-        return PieceType::knight;
-    }
-    return PieceType::pawn;
-}
+// PieceType Controller::getPromotedTo() {
+//     if (promotedTo == "Q" || promotedTo == "q") {
+//         return PieceType::queen;
+//     } else if (promotedTo == "R" || promotedTo == "r") {
+//         return PieceType::rook;
+//     } else if (promotedTo == "B" || promotedTo == "b") {
+//         return PieceType::bishop;
+//     } else if (promotedTo == "N" || promotedTo == "n") {
+//         return PieceType::knight;
+//     }
+//     return PieceType::pawn;
+// }
 
 void Controller::setPromotedTo(std::string promotedType) {
     promotedTo = promotedType;

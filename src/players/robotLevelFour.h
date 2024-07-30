@@ -5,7 +5,7 @@
 
 class LevelFour : public Robot {
     private:
-        void generateMoves() override;
+        void generateMoves(std::vector<Move> &allValidMoves) override;
     public:
         LevelFour(Colour c, Board *b);
         virtual Move makeMove(Board &board, const string &to, const string &from, const string &promote) override;

@@ -65,9 +65,6 @@ vector<Move> Knight::getValidMoves() const {
                 validMoves.push_back(Move(square, jump, MoveType::Normal));
             }
             else if (jump->getPiece()->getColour() != colour) {
-                if (jump->getPiece()->getPieceType() == PieceType::king) {
-                    board->isInCheck(jump->getPiece()->getColour());
-                }
                 validMoves.push_back(Move(square, jump, MoveType::Capture));
             }
         }
@@ -78,9 +75,6 @@ vector<Move> Knight::getValidMoves() const {
                 validMoves.push_back(Move(square, jump, MoveType::Normal));
             }
             else if (jump->getPiece()->getColour() != colour) {
-                if (jump->getPiece()->getPieceType() == PieceType::king) {
-                    board->isInCheck(jump->getPiece()->getColour());
-                }
                 validMoves.push_back(Move(square, jump, MoveType::Capture));
             }
         }

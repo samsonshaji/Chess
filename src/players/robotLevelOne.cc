@@ -2,46 +2,41 @@
 
 LevelOne::LevelOne(Colour c, Board *b) : Robot(c, b) {}
 
-void LevelOne::generateMoves() {
+void LevelOne::generateMoves(std::vector<Move> &allValidMoves) {
     std::cout << "robot: generateMoves called" << std::endl;
-    moveList.clear();
+    
+    for (const auto &row : board->getBoard()) {
+        for (const auto &square : row) {
+            Piece *piece = square->getPiece();
+            if (piece && piece->getColour() == colour) {
+                std::vector<Move> validMoves = piece->getValidMoves();
+                moveList.insert(moveList.end(), validMoves.begin(), validMoves.end());
+            }
 
-    if (colour == Colour::White) {
-        //loop through whitePieces with auto
-        for (auto it : board->getWhitePieces()) {
-            //check if piece has a square
-            if (it->getSquare() != nullptr) {
-                std::vector<Move> pieceMoves = it->getValidMoves();
-                moveList.insert(moveList.end(), pieceMoves.begin(), pieceMoves.end());
-            }
         }
     }
-    else {
-        //loop through blackPieces with auto
-        for (auto it : board->getBlackPieces()) {
-            //check if piece has a square
-            if (it->getSquare() != nullptr) {
-                std::vector<Move> pieceMoves = it->getValidMoves();
-                moveList.insert(moveList.end(), pieceMoves.begin(), pieceMoves.end());
-            }
-        }
-    }
+    
+    std::cout << "robot: allValidMoves.size(): " << allValidMoves.size() << std::endl;
     std::cout << "robot: generateMoves finished" << std::endl;
 }
 
 Move LevelOne::makeMove(Board &board, const string &to, const string &from, const string &promote) {
-    generateMoves();
+    std::vector<Move> allValidMoves;
+    generateMoves(allValidMoves);
     bool legal = false;
     Move m;
 
-    std::srand(std::time(0));
-
     std::cout << "robot: makeMove called" << std::endl;
+
+    std::srand(std::time(0));
+    int randomIndex = rand() % getMoveListSize();
 
     // PROBLEM in this function
     while (!legal){
-
-        int randomIndex = rand() % getMoveListSize();
+        std::cout << "robot: in while loop" << std::endl;
+        std::cout << "robot: getMoveListSize(): " << getMoveListSize() << std::endl;
+        randomIndex = rand() % getMoveListSize(); // floating point exception happens here
+        std::cout << "robot: randomIndex: " << randomIndex << std::endl;
 
         //check if move is Promotion movetype
 
@@ -68,7 +63,10 @@ Move LevelOne::makeMove(Board &board, const string &to, const string &from, cons
         }
         else {
             std::cout << "robot: move is not legal... erasing from moveList" << std::endl;
+            std::cout << "before erase: " << moveList.size() << std::endl;
             moveList.erase(moveList.begin() + randomIndex);
+            std::cout << "after erase: " << moveList.size() << std::endl;
+            std::cout << "erased" << std::endl;
             continue;
             // cout << "Bad Move: " << moveList[randomIndex].getFrom()->getPiece()->getSymbol() <<" (" << moveList[randomIndex].getFrom()->getX() << "," << moveList[randomIndex].getFrom()->getY() << ") -> (" << moveList[randomIndex].getTo()->getX() << "," << moveList[randomIndex].getTo()->getY() << ") : " << moveList[randomIndex].getMoveType() << endl;
         }
