@@ -8,7 +8,7 @@ BIN_DIR = bin
 SRCS = main.cc \
        game/controller.cc game/move.cc game/board.cc game/scoreboard.cc game/square.cc game/subject.cc \
        pieces/king.cc pieces/knight.cc pieces/pawn.cc pieces/piece.cc pieces/queen.cc pieces/rook.cc pieces/bishop.cc \
-       observers/graphicsobserver.cc observers/textobserver.cc observers/window.cc \
+       observers/graphicsobserver.cc observers/textobserver.cc observers/window.cc observers/observer.cc \
        players/human.cc \
 	   players/robotLevelOne.cc \
 	   players/robotLevelTwo.cc \
