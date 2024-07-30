@@ -146,7 +146,9 @@ void Controller::handleCommand(const std::string &command) {
         if (blackPlayerType == "human") {
             player2 = new Human(Colour::Black);
         } else if (blackPlayerType == "computer1") {
+            std::cout << "SMASON HERE SHOUDL BE HERE" << std::endl;
             player2 = new LevelOne(Colour::Black, board);
+            std::cout << "I GOT EMMM" << player2->getColour() << std::endl;
         } else if (blackPlayerType == "computer2") {
             player2 = new LevelTwo(Colour::Black, board);
             // } else if (blackPlayerType == "computer3") {
@@ -195,7 +197,10 @@ void Controller::handleCommand(const std::string &command) {
         }
 
         Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
-
+        // bool state = currentPlayer->isRobot();
+        // if (state){
+        //     std::cout << "Samson this is it, the colour: " << currentPlayer->getColour() << std::endl;
+        // }
         if (currentPlayer->isRobot() && (move.getPromotedTo() == 'q' || move.getPromotedTo() == 'n' || move.getPromotedTo() == 'b' || move.getPromotedTo() == 'r')) {
             string s;
             s.push_back(move.getPromotedTo());

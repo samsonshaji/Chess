@@ -79,8 +79,6 @@ void Board::setupInitialBoard() {
     board[0][7]->setPiece(new Rook(Colour::White));
     for (int i = 0; i < 8; i++) {
         board[1][i]->setPiece(new Pawn(Colour::White));
-        whitePieces.push_back(board[1][i]->getPiece());
-        whitePieces.push_back(board[0][i]->getPiece());
     }
 
     // black pieces
@@ -94,17 +92,7 @@ void Board::setupInitialBoard() {
     board[7][7]->setPiece(new Rook(Colour::Black));
     for (int i = 0; i < 8; i++) {
         board[6][i]->setPiece(new Pawn(Colour::Black));
-        blackPieces.push_back(board[6][i]->getPiece());
-        blackPieces.push_back(board[7][i]->getPiece());
     }
-}
-
-std::vector<Piece*> Board::getWhitePieces() const {
-    return whitePieces;
-}
-
-std::vector<Piece*> Board::getBlackPieces() const {
-    return blackPieces;
 }
 
 void Board::addPiece(Piece* piece, Square* square) {
@@ -680,100 +668,6 @@ void Board::undoMove() {
     }
 
     piece->setHasMoved(hasMoved);
-}
-
-// copy constructor
-Board::Board(const Board& other) {
-    for (const auto& row : other.board) {
-        std::vector<Square*> newRow;
-        for (const auto& square : row) {
-            Square* newSquare = new Square(square->getX(), square->getY());
-            if (square->getPiece() != nullptr) {
-                Piece* piece = square->getPiece();
-                Piece* newPiece = nullptr;
-                switch (piece->getPieceType()) {
-                    case PieceType::pawn:
-                        newPiece = new Pawn(piece->getColour());
-                        break;
-                    case PieceType::rook:
-                        newPiece = new Rook(piece->getColour());
-                        break;
-                    case PieceType::knight:
-                        newPiece = new Knight(piece->getColour());
-                        break;
-                    case PieceType::bishop:
-                        newPiece = new Bishop(piece->getColour());
-                        break;
-                    case PieceType::queen:
-                        newPiece = new Queen(piece->getColour());
-                        break;
-                    case PieceType::king:
-                        newPiece = new King(piece->getColour());
-                        break;
-                    default:
-                        break;
-                }
-                newPiece->setHasMoved(piece->getHasMoved());
-                newSquare->setPiece(newPiece);
-                newPiece->setBoard(this);
-            }
-            newRow.push_back(newSquare);
-        }
-        board.push_back(newRow);
-    }
-}
-
-// assignment operator
-Board& Board::operator=(const Board& other) {
-    if (this == &other) {
-        return *this;
-    }
-
-    for (auto& row : board) {
-        for (auto& square : row) {
-            delete square;
-        }
-    }
-    board.clear();
-
-    for (const auto& row : other.board) {
-        std::vector<Square*> newRow;
-        for (const auto& square : row) {
-            Square* newSquare = new Square(square->getX(), square->getY());
-            if (square->getPiece() != nullptr) {
-                Piece* piece = square->getPiece();
-                Piece* newPiece = nullptr;
-                switch (piece->getPieceType()) {
-                    case PieceType::pawn:
-                        newPiece = new Pawn(piece->getColour());
-                        break;
-                    case PieceType::rook:
-                        newPiece = new Rook(piece->getColour());
-                        break;
-                    case PieceType::knight:
-                        newPiece = new Knight(piece->getColour());
-                        break;
-                    case PieceType::bishop:
-                        newPiece = new Bishop(piece->getColour());
-                        break;
-                    case PieceType::queen:
-                        newPiece = new Queen(piece->getColour());
-                        break;
-                    case PieceType::king:
-                        newPiece = new King(piece->getColour());
-                        break;
-                    default:
-                        break;
-                }
-                newPiece->setHasMoved(piece->getHasMoved());
-                newSquare->setPiece(newPiece);
-            }
-            newRow.push_back(newSquare);
-        }
-        board.push_back(newRow);
-    }
-
-    return *this;
 }
 
 bool Board::isInCheck(Colour colour) const {
