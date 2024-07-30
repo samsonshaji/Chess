@@ -20,6 +20,7 @@ Board::~Board() {
         for (auto& square : row) {
             delete square;
             square = nullptr;
+            controller = nullptr;
         }
     }
 }

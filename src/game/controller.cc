@@ -43,6 +43,7 @@ Controller::~Controller() {
     delete board;
     delete scoreBoard;
     scoreBoard = nullptr;
+    currentPlayer = nullptr;
     delete player1;
     delete player2;
     player1 = nullptr;

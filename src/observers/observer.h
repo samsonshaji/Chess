@@ -9,6 +9,6 @@ class Observer {
   public:
     Board *board;
     virtual void notify() = 0;
-    virtual ~Observer() = default;
+    virtual ~Observer() = 0;
 };
 #endif

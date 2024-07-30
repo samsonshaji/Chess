@@ -13,6 +13,7 @@ class ScoreBoard {
         int blackScore;
     public:
         ScoreBoard();
+        ~ScoreBoard();
 
         void updateScore(bool isWhiteWinner);
         void displayScore() const;
