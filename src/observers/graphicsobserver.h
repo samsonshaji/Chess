@@ -7,7 +7,7 @@
 
 class GraphicsObserver : public Observer {
     Subject &subject;
-    Xwindow w;
+    Xwindow win;
     bool gridDrawn = false;
 public:
     GraphicsObserver(Subject &sub);

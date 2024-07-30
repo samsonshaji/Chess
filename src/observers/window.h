@@ -11,24 +11,14 @@ class Xwindow {
   GC gc;
   unsigned long colours[10];
   int width, height;
+  Font font;
 
  public:
-  Xwindow(int width=500, int height=500);  // Constructor; displays the window.
-  ~Xwindow();                              // Destructor; destroys the window.
-
-  enum {White=0, Black, Red, Green, Blue, Cyan, Yellow, Magenta, Orange, Brown}; // Available colours.
-
-  // Draws a rectangle
+  Xwindow(int width=1000, int height=1000);  
+  ~Xwindow();                           
+  enum {White=0, Black, Red, Green, Blue, Cyan, Yellow, Magenta, Orange, Brown};
   void fillRectangle(int x, int y, int width, int height, int colour=Black);
-
-  // Draws a string
   void drawString(int x, int y, std::string msg, int colour=Black);
-
-  // Draws a string
-  void drawBigString(int x, int y, std::string msg, int colour=Black);
-
-  // Prints the first 10000 available fonts
-  void showAvailableFonts();
 };
 
 #endif
