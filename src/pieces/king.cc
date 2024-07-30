@@ -51,10 +51,6 @@ std::vector<Move> King::getValidMoves() const {
         board->getSquare(7,curY)->getPiece() != nullptr &&
         board->getSquare(7,curY)->getPiece()->getPieceType() == PieceType::rook)
     {
-        // std::cout << std::endl;
-        // std::cout << "Checking kingside castling for colour: " 
-        //           << (colour == Colour::White ? "White" : "Black") 
-        //           << std::endl;
 
         if (!(board->getSquare(7, curY)->getPiece()->getHasMoved())) {
             // 4 -> king
@@ -63,18 +59,10 @@ std::vector<Move> King::getValidMoves() const {
             // 7 -> rook
 
             // make sure if king moves to 5 -- not in check
-            // std::cout << "Rook has not moved" << std::endl;
 
             Move tempMove(square, board->getSquare(5,curY), MoveType::Normal);
             bool valid = board->overrideMovePiece(tempMove);
             bool isCheck5 = board->isInCheck(colour);
-
-            // std::cout << std::endl;
-            // std::cout << "-----------------" << std::endl;
-            // board->print();
-            // std::cout << "-----------------" << std::endl;
-            // std::cout << std::endl;
-
 
             if (!isCheck5) {
                 // make sure if king moves to 6 -- not in check
@@ -82,16 +70,7 @@ std::vector<Move> King::getValidMoves() const {
                 bool valid2 = board->overrideMovePiece(tempMove2);
                 bool isCheck6 = board->isInCheck(colour);
 
-                // std::cout << std::endl;
-                // std::cout << "-----------------" << std::endl;
-                // board->print();
-                // std::cout << "-----------------" << std::endl;
-                // std::cout << std::endl;
-
                 if (!isCheck6) {
-                    // std::cout << "Castling move pushed" << std::endl;
-                    // std::cout << board->getSquare(4,curY)->getX() << " " << board->getSquare(4,curY)->getY() << std::endl;
-                    // std::cout << board->getSquare(7,curY)->getX() << " " << board->getSquare(7,curY)->getY() << std::endl;
                     validMoves.push_back(Move(board->getSquare(4,curY), board->getSquare(6,curY), MoveType::Castling));
                 }
                 board->undoMove();
@@ -100,13 +79,6 @@ std::vector<Move> King::getValidMoves() const {
 
             
         }
-
-        // we're good here
-        // std::cout << std::endl;
-        // std::cout << "-----after undoMove-----" << std::endl;
-        // board->print();
-        // std::cout << "-------------------------" << std::endl;
-        // std::cout << std::endl;
 
     }
 
@@ -127,8 +99,6 @@ std::vector<Move> King::getValidMoves() const {
             // 4 -> king
 
             // make sure if king moves to 3 -- not in check
-            // std::cout << "Rook has not moved" << std::endl;
-
             Move tempMove(board->getSquare(4,curY), board->getSquare(3,curY), MoveType::Normal);
             bool valid = board->overrideMovePiece(tempMove);
             bool isCheck3 = board->isInCheck(colour);
@@ -146,7 +116,6 @@ std::vector<Move> King::getValidMoves() const {
                     bool isCheck1 = board->isInCheck(colour);
 
                     if (!isCheck1) {
-                        // std::cout << "Castling move pushed" << std::endl;
                         validMoves.push_back(Move(board->getSquare(4,curY), board->getSquare(2,curY), MoveType::Castling));
                     }
                     board->undoMove();

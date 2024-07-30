@@ -29,7 +29,6 @@ class Controller {
         void endGame(bool resigned);
         void setScoreBoard(ScoreBoard* sb);
         
-        // PieceType getPromotedTo();
         void setPromotedTo(std::string promotedType);
         
         void handleCommand(const std::string &command);

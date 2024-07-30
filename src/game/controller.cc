@@ -81,19 +81,6 @@ void Controller::setScoreBoard(ScoreBoard *sb) {
     scoreBoard = sb;
 }
 
-// PieceType Controller::getPromotedTo() {
-//     if (promotedTo == "Q" || promotedTo == "q") {
-//         return PieceType::queen;
-//     } else if (promotedTo == "R" || promotedTo == "r") {
-//         return PieceType::rook;
-//     } else if (promotedTo == "B" || promotedTo == "b") {
-//         return PieceType::bishop;
-//     } else if (promotedTo == "N" || promotedTo == "n") {
-//         return PieceType::knight;
-//     }
-//     return PieceType::pawn;
-// }
-
 void Controller::setPromotedTo(std::string promotedType) {
     promotedTo = promotedType;
 }
@@ -183,9 +170,7 @@ void Controller::handleCommand(const std::string &command) {
                 std::cout << "No current player" << std::endl;
             }
 
-            std::cout << "controller: before making move" << std::endl;
             Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
-            std::cout << "controller: after making move" << std::endl;
 
             if (currentPlayer->isRobot() && (move.getPromotedTo() == 'q' || move.getPromotedTo() == 'n' || move.getPromotedTo() == 'b' || move.getPromotedTo() == 'r')) {
                 string s;
@@ -197,15 +182,12 @@ void Controller::handleCommand(const std::string &command) {
                 std::cout << "Invalid move" << std::endl;
                 return;
             }
-            // Move move = Move(fromSquare, toSquare);
 
-            std::cout << "controller: before running game" << std::endl;
             runGame(move);
-            std::cout << "controller: after running game" << std::endl;
 
             } else if (action == "setup") {
                 setupMode();
-            } else if (action == "undo") { // not necessary, but we still have it
+            } else if (action == "undo") {
                 if (MoveHistory.size() == 0) {
                     std::cout << "No moves to undo" << std::endl;
                     return;
@@ -239,14 +221,11 @@ void Controller::startGame(Player &p1, Player &p2) {
 
 void Controller::checkWin() {
     Colour colour = (currentPlayer == player1) ? Colour::White : Colour::Black;
-    std::cout << "before calling isInCheck" << std::endl;
     bool isInCheck = board->isInCheck(colour);
-    std::cout << "after calling isInCheck" << std::endl;
 
     if (isInCheck) {
         std::cout << (colour == White ? "White" : "Black") << " is in check!" << std::endl;
         bool checkmate = board->isCheckmate(colour);
-        std::cout << "after calling isCheckmate" << std::endl;
         if (checkmate) {
             gameEnded = true;
             
@@ -263,9 +242,7 @@ void Controller::checkWin() {
         }
     }
     else {
-        std::cout << "Not in check - checking if stalemate" << std::endl;
         bool stalemate = board->isStalemate(colour);
-        std::cout << "after checking for stalemate" << std::endl;
         if (stalemate) {
             gameEnded = true;
             std::cout << "Stalemate!" << std::endl;
@@ -275,7 +252,7 @@ void Controller::checkWin() {
 
 void Controller::runGame(const Move &move) {
     if (gameEnded){
-        std::cout << "Game has ended, who you think you foolin?" << std::endl;
+        std::cout << "No game in progress" << std::endl;
         return;
     }
     bool legal = board->movePiece(move);
@@ -340,25 +317,18 @@ void Controller::setupMode() {
             }
 
             Colour colour = (piece[0] < 'a') ? Colour::White : Colour::Black;
-            PieceType pieceType;
             Piece *piecePtr = nullptr;
             if ((piece[0] == 'K' || piece[0] == 'k') && board->findKing(colour) == nullptr) {
-                pieceType = PieceType::king;
                 piecePtr = new King(colour);
             } else if ((piece[0] == 'Q' || piece[0] == 'q')) {
-                pieceType = PieceType::queen;
                 piecePtr = new Queen(colour);
             } else if ((piece[0] == 'R' || piece[0] == 'r')) {
-                pieceType = PieceType::rook;
                 piecePtr = new Rook(colour);
             } else if (piece[0] == 'B' || piece[0] == 'b') {
-                pieceType = PieceType::bishop;
                 piecePtr = new Bishop(colour);
             } else if (piece[0] == 'N' || piece[0] == 'n') {
-                pieceType = PieceType::knight;
                 piecePtr = new Knight(colour);
             } else if (piece[0] == 'P' || piece[0] == 'p') {
-                pieceType = PieceType::pawn;
                 piecePtr = new Pawn(colour);
             } else {
                 std::cout << "Invalid piece" << std::endl;

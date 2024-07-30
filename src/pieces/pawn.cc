@@ -45,7 +45,6 @@ std::vector<Move> Pawn::getValidMoves() const {
     std::vector<Move> validMoves;
 
     if (!square || !board) return validMoves;
-    // std::cout << "Pawn::getValidMoves()" << std::endl;
 
     int curX = square->getX();
     int curY = square->getY();
