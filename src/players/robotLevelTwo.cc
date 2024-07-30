@@ -2,6 +2,8 @@
 
 LevelTwo::LevelTwo(Colour c, Board *b) : Robot(c, b) {}
 
+LevelTwo::~LevelTwo() {}
+
 Move LevelTwo::makeMove(Board &board, const string &to, const string &from, const string &promote) {
     // generate moves
     std::srand(std::time(0));

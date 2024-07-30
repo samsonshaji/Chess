@@ -11,6 +11,8 @@ TextObserver::~TextObserver() {
 
 void TextObserver::notify() {
     std::vector<std::vector<Square*>> board = subject.getState();
+    out << "  abcdefgh" << std::endl;
+
     for (int i = 7; i >= 0; i--) {
         out << i+1 << " ";
         for (int j = 0; j < 8; j++) {

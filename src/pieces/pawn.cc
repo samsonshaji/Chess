@@ -12,6 +12,8 @@ Pawn::Pawn(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'P' : 'p';
 }
 
+Pawn::~Pawn() {}
+
 bool Pawn::isEnPassantValid(const Board &board, int side) const {
     int curX = square->getX();
     int curY = square->getY();
@@ -45,7 +47,6 @@ std::vector<Move> Pawn::getValidMoves() const {
     std::vector<Move> validMoves;
 
     if (!square || !board) return validMoves;
-    // std::cout << "Pawn::getValidMoves()" << std::endl;
 
     int curX = square->getX();
     int curY = square->getY();

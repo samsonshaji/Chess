@@ -52,57 +52,11 @@ bool Piece::operator==(const Piece &other) const {
     return type == other.type && square->getX() == other.square->getX() && square->getY() == other.square->getY();
 }
 
-// void Piece::addMovesInDirection(vector<Move>& moves, int xDir, int yDir) const {
-//     int x = square->getX() + xDir;
-//     int y = square->getY() + yDir;
-    
-//     while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-        
-//         Square* targetSquare = board->getSquare(x, y);
-        
-//         if (targetSquare->getPiece() == nullptr) {
-//             moves.push_back(Move(square, targetSquare, MoveType::Normal));
-//         } 
-//         else if (targetSquare->getPiece()->getColour() != colour) {
-//             if (targetSquare->getPiece()->getPieceType() == PieceType::king) {
-//                 board->isInCheck(targetSquare->getPiece()->getColour());
-//             }
-//             moves.push_back(Move(square, targetSquare, MoveType::Capture));
-//             break;
-//         } else {
-//             break;
-//         }
-//         x += xDir;
-//         y += yDir;
-//     }
-// }
-
 void Piece::addMovesInDirection(std::vector<Move>& moves, int xDir, int yDir) const {
     int curX = square->getX();
     int curY = square->getY();
     int posX = curX + xDir;
     int posY = curY + yDir;
-
-    // std::cout << "current: " << curX << " " << curY << std::endl;
-    // std::cout << "pos: " << posX << " " << posY << std::endl;
-
-    // PROBLEM -- board has not been defined
-    // if (board) {
-    //     std::cout << "board defined" << std::endl;
-    // }
-    // else {
-    //     std::cout << "board not defined" << std::endl;
-    // }
-
-    // if (board->getSquare(posX, posY) == nullptr) {
-    //     std::cout << "null" << std::endl;
-    // }
-    // else if (board->getSquare(posX, posY)->getPiece() == nullptr) {
-    //     std::cout << "empty" << std::endl;
-    // }
-    // else {
-    //     std::cout << "not empty" << std::endl;
-    // }
 
     while(posX >= 0 && posX < 8 && posY >= 0 && posY < 8){
         if (board->getSquare(posX, posY) && board->getSquare(posX, posY)->getPiece() != nullptr) {

@@ -2,6 +2,8 @@
 
 LevelOne::LevelOne(Colour c, Board *b) : Robot(c, b) {}
 
+LevelOne::~LevelOne() {}
+
 Move LevelOne::makeMove(Board &board, const string &to, const string &from, const string &promote) {
     std::srand(std::time(0));
     bool legal = false;

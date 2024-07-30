@@ -23,13 +23,13 @@ class Controller {
         Colour startTurnColour = Colour::White;
     public:
         Controller(Player* player1, Player* player2);
+        ~Controller();
         void startGame(Player &p1, Player &p2);
         void checkWin();
         void runGame( const Move &move);
         void endGame(bool resigned);
         void setScoreBoard(ScoreBoard* sb);
         
-        // PieceType getPromotedTo();
         void setPromotedTo(std::string promotedType);
         
         void handleCommand(const std::string &command);

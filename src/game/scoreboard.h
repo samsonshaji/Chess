@@ -13,13 +13,11 @@ class ScoreBoard {
         int blackScore;
     public:
         ScoreBoard();
-        int getWhiteScore() const;
-        int getBlackScore() const;
-        void setWhiteScore(int score);
-        void setBlackScore(int score);
 
         void updateScore(bool isWhiteWinner);
         void displayScore() const;
-};
+
+        void stalemateUpdate();
+};  
 
 #endif

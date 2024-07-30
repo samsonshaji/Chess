@@ -12,5 +12,12 @@ void ScoreBoard::updateScore(bool isWhiteWinner) {
 }
 
 void ScoreBoard::displayScore() const {
-    std::cout << "White: " << whiteScore << " Black: " << blackScore << std::endl;
+    std::cout << "Final Score:" << std::endl;
+    std::cout << "White: " << whiteScore << std::endl;
+    std::cout << "Black: " << blackScore << std::endl;
+}
+
+void ScoreBoard::stalemateUpdate() {
+    whiteScore += 0.5;
+    blackScore += 0.5;
 }

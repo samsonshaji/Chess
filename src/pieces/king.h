@@ -7,6 +7,7 @@ class King : public Piece {
 private:
 public:
     King(Colour c);
+    ~King();
     std::vector<Move> getValidMoves() const override;
 };
 

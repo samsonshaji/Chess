@@ -19,6 +19,7 @@ class Move {
 
     public:
         Move();
+        ~Move();
         Move(Square* f, Square* t);
         Move(Square* f, Square* t, MoveType mt);
         Move(Square* f, Square* t, MoveType mt, char p);

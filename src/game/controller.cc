@@ -4,6 +4,7 @@
 #include "bishop.h"
 #include "board.h"
 #include "controller.h"
+#include "graphicsobserver.h"
 #include "human.h"
 #include "king.h"
 #include "knight.h"
@@ -12,13 +13,12 @@
 #include "queen.h"
 #include "robot.h"
 #include "robotLevelOne.h"
-#include "robotLevelTwo.h"
 #include "robotLevelThree.h"
-#include "scoreboard.h"
+#include "robotLevelTwo.h"
 #include "rook.h"
+#include "scoreboard.h"
 #include "square.h"
 #include "textobserver.h"
-#include "graphicsobserver.h"
 
 Controller::Controller(Player *player1, Player *player2) : player1(player1), player2(player2), currentPlayer(player1), gameEnded(false) {
     board = new Board();
@@ -26,6 +26,27 @@ Controller::Controller(Player *player1, Player *player2) : player1(player1), pla
     scoreBoard = new ScoreBoard();
     new TextObserver(*board);
     // new GraphicsObserver(*board);
+}
+
+Controller::~Controller() {
+    std::cout << "Controller destructor called" << std::endl;
+    for (auto move : board->getMoveStack()) {
+        if (move.getCapturedPiece() != nullptr) {
+            delete move.getCapturedPiece();
+            move.setCapturedPiece(nullptr);
+        }
+        else if( move.getPromotedPawn() != nullptr){
+            delete move.getPromotedPawn();
+            move.setPromotedPawn(nullptr);
+        }
+    }
+    delete board;
+    delete scoreBoard;
+    scoreBoard = nullptr;
+    delete player1;
+    delete player2;
+    player1 = nullptr;
+    player2 = nullptr;
 }
 
 void Controller::displayScore() {
@@ -81,19 +102,6 @@ void Controller::setScoreBoard(ScoreBoard *sb) {
     scoreBoard = sb;
 }
 
-// PieceType Controller::getPromotedTo() {
-//     if (promotedTo == "Q" || promotedTo == "q") {
-//         return PieceType::queen;
-//     } else if (promotedTo == "R" || promotedTo == "r") {
-//         return PieceType::rook;
-//     } else if (promotedTo == "B" || promotedTo == "b") {
-//         return PieceType::bishop;
-//     } else if (promotedTo == "N" || promotedTo == "n") {
-//         return PieceType::knight;
-//     }
-//     return PieceType::pawn;
-// }
-
 void Controller::setPromotedTo(std::string promotedType) {
     promotedTo = promotedType;
 }
@@ -102,116 +110,119 @@ void Controller::handleCommand(const std::string &command) {
     std::istringstream iss(command);
     std::string action, extra;
     iss >> action;
-        if (action == "game") {
-            if (gameStarted) {
-                std::cout << "Game has already started" << std::endl;
-                return;
-            }
-            std::string whitePlayerType;
-            std::string blackPlayerType;
-            iss >> whitePlayerType >> blackPlayerType >> extra;
 
-            if (extra != "") {
-                std::cout << "Invalid command" << std::endl;
-                return;
-            }
+    if (action == "") {
+        return;
+    }
 
-            if (whitePlayerType == "human") {
-                player1 = new Human(Colour::White);
-            } else if (whitePlayerType == "computer1") {
-                player1 = new LevelOne(Colour::White, board);
-            } else if (whitePlayerType == "computer2") {
-                player1 = new LevelTwo(Colour::White, board);
+    if (action == "game") {
+        if (gameStarted) {
+            std::cout << "Game has already started" << std::endl;
+            return;
+        }
+        std::string whitePlayerType;
+        std::string blackPlayerType;
+        iss >> whitePlayerType >> blackPlayerType >> extra;
+
+        if (extra != "") {
+            std::cout << "Invalid command" << std::endl;
+            return;
+        }
+
+        if (whitePlayerType == "human") {
+            player1 = new Human(Colour::White);
+        } else if (whitePlayerType == "computer1") {
+            player1 = new LevelOne(Colour::White, board);
+        } else if (whitePlayerType == "computer2") {
+            player1 = new LevelTwo(Colour::White, board);
             // } else if (whitePlayerType == "computer3") {
             //     player1 = new Robot(Colour::White, 3);
-            }
-            else {
-                std::cout << "Invalid player type" << std::endl;
-                return;
-            }
+        } else {
+            std::cout << "Invalid player type" << std::endl;
+            return;
+        }
 
-            if (blackPlayerType == "human") {
-                player2 = new Human(Colour::Black);
-            } else if (blackPlayerType == "computer1") {
-                player2 = new LevelOne(Colour::Black, board);
-            } else if (blackPlayerType == "computer2") {
-                player2 = new LevelTwo(Colour::Black, board);
+        if (blackPlayerType == "human") {
+            player2 = new Human(Colour::Black);
+        } else if (blackPlayerType == "computer1") {
+            player2 = new LevelOne(Colour::Black, board);
+        } else if (blackPlayerType == "computer2") {
+            player2 = new LevelTwo(Colour::Black, board);
             // } else if (blackPlayerType == "computer3") {
             //     player2 = new Robot(Colour::Black, 3);
-            }
-            else {
-                std::cout << "Invalid player type" << std::endl;
-                return;
-            }
-            startGame(*player1, *player2);
-        } else if (action == "resign") {
-
-            if (!gameStarted) {
-                std::cout << "Game has not started yet" << std::endl;
-                return;
-            }
-            iss >> extra;
-
-            if (extra != "") {
-                std::cout << "Invalid command - extra commands found" << std::endl;
-                return;
-            }
-            endGame(true);
+        } else {
+            std::cout << "Invalid player type" << std::endl;
             return;
-        } else if (action == "move") {
-            if (!gameStarted) {
-                std::cout << "Game has not started yet" << std::endl;
-                return;
-            }
-            std::string from, to, promotePiece;
-            iss >> from >> to >> promotePiece >> extra;
+        }
+        startGame(*player1, *player2);
+    } else if (action == "resign") {
+        if (!gameStarted) {
+            std::cout << "Game has not started yet" << std::endl;
+            return;
+        }
+        iss >> extra;
 
-            //check if current player is human
-            if (currentPlayer->isRobot() && from != "") {
-                std::cout << "Invalid command" << std::endl;
-                return;
-            }
+        if (extra != "") {
+            std::cout << "Invalid command - extra commands found" << std::endl;
+            return;
+        }
+        endGame(true);
+        return;
+    } else if (action == "move") {
+        if (!gameStarted) {
+            std::cout << "Game has not started yet" << std::endl;
+            return;
+        }
+        std::string from, to, promotePiece;
+        iss >> from >> to >> promotePiece >> extra;
 
-            if (promotePiece != "") {
-                setPromotedTo(promotePiece);
-            }
-            if ((!currentPlayer->isRobot()) && (from.length() != 2 || to.length() != 2)) {
-                std::cout << "Invalid command" << std::endl;
-                return;
-            }
-            if (currentPlayer == nullptr) {
-                std::cout << "No current player" << std::endl;
-            }
-            Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
+        // check if current player is human
+        if (currentPlayer->isRobot() && from != "") {
+            std::cout << "Invalid command" << std::endl;
+            return;
+        }
 
-            if (currentPlayer->isRobot() && (move.getPromotedTo() == 'q' || move.getPromotedTo() == 'n' || move.getPromotedTo() == 'b' || move.getPromotedTo() == 'r')) {
-                string s;
-                s.push_back(move.getPromotedTo());
-                setPromotedTo(s);
-            }
+        if (promotePiece != "") {
+            setPromotedTo(promotePiece);
+        }
+        if ((!currentPlayer->isRobot()) && (from.length() != 2 || to.length() != 2)) {
+            std::cout << "Invalid command" << std::endl;
+            return;
+        }
+        if (currentPlayer == nullptr) {
+            std::cout << "No current player" << std::endl;
+        }
 
-            if(move.getFrom() == nullptr || move.getTo() == nullptr) {
-                std::cout << "Invalid move" << std::endl;
-                return;
-            }
-            // Move move = Move(fromSquare, toSquare);
-            runGame(move);
+        Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
 
-            } else if (action == "setup") {
-                setupMode();
-            } else if (action == "undo") { // not necessary, but we still have it
-                if (MoveHistory.size() == 0) {
-                    std::cout << "No moves to undo" << std::endl;
-                    return;
-                }
-                board->undoMove();
-                MoveHistory.pop_back();
-                std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " called undo" << std::endl;
-                currentPlayer = (currentPlayer == player1) ? player2 : player1;
-                board->notifyObservers();
-            } else {
-                std::cout << "Invalid command" << std::endl;
-            }
+        if (currentPlayer->isRobot() && (move.getPromotedTo() == 'q' || move.getPromotedTo() == 'n' || move.getPromotedTo() == 'b' || move.getPromotedTo() == 'r')) {
+            string s;
+            s.push_back(move.getPromotedTo());
+            setPromotedTo(s);
+        }
+
+        if (move.getFrom() == nullptr || move.getTo() == nullptr) {
+            std::cout << "Invalid move" << std::endl;
+            return;
+        }
+
+        runGame(move);
+
+    } else if (action == "setup") {
+        setupMode();
+    } else if (action == "undo") {
+        if (MoveHistory.size() == 0) {
+            std::cout << "No moves to undo" << std::endl;
+            return;
+        }
+        board->undoMove();
+        MoveHistory.pop_back();
+        std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " called undo" << std::endl;
+        currentPlayer = (currentPlayer == player1) ? player2 : player1;
+        board->notifyObservers();
+    } else {
+        std::cout << "Invalid command" << std::endl;
+    }
 }
 
 void Controller::startGame(Player &p1, Player &p2) {
@@ -236,35 +247,33 @@ void Controller::checkWin() {
     bool isInCheck = board->isInCheck(colour);
 
     if (isInCheck) {
-        std::cout << (colour == White ? "White" : "Black") << " is in check!" << std::endl;
+        // std::cout << (colour == White ? "White" : "Black") << " is in check." << std::endl;
         bool checkmate = board->isCheckmate(colour);
         if (checkmate) {
             gameEnded = true;
-            
-            std::cout << "Checkmate! ";
+
             if (currentPlayer == player1) {
-                std::cout << "Player 2 wins!" << std::endl;
-                return;
-            } else {
-                std::cout << "Player 1 wins!" << std::endl;
-                return;
+                Colour color = player1->getColour();
+            } else if (currentPlayer == player2) {
+                Colour color = player2->getColour();
             }
+
+            std::cout << "Checkmate! " << (currentPlayer == player1 ? "Black" : "White") << " wins!" << std::endl;
         } else {
             std::cout << "Check!" << std::endl;
         }
-    }
-    else {
+    } else {
         bool stalemate = board->isStalemate(colour);
         if (stalemate) {
             gameEnded = true;
-            std::cout << "Stalemate!" << std::endl;
+            endGame(false);
         }
     }
 }
 
 void Controller::runGame(const Move &move) {
-    if (gameEnded){
-        std::cout << "Game has ended, who you think you foolin?" << std::endl;
+    if (gameEnded) {
+        std::cout << "No game in progress" << std::endl;
         return;
     }
     bool legal = board->movePiece(move);
@@ -282,15 +291,31 @@ void Controller::endGame(bool resigned) {
     gameEnded = true;
     gameStarted = false;
     if (resigned) {
-        std::cout << "Player " << (currentPlayer == player1 ? "2" : "1") << " wins!" << std::endl;
+        if (currentPlayer == player1) {
+            Colour color = player1->getColour();
+        } else if (currentPlayer == player2) {
+            Colour color = player2->getColour();
+        }
+        std::cout << "Player " << (currentPlayer == player1 ? "Black" : "White") << " wins!" << std::endl;
         std::cout << "Game ended!" << std::endl;
     }
     if (currentPlayer == player1) {
-        scoreBoard->updateScore(true);
-    } else {
         scoreBoard->updateScore(false);
+    } else {
+        scoreBoard->updateScore(true);
     }
-    currentPlayer == player1 ? player2 : player1;
+
+    if (board->isCheckmate(currentPlayer->getColour())) {
+        std::cout << "Checkmate! Player " << (currentPlayer == player1 ? "2" : "1") << " wins!" << std::endl;
+        if (currentPlayer == player1) {
+            scoreBoard->updateScore(false);
+        } else {
+            scoreBoard->updateScore(true);
+        }
+    } else if (board->isStalemate(currentPlayer->getColour())) {
+        std::cout << "Stalemate!" << std::endl;
+        scoreBoard->stalemateUpdate();
+    }
     board->setupInitialBoard();
 }
 
@@ -329,32 +354,25 @@ void Controller::setupMode() {
             }
 
             Colour colour = (piece[0] < 'a') ? Colour::White : Colour::Black;
-            PieceType pieceType;
             Piece *piecePtr = nullptr;
             if ((piece[0] == 'K' || piece[0] == 'k') && board->findKing(colour) == nullptr) {
-                pieceType = PieceType::king;
                 piecePtr = new King(colour);
             } else if ((piece[0] == 'Q' || piece[0] == 'q')) {
-                pieceType = PieceType::queen;
                 piecePtr = new Queen(colour);
             } else if ((piece[0] == 'R' || piece[0] == 'r')) {
-                pieceType = PieceType::rook;
                 piecePtr = new Rook(colour);
             } else if (piece[0] == 'B' || piece[0] == 'b') {
-                pieceType = PieceType::bishop;
                 piecePtr = new Bishop(colour);
             } else if (piece[0] == 'N' || piece[0] == 'n') {
-                pieceType = PieceType::knight;
                 piecePtr = new Knight(colour);
             } else if (piece[0] == 'P' || piece[0] == 'p') {
-                pieceType = PieceType::pawn;
                 piecePtr = new Pawn(colour);
             } else {
                 std::cout << "Invalid piece" << std::endl;
                 continue;
             }
             targetSquare->setPiece(piecePtr);
-            board -> addPiece(piecePtr, targetSquare);
+            board->addPiece(piecePtr, targetSquare);
             piecePtr->setBoard(board);
             board->notifyObservers();
         }
@@ -396,8 +414,7 @@ void Controller::setupMode() {
                 std::cout << "Invalid colour" << std::endl;
                 continue;
             }
-        }
-        else if (command == "done") {
+        } else if (command == "done") {
             if (board == nullptr) {
                 std::cout << "No board" << std::endl;
                 continue;
@@ -409,8 +426,7 @@ void Controller::setupMode() {
                 std::cout << "Invalid setup... " << std::endl;
                 std::cout << "Please make sure both kings are on the board and not in check" << std::endl;
             }
-        }
-        else {
+        } else {
             std::cout << "Invalid command" << std::endl;
         }
     }

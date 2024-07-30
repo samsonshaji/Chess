@@ -9,6 +9,7 @@ class Queen : public Piece {
 private:
 public:
     Queen(Colour c);
+    ~Queen();
     std::vector<Move> getValidMoves() const override;
 };
 
