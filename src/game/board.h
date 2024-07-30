@@ -61,6 +61,7 @@ public:
     Board& operator=(const Board& other);
 
     bool isMoveLegal(const Move& move);
+    std::vector<std::vector<Square*>> getBoard();
 };
 
 #endif // BOARD_H

@@ -281,10 +281,20 @@ bool Board::isValidSetup() const {
 }
 
 bool Board::overrideMovePiece(const Move& move) {
+    std::cout << "overrideMovePiece called" << std::endl;
     Square* from = move.getFrom();
     Square* to = move.getTo();
     Piece* piece = from->getPiece();
     piece->setBoard(this);
+
+    Piece *capturedPiece = nullptr;
+
+    // std::cout << "Move from: " << from->getX() << " " << from->getY() << " to " << to->getX() << " " << to->getY() << std::endl;
+    // std::cout << "Piece at from: " << from->getPiece()->getSymbol() << std::endl;
+    if (to->getPiece() != nullptr) {
+        // std::cout << "Piece at to: " << to->getPiece()->getSymbol() << std::endl;
+        capturedPiece = to->getPiece();
+    }
 
     Move currMove = move;
 
@@ -299,20 +309,29 @@ bool Board::overrideMovePiece(const Move& move) {
     MoveType moveType = MoveType::Normal;
 
     if (piece->getPieceType() == PieceType::pawn) {
-        if (to->getX() != from->getX() && to->getPiece() == nullptr) {
+        if (to->getX() != from->getX() && capturedPiece == nullptr) {
+            std::cout << "en passant" << std::endl;
             moveType = MoveType::EnPassant;
         } else if (to->getY() == 0 || to->getY() == 7) {
+            std::cout << "promotion" << std::endl;
             moveType = MoveType::Promotion;
         } else if (from->getY() == 1 && to->getY() == 3) {
+            std::cout << "double pawn" << std::endl;
             moveType = MoveType::DoublePawn;
+        } else if (capturedPiece != nullptr) {
+            std::cout << "capture" << std::endl;
+            moveType = MoveType::Capture;
         }
     } else if (piece->getPieceType() == PieceType::king && abs(from->getX() - to->getX()) == 2) {
+        std::cout << "castling" << std::endl;
         moveType = MoveType::Castling;
-    } else if (to->getPiece() != nullptr) {
+    } else if (capturedPiece != nullptr) {
+        std::cout << "capture" << std::endl;
         moveType = MoveType::Capture;
     }
 
     currMove.setMoveType(moveType);
+    std::cout << "moveType set to: " << moveType << std::endl;
 
     if (currMove.getMoveType() == MoveType::Normal) {
         to->setPiece(piece);
@@ -322,7 +341,7 @@ bool Board::overrideMovePiece(const Move& move) {
         to->setPiece(piece);
         from->setPiece(nullptr);
         piece->setSquare(to);
-        currMove.setCapturedPiece(to->getPiece());
+        currMove.setCapturedPiece(capturedPiece);
     } else if (currMove.getMoveType() == MoveType::EnPassant) {
         to->setPiece(piece);
         from->setPiece(nullptr);
@@ -365,8 +384,8 @@ bool Board::overrideMovePiece(const Move& move) {
         }
     } else if (currMove.getMoveType() == MoveType::Promotion) {
         // check for capture first
-        if (to->getPiece() != nullptr) {
-            currMove.setCapturedPiece(to->getPiece());
+        if (capturedPiece != nullptr) {
+            currMove.setCapturedPiece(capturedPiece);
         }
 
         Piece *newPiece = nullptr;
@@ -442,6 +461,11 @@ bool Board::movePiece(const Move& move) {
     Piece* piece = from->getPiece();
     piece->setBoard(this);
 
+    Piece *capturedPiece = nullptr;
+    if (to->getPiece() != nullptr) {
+        capturedPiece = to->getPiece();
+    }
+
     // std::cout << "move coordinates: " << from->getX() << " " << from->getY() << " to " << to->getX() << " " << to->getY() << std::endl;
 
     Move currMove = move;
@@ -449,7 +473,7 @@ bool Board::movePiece(const Move& move) {
     MoveType moveType = MoveType::Normal;
 
     if (piece->getPieceType() == PieceType::pawn) {
-        if (to->getX() != from->getX() && to->getPiece() == nullptr) {
+        if (to->getX() != from->getX() && capturedPiece == nullptr) {
             std::cout << "en passant" << std::endl;
             moveType = MoveType::EnPassant;
         } else if (to->getY() == 0 || to->getY() == 7) {
@@ -458,10 +482,13 @@ bool Board::movePiece(const Move& move) {
         } else if (from->getY() == 1 && to->getY() == 3) {
             // std::cout << "double pawn" << std::endl;
             moveType = MoveType::DoublePawn;
+        } else if (capturedPiece != nullptr) {
+            // std::cout << "capture" << std::endl;
+            moveType = MoveType::Capture;
         }
     } else if (piece->getPieceType() == PieceType::king && abs(from->getX() - to->getX()) == 2) {
         moveType = MoveType::Castling;
-    } else if (to->getPiece() != nullptr) {
+    } else if (capturedPiece != nullptr) {
         // std::cout << "capture" << std::endl;
         moveType = MoveType::Capture;
     }
@@ -476,7 +503,7 @@ bool Board::movePiece(const Move& move) {
         to->setPiece(piece);
         from->setPiece(nullptr);
         piece->setSquare(to);
-        currMove.setCapturedPiece(to->getPiece());
+        currMove.setCapturedPiece(capturedPiece);
     } else if (currMove.getMoveType() == MoveType::EnPassant) {
         to->setPiece(piece);
         from->setPiece(nullptr);
@@ -516,8 +543,8 @@ bool Board::movePiece(const Move& move) {
         }
     } else if (currMove.getMoveType() == MoveType::Promotion) {
         // check for capture first
-        if (to->getPiece() != nullptr) {
-            currMove.setCapturedPiece(to->getPiece());
+        if (capturedPiece != nullptr) {
+            currMove.setCapturedPiece(capturedPiece);
         }
 
         Piece *newPiece = nullptr;
@@ -573,6 +600,17 @@ void Board::undoMove() {
     Piece* piece = to->getPiece();
     piece->setBoard(this);
 
+    std::cout << "undoMove called" << std::endl;
+    std::cout << "From: (" << from->getX() << ", " << from->getY() << ")" << std::endl;
+    std::cout << "To: (" << to->getX() << ", " << to->getY() << ")" << std::endl;
+    std::cout << "Piece: " << piece->getSymbol() << std::endl;
+    std::cout << (lastMove.getMoveType() == 0 ? "Normal" : 
+                  lastMove.getMoveType() == 1 ? "Capture" : 
+                  lastMove.getMoveType() == 2 ? "EnPassant" : 
+                  lastMove.getMoveType() == 3 ? "Castling" : 
+                  lastMove.getMoveType() == 4 ? "DoublePawn" : "Promotion") << std::endl;
+    std::cout << std::endl;
+
     if (lastMove.getMoveType() == MoveType::Normal) {
         from->setPiece(piece);
         to->setPiece(nullptr);
@@ -581,6 +619,11 @@ void Board::undoMove() {
         from->setPiece(piece);
         to->setPiece(lastMove.getCapturedPiece());
         piece->setSquare(from);
+
+        std::cout << "captured: ";
+        std::cout << lastMove.getCapturedPiece()->getSymbol() << std::endl;
+        std::cout << std::endl;
+
     } else if (lastMove.getMoveType() == MoveType::EnPassant) {
         from->setPiece(piece);
         to->setPiece(nullptr);
@@ -888,3 +931,6 @@ bool Board::isStalemate(Colour colour) const {
 	return false;
 }
 
+std::vector<std::vector<Square*>> Board::getBoard() {
+    return board;
+}

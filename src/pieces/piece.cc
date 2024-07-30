@@ -18,6 +18,10 @@ Colour Piece::getColour() const {
     return colour;
 }
 
+void Piece::setColour(Colour c) {
+    colour = c;
+}
+
 Piece::Piece(Colour c) : colour(c) {}
 
 Square *Piece::getSquare() const {

@@ -24,6 +24,7 @@ public:
     virtual std::vector<Move> getValidMoves() const = 0;
     void addMovesInDirection(std::vector<Move>& moves, int xDir, int yDir) const;
     Colour getColour() const;
+    void setColour(Colour c);
     Piece(Colour c);
     void setSquare(Square *s);
     void setBoard(Board *b);

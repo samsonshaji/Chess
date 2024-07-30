@@ -6,34 +6,61 @@ void LevelOne::generateMoves() {
     moveList.clear();
 
     vector<Move> moves;
+    // if (colour == Colour::White) {
+    //     //loop through whitePieces with auto
+    //     for (auto it : board->getWhitePieces()) {
+    //         //check if piece has a square
+    //         if (it->getSquare() != nullptr) {
+    //             std::vector<Move> pieceMoves = it->getValidMoves();
+    //             moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
+    //         }
+    //     }
+    // }
+    // else {
+    //     //loop through blackPieces with auto
+    //     for (auto it : board->getBlackPieces()) {
+    //         //check if piece has a square
+    //         if (it->getSquare() != nullptr) {
+    //             std::vector<Move> pieceMoves = it->getValidMoves();
+    //             moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
+    //         }
+    //     }
+    // }
+
     if (colour == Colour::White) {
-        //loop through whitePieces with auto
-        for (auto it : board->getWhitePieces()) {
-            //check if piece has a square
-            if (it->getSquare() != nullptr) {
-                std::vector<Move> pieceMoves = it->getValidMoves();
-                moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
+        for (const auto &row : board->getBoard()) {
+            for (const auto &square : row) {
+                if (square->getPiece() != nullptr && square->getPiece()->getColour() == Colour::White) {
+                    std::vector<Move> pieceMoves = square->getPiece()->getValidMoves();
+                    moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
+                }
             }
         }
     }
     else {
-        //loop through blackPieces with auto
-        for (auto it : board->getBlackPieces()) {
-            //check if piece has a square
-            if (it->getSquare() != nullptr) {
-                std::vector<Move> pieceMoves = it->getValidMoves();
-                moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
+        for (const auto &row : board->getBoard()) {
+            for (const auto &square : row) {
+                if (square->getPiece() != nullptr && square->getPiece()->getColour() == Colour::Black) {
+                    std::vector<Move> pieceMoves = square->getPiece()->getValidMoves();
+                    moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
+                }
             }
         }
     }
 
     // make sure all moves here are valid
     for (auto move : moves) {
-        if (board->isMoveLegal(move)) {
+        bool valid = board->overrideMovePiece(move);
+        bool isCheck = board->isInCheck(colour);
+        board->undoMove();
+
+        if (valid && !isCheck) {
             moveList.push_back(move);
         }
+        else {
+            std::cout << "Invalid Move: " << move.getFrom()->getPiece()->getSymbol() <<" (" << move.getFrom()->getX() << "," << move.getFrom()->getY() << ") -> (" << move.getTo()->getX() << "," << move.getTo()->getY() << ") : " << move.getMoveType() << std::endl;
+        }
     }
-
     cout<<"end1"<<endl;
 }
 
