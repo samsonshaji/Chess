@@ -16,6 +16,8 @@ class ScoreBoard {
 
         void updateScore(bool isWhiteWinner);
         void displayScore() const;
-};
+
+        void stalemateUpdate();
+};  
 
 #endif

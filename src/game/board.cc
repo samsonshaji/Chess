@@ -705,7 +705,7 @@ bool Board::isInCheck(Colour colour) const {
     // check if the king of the given colour is in check
     Square* kingSquare = findKing(colour);
     if (kingSquare == nullptr) {
-        std::cout << "king not found!!!" << std::endl;
+        std::cout << "King not found!!!" << std::endl;
         return false;
     }
 

@@ -16,3 +16,8 @@ void ScoreBoard::displayScore() const {
     std::cout << "White: " << whiteScore << std::endl;
     std::cout << "Black: " << blackScore << std::endl;
 }
+
+void ScoreBoard::stalemateUpdate() {
+    whiteScore += 0.5;
+    blackScore += 0.5;
+}
