@@ -47,6 +47,8 @@ class Controller {
 
         void setupMode();
         Player* getCurrentPlayer();
+
+        void displayScore();
 };
 
 #endif

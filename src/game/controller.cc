@@ -25,7 +25,11 @@ Controller::Controller(Player *player1, Player *player2) : player1(player1), pla
     board->setController(this);
     scoreBoard = new ScoreBoard();
     new TextObserver(*board);
-    // new GraphicsObserver(*board);
+    new GraphicsObserver(*board);
+}
+
+void Controller::displayScore() {
+    scoreBoard->displayScore();
 }
 
 bool Controller::getGameEnded() {
@@ -270,6 +274,7 @@ void Controller::runGame(const Move &move) {
     }
     MoveHistory.push_back(move);
     std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " made a move" << std::endl;
+    std::cout << "Player " << (currentPlayer == player1 ? "2" : "1") << "'s turn...." << std::endl;
     currentPlayer = (currentPlayer->getColour() == White) ? player2 : player1;
     checkWin();
 }
@@ -281,12 +286,13 @@ void Controller::endGame(bool resigned) {
         std::cout << "Player " << (currentPlayer == player1 ? "2" : "1") << " wins!" << std::endl;
         std::cout << "Game ended!" << std::endl;
     }
-    currentPlayer == player1 ? player2 : player1;
     if (currentPlayer == player1) {
         scoreBoard->updateScore(true);
     } else {
         scoreBoard->updateScore(false);
     }
+    currentPlayer == player1 ? player2 : player1;
+    board->setupInitialBoard();
 }
 
 void Controller::setupMode() {
