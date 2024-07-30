@@ -177,7 +177,14 @@ Move Board::getLastMove() const {
 
 
 bool Board::isMoveLegal(const Move& move) {
+    // std::cout << "isMoveLegal called" << std::endl;
+
+    if (move.getFrom()->getPiece() == nullptr) {
+        return false;
+    }
+    // fixed seg fault here
     Colour colour = move.getFrom()->getPiece()->getColour();
+    std::cout << "colour: " << colour << std::endl;
 
     // find all valid moves of all pieces of the given colour, that put the king out of check
     std::vector<Move> validMoves;
@@ -195,9 +202,14 @@ bool Board::isMoveLegal(const Move& move) {
     if (std::find(validMoves.begin(), validMoves.end(), move) == validMoves.end()) {
         return false;
     }
+
+    std::cout << "isMoveLegal: overriding move" << std::endl;
     bool valid = overrideMovePiece(move);
+    std::cout << "isMoveLegal: calling isCheck " << valid << std::endl;
     bool isCheck = isInCheck(colour);
+    std::cout << "isMoveLegal: undoing move" << std::endl;
     undoMove();
+    std::cout << "isMoveLegal: done undoing move" << std::endl;
 
     // std::cout << "after move undoed" << std::endl;
     // print();
@@ -289,8 +301,8 @@ bool Board::overrideMovePiece(const Move& move) {
 
     Piece *capturedPiece = nullptr;
 
-    // std::cout << "Move from: " << from->getX() << " " << from->getY() << " to " << to->getX() << " " << to->getY() << std::endl;
-    // std::cout << "Piece at from: " << from->getPiece()->getSymbol() << std::endl;
+    std::cout << "Move from: " << from->getX() << " " << from->getY() << " to " << to->getX() << " " << to->getY() << std::endl;
+    std::cout << "Piece at from: " << from->getPiece()->getSymbol() << std::endl;
     if (to->getPiece() != nullptr) {
         // std::cout << "Piece at to: " << to->getPiece()->getSymbol() << std::endl;
         capturedPiece = to->getPiece();
@@ -334,9 +346,11 @@ bool Board::overrideMovePiece(const Move& move) {
     std::cout << "moveType set to: " << moveType << std::endl;
 
     if (currMove.getMoveType() == MoveType::Normal) {
+        std::cout << "normal move" << std::endl;
         to->setPiece(piece);
         from->setPiece(nullptr);
         piece->setSquare(to);
+        std::cout << "piece moved" << std::endl;
     } else if (currMove.getMoveType() == MoveType::Capture) {
         to->setPiece(piece);
         from->setPiece(nullptr);
@@ -418,7 +432,6 @@ bool Board::overrideMovePiece(const Move& move) {
         // std::cout << currMove.getCapturedPiece()->getSymbol() << std::endl;
         // std::cout << "promoted: ";
         // std::cout << currMove.getPromotedPawn()->getSymbol() << std::endl;
-;
     }
 
     // set piece's moved state
@@ -439,7 +452,7 @@ bool Board::overrideMovePiece(const Move& move) {
     //     }
     // }
 
-    // std::cout << "moveStack size: " << moveStack.size() << std::endl;
+    std::cout << "moveStack size: " << moveStack.size() << std::endl;
 
     // notifyObservers();
 
@@ -449,11 +462,11 @@ bool Board::overrideMovePiece(const Move& move) {
 
 bool Board::movePiece(const Move& move) {
     // std::cout << "movePiece called" << std::endl;
-    if(!controller->getCurrentPlayer()->isRobot()) {
     if (!isMoveLegal(move)) {
-        std::cout << "Illegal move, try again!" << std::endl;
-        return false;
+        if (!controller->getCurrentPlayer()->isRobot()) {
+            std::cout << "Illegal move, try again!" << std::endl;
         }
+        return false;
     }
 
     Square* from = move.getFrom();
@@ -635,27 +648,44 @@ void Board::undoMove() {
         to->setPiece(nullptr);
         piece->setSquare(from);
     } else if (lastMove.getMoveType() == MoveType::Castling) {
+
+        std::cout << "attempting to undo castling" << std::endl;
+
         from->setPiece(piece);
         to->setPiece(nullptr);
         piece->setSquare(from);
 
         // Kingside castling
         if (to->getX() == from->getX() + 2) {
+            std::cout << "undoing kingside castling" << std::endl;
             Square* rookFrom = getSquare(5, from->getY());
             Square* rookTo = getSquare(7, from->getY());
             Piece* rook = rookFrom->getPiece();
+
+            if (rook == nullptr) {
+                std::cout << "rook is nullptr" << std::endl;
+            }
+
             rookTo->setPiece(rook);
             rookFrom->setPiece(nullptr);
             rook->setHasMoved(false);
         }
         else if (to->getX() == from->getX() - 2) {
+            std::cout << "undoing queenside castling" << std::endl;
             Square* rookFrom = getSquare(3, from->getY());
             Square* rookTo = getSquare(0, from->getY());
             Piece* rook = rookFrom->getPiece();
+
+            if (rook == nullptr) {
+                std::cout << "rook is nullptr" << std::endl;
+            }
+
             rookTo->setPiece(rook);
             rookFrom->setPiece(nullptr);
             rook->setHasMoved(false);
         }
+
+        std::cout << "AFTER undoing castling: " << std::endl;
 
     } else if (lastMove.getMoveType() == MoveType::Promotion) {
         delete piece;
@@ -697,7 +727,7 @@ void Board::undoMove() {
     }
 
     piece->setHasMoved(hasMoved);
-    // std::cout << "undoMove done" << std::endl;
+    std::cout << "undoMove done" << std::endl;
     // notifyObservers();
 }
 
