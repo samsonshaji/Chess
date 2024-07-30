@@ -190,7 +190,7 @@ void Controller::handleCommand(const std::string &command) {
             }
             // Move move = Move(fromSquare, toSquare);
 
-            runGame(*player1, *player2, move);
+            runGame(move);
 
             } else if (action == "setup") {
                 setupMode();
