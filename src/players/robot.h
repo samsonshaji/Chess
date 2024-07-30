@@ -8,11 +8,9 @@
 class Robot : public Player {
 protected:
     Board *board;
-    std::vector<Move> moveList;
 public:
     Robot(Colour c, Board *b);
     virtual Move makeMove(Board &board, const string &to, const string &from, const string &promote) = 0;
-    int getMoveListSize();
     virtual ~Robot() = 0;
     virtual bool isRobot() override;
 };

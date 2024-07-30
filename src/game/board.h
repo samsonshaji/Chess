@@ -16,8 +16,6 @@ private:
     std::vector<std::vector<Square*>> board;
     Controller* controller;
     std::vector<Move> moveStack;
-    std::vector<Piece*> whitePieces;
-    std::vector<Piece*> blackPieces;
 public:
     Board();
     ~Board();
@@ -30,9 +28,6 @@ public:
 
     std::vector<Move> getMoveStack() const;
     Move getLastMove() const;
-    
-    std::vector<Piece*> getWhitePieces() const;
-    std::vector<Piece*> getBlackPieces() const;
 
     void addMoveToStack(const Move& move);
     void undoMove();
@@ -54,9 +49,6 @@ public:
     bool isStalemate(Colour colour) const;
 
     void print() const;
-
-    Board(const Board& other);
-    Board& operator=(const Board& other);
 
     bool isMoveLegal(const Move& move);
     std::vector<std::vector<Square*>> getBoard();
