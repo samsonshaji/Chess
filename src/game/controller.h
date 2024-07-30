@@ -46,6 +46,7 @@ class Controller {
         Colour getStartTurnColour();
 
         void setupMode();
+        Player* getCurrentPlayer();
 };
 
 #endif

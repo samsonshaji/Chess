@@ -49,6 +49,10 @@ void Controller::setStartTurnColour(Colour colour) {
     startTurnColour = colour;
 }
 
+Player *Controller::getCurrentPlayer() {
+    return currentPlayer;
+}
+
 Square *Controller::stringToSquare(std::string squarestring) {
 
     if (squarestring.length() != 2) {
@@ -153,7 +157,13 @@ void Controller::handleCommand(const std::string &command) {
                 return;
             }
             std::string from, to, promotePiece;
-            iss >> from >> to >> promotePiece >> promotePiece;
+            iss >> from >> to >> promotePiece >> extra;
+
+            //check if current player is human
+            if (currentPlayer->isRobot() && from != "") {
+                std::cout << "Invalid command" << std::endl;
+                return;
+            }
 
             if (promotePiece != "") {
                 setPromotedTo(promotePiece);
@@ -168,11 +178,18 @@ void Controller::handleCommand(const std::string &command) {
 
             Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
 
+            if (currentPlayer->isRobot() && (move.getPromotedTo() == 'q' || move.getPromotedTo() == 'n' || move.getPromotedTo() == 'b' || move.getPromotedTo() == 'r')) {
+                string s;
+                s.push_back(move.getPromotedTo());
+                setPromotedTo(s);
+            }
+
             if(move.getFrom() == nullptr || move.getTo() == nullptr) {
                 std::cout << "Invalid move" << std::endl;
                 return;
             }
             // Move move = Move(fromSquare, toSquare);
+
             runGame(move);
 
             } else if (action == "setup") {
@@ -250,8 +267,7 @@ void Controller::runGame(const Move &move) {
     }
     MoveHistory.push_back(move);
     std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " made a move" << std::endl;
-    currentPlayer = (currentPlayer == player1) ? player2 : player1;
-    std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << "'s turn now..." << std::endl;
+    currentPlayer = (currentPlayer->getColour() == White) ? player2 : player1;
     checkWin();
 }
 
