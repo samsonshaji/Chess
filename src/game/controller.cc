@@ -292,7 +292,7 @@ void Controller::setupMode() {
         return;
     }
     board->clearBoard();
-    board->print();
+    board->notifyObservers();
     while (!getGameStarted()) {
         std::string command;
         std::cin >> command;
