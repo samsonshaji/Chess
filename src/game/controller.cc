@@ -199,17 +199,13 @@ void Controller::handleCommand(const std::string &command) {
             std::cout << "Invalid move" << std::endl;
             return;
         }
-        // Move move = Move(fromSquare, toSquare);
 
-        std::cout << "controller: before running game" << std::endl;
         runGame(move);
-        std::cout << "controller: after running game" << std::endl;
 
     } else if (action == "setup") {
         setupMode();
     } else if (action == "undo") { // not necessary, but we still have it
         if (MoveHistory.size() == 0) {
-            std::cout << "No moves to undo" << std::endl;
             return;
         }
         board->undoMove();
@@ -241,35 +237,30 @@ void Controller::startGame(Player &p1, Player &p2) {
 
 void Controller::checkWin() {
     Colour colour = (currentPlayer == player1) ? Colour::White : Colour::Black;
-    std::cout << "before calling isInCheck" << std::endl;
     bool isInCheck = board->isInCheck(colour);
-    std::cout << "after calling isInCheck" << std::endl;
 
     if (isInCheck) {
-        std::cout << (colour == White ? "White" : "Black") << " is in check!" << std::endl;
+        std::cout << (colour == White ? "White" : "Black") << " is in check." << std::endl;
         bool checkmate = board->isCheckmate(colour);
         std::cout << "after calling isCheckmate" << std::endl;
         if (checkmate) {
             gameEnded = true;
 
-            std::cout << "Checkmate! ";
-            if (currentPlayer == player1) {
-                std::cout << "Player 2 wins!" << std::endl;
-                return;
-            } else {
-                std::cout << "Player 1 wins!" << std::endl;
-                return;
+            if (currentPlayer == player1){
+                Colour color = player1->getColour();
             }
+            else if (currentPlayer == player2){
+                Colour color = player2->getColour();
+            }
+
+            std::cout << "Checkmate! " << (currentPlayer == player1 ? "Black" : "White") << " wins!" << std::endl;
         } else {
             std::cout << "Check!" << std::endl;
         }
     } else {
-        std::cout << "Not in check - checking if stalemate" << std::endl;
         bool stalemate = board->isStalemate(colour);
-        std::cout << "after checking for stalemate" << std::endl;
         if (stalemate) {
             gameEnded = true;
-            std::cout << "Stalemate!" << std::endl;
             endGame(false);
         }
     }
@@ -277,7 +268,6 @@ void Controller::checkWin() {
 
 void Controller::runGame(const Move &move) {
     if (gameEnded) {
-        std::cout << "Game has ended, who you think you foolin?" << std::endl;
         return;
     }
     bool legal = board->movePiece(move);
@@ -295,7 +285,13 @@ void Controller::endGame(bool resigned) {
     gameEnded = true;
     gameStarted = false;
     if (resigned) {
-        std::cout << "Player " << (currentPlayer == player1 ? "2" : "1") << " wins!" << std::endl;
+        if (currentPlayer == player1){
+            Colour color = player1->getColour();
+        }
+        else if (currentPlayer == player2){
+            Colour color = player2->getColour();
+        }
+        std::cout << "Player " << (currentPlayer == player1 ? "Black" : "White") << " wins!" << std::endl;
         std::cout << "Game ended!" << std::endl;
     }
     if (currentPlayer == player1) {

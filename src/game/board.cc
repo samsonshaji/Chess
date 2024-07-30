@@ -837,11 +837,9 @@ bool Board::isInCheck(Colour colour) const {
     // check if the king of the given colour is in check
     Square* kingSquare = findKing(colour);
     if (kingSquare == nullptr) {
-        std::cout << "king not found!!!" << std::endl;
+        std::cout << "King not found!!!" << std::endl;
         return false;
     }
-    std::cout << "found king at " << kingSquare->getX() << " " << kingSquare->getY() << std::endl;
-    std::cout << "colour: " << colour << std::endl;
 
     std::vector<Move> allValidMoves;
 
@@ -849,23 +847,11 @@ bool Board::isInCheck(Colour colour) const {
         for (const auto& square : row) {
             Piece* piece = square->getPiece();
             if (piece && piece->getColour() != colour) {
-
-                // std::cout << std::endl;
-                // std::cout << "getting valid moves for piece at " << square->getX() << " " << square->getY() << std::endl;
-                // std::cout << "piece is " << piece->getSymbol() << std::endl;
-                // std::cout << std::endl;
-
-                std::cout << "getting valid moves for piece: " << piece->getSymbol() << std::endl;
                 std::vector<Move> validMoves = piece->getValidMoves();
-                // std::cout << "validMoves.size(): " << validMoves.size() << std::endl;
-                // std::cout << std::endl;
-
                 allValidMoves.insert(allValidMoves.end(), validMoves.begin(), validMoves.end());
             }
         }
     }
-
-    std::cout << "allValidMoves.size(): " << allValidMoves.size() << std::endl;
 
     for (const auto& move : allValidMoves) {
         if (move.getTo() == kingSquare) {
