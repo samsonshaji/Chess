@@ -28,6 +28,27 @@ Controller::Controller(Player *player1, Player *player2) : player1(player1), pla
     // new GraphicsObserver(*board);
 }
 
+Controller::~Controller() {
+    std::cout << "Controller destructor called" << std::endl;
+    for (auto move : board->getMoveStack()) {
+        if (move.getCapturedPiece() != nullptr) {
+            delete move.getCapturedPiece();
+            move.setCapturedPiece(nullptr);
+        }
+        else if( move.getPromotedPawn() != nullptr){
+            delete move.getPromotedPawn();
+            move.setPromotedPawn(nullptr);
+        }
+    }
+    delete board;
+    delete scoreBoard;
+    scoreBoard = nullptr;
+    delete player1;
+    delete player2;
+    player1 = nullptr;
+    player2 = nullptr;
+}
+
 void Controller::displayScore() {
     scoreBoard->displayScore();
 }
@@ -172,7 +193,7 @@ void Controller::handleCommand(const std::string &command) {
             std::cout << "No current player" << std::endl;
         }
 
-            Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
+        Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
 
         if (currentPlayer->isRobot() && (move.getPromotedTo() == 'q' || move.getPromotedTo() == 'n' || move.getPromotedTo() == 'b' || move.getPromotedTo() == 'r')) {
             string s;
@@ -180,28 +201,28 @@ void Controller::handleCommand(const std::string &command) {
             setPromotedTo(s);
         }
 
-            if(move.getFrom() == nullptr || move.getTo() == nullptr) {
-                std::cout << "Invalid move" << std::endl;
-                return;
-            }
+        if (move.getFrom() == nullptr || move.getTo() == nullptr) {
+            std::cout << "Invalid move" << std::endl;
+            return;
+        }
 
-            runGame(move);
+        runGame(move);
 
-            } else if (action == "setup") {
-                setupMode();
-            } else if (action == "undo") {
-                if (MoveHistory.size() == 0) {
-                    std::cout << "No moves to undo" << std::endl;
-                    return;
-                }
-                board->undoMove();
-                MoveHistory.pop_back();
-                std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " called undo" << std::endl;
-                currentPlayer = (currentPlayer == player1) ? player2 : player1;
-                board->notifyObservers();
-            } else {
-                std::cout << "Invalid command" << std::endl;
-            }
+    } else if (action == "setup") {
+        setupMode();
+    } else if (action == "undo") {
+        if (MoveHistory.size() == 0) {
+            std::cout << "No moves to undo" << std::endl;
+            return;
+        }
+        board->undoMove();
+        MoveHistory.pop_back();
+        std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " called undo" << std::endl;
+        currentPlayer = (currentPlayer == player1) ? player2 : player1;
+        board->notifyObservers();
+    } else {
+        std::cout << "Invalid command" << std::endl;
+    }
 }
 
 void Controller::startGame(Player &p1, Player &p2) {
@@ -231,10 +252,9 @@ void Controller::checkWin() {
         if (checkmate) {
             gameEnded = true;
 
-            if (currentPlayer == player1){
+            if (currentPlayer == player1) {
                 Colour color = player1->getColour();
-            }
-            else if (currentPlayer == player2){
+            } else if (currentPlayer == player2) {
                 Colour color = player2->getColour();
             }
 
@@ -242,8 +262,7 @@ void Controller::checkWin() {
         } else {
             std::cout << "Check!" << std::endl;
         }
-    }
-    else {
+    } else {
         bool stalemate = board->isStalemate(colour);
         if (stalemate) {
             gameEnded = true;
@@ -253,7 +272,7 @@ void Controller::checkWin() {
 }
 
 void Controller::runGame(const Move &move) {
-    if (gameEnded){
+    if (gameEnded) {
         std::cout << "No game in progress" << std::endl;
         return;
     }
@@ -272,10 +291,9 @@ void Controller::endGame(bool resigned) {
     gameEnded = true;
     gameStarted = false;
     if (resigned) {
-        if (currentPlayer == player1){
+        if (currentPlayer == player1) {
             Colour color = player1->getColour();
-        }
-        else if (currentPlayer == player2){
+        } else if (currentPlayer == player2) {
             Colour color = player2->getColour();
         }
         std::cout << "Player " << (currentPlayer == player1 ? "Black" : "White") << " wins!" << std::endl;

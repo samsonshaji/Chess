@@ -14,7 +14,7 @@ class Subject {
     void detach(Observer *o);
     void notifyObservers();
     virtual std::vector<std::vector<Square*>> getState() const = 0;
-    virtual ~Subject() = default;
+    virtual ~Subject();
 };
 
 #endif

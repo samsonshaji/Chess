@@ -6,7 +6,9 @@ int Robot::getMoveListSize() {
 
 Robot::Robot(Colour c, Board *b) : Player(c), board{b} {}
 
-Robot::~Robot() {}
+Robot::~Robot() {
+    board = nullptr;
+}
 
 bool Robot::isRobot() {
     return true;

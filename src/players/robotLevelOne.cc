@@ -2,6 +2,8 @@
 
 LevelOne::LevelOne(Colour c, Board *b) : Robot(c, b) {}
 
+LevelOne::~LevelOne() {}
+
 void LevelOne::generateMoves() {
     
     for (const auto &row : board->getBoard()) {

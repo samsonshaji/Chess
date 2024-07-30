@@ -9,6 +9,7 @@ private:
 
 public:
     Pawn(Colour c);
+    ~Pawn();
     std::vector<Move> getValidMoves() const override;
 };
 

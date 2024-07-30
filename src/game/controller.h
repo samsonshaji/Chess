@@ -23,6 +23,7 @@ class Controller {
         Colour startTurnColour = Colour::White;
     public:
         Controller(Player* player1, Player* player2);
+        ~Controller();
         void startGame(Player &p1, Player &p2);
         void checkWin();
         void runGame( const Move &move);

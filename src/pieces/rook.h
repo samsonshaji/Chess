@@ -10,6 +10,7 @@ class Rook : public Piece {
 private:
 public:
     Rook(Colour c);
+    ~Rook();
     std::vector<Move> getValidMoves() const override;
 };
 

@@ -2,6 +2,8 @@
 
 LevelTwo::LevelTwo(Colour c, Board *b) : Robot(c, b) {}
 
+LevelTwo::~LevelTwo() {}
+
 void LevelTwo::generateMoves() {
     moveList.clear();
 

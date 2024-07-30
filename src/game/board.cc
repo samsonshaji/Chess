@@ -19,6 +19,7 @@ Board::~Board() {
     for (auto& row : board) {
         for (auto& square : row) {
             delete square;
+            square = nullptr;
         }
     }
 }

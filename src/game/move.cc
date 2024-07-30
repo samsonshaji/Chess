@@ -9,6 +9,13 @@ Move::Move(Square* f, Square* t, MoveType mt) : from(f), to(t), type(mt) {}
 
 Move::Move(Square* f, Square* t, MoveType mt, char p) : from(f), to(t), type(mt), promotedTo(p) {}
 
+Move::~Move() {
+    from = nullptr;
+    to = nullptr;
+    capturedPiece = nullptr;
+    promotedPawn = nullptr;
+}
+
 MoveType Move::getMoveType() const {
     return type;
 }

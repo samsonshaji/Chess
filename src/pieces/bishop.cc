@@ -12,6 +12,8 @@ Bishop::Bishop(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'B' : 'b';
 }
 
+Bishop::~Bishop() {}
+
 
 vector<Move> Bishop::getValidMoves() const {
     vector<Move> moves;

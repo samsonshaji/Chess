@@ -19,7 +19,7 @@ protected:
     Board *board;
 
 public:
-    virtual ~Piece();
+    virtual ~Piece() = 0;
     PieceType getPieceType() const;
     virtual std::vector<Move> getValidMoves() const = 0;
     void addMovesInDirection(std::vector<Move>& moves, int xDir, int yDir) const;

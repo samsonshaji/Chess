@@ -14,7 +14,7 @@ public:
     Robot(Colour c, Board *b);
     virtual Move makeMove(Board &board, const string &to, const string &from, const string &promote) = 0;
     int getMoveListSize();
-    virtual ~Robot();
+    virtual ~Robot() = 0;
     virtual bool isRobot() override;
 };
 

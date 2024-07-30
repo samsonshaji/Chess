@@ -11,6 +11,7 @@ public:
     Human(Colour colour);
     virtual Move makeMove(Board &board, const string &from, const string &to, const string &promote) override;
     virtual bool isRobot() override;
+    ~Human();
 };
 
 #endif 

@@ -6,6 +6,8 @@ Queen::Queen(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'Q' : 'q';
 }
 
+Queen::~Queen() {}
+
 std::vector<Move> Queen::getValidMoves() const {
     std::vector<Move> moves;
     addMovesInDirection(moves, 1, 0);

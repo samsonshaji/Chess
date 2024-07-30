@@ -45,7 +45,6 @@ public:
 
     std::vector<std::vector<Square*>> getState() const override;
 
-    // false if move is illegal, true + updates board otherwise
     bool movePiece(const Move& move);
     bool overrideMovePiece(const Move& move);
     
@@ -56,13 +55,11 @@ public:
 
     void print() const;
 
-    // copy constructor
     Board(const Board& other);
-    // assignment operator
     Board& operator=(const Board& other);
 
     bool isMoveLegal(const Move& move);
     std::vector<std::vector<Square*>> getBoard();
 };
 
-#endif // BOARD_H
+#endif 

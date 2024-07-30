@@ -7,6 +7,7 @@ class Bishop : public Piece {
 private:
 public:
     Bishop(Colour c);
+    ~Bishop();
     std::vector<Move> getValidMoves() const override;
 };
 

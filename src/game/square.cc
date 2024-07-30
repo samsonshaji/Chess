@@ -1,10 +1,13 @@
 #include "square.h"
+#include <iostream>
 
 Square::Square(int x, int y) : x(x), y(y), piece(nullptr) {}
 
 Square::~Square() {
     if (piece != nullptr) {
         delete piece;
+        piece = nullptr;
+        board = nullptr;
     }
 }
 
