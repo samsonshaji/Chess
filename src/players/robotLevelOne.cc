@@ -4,13 +4,15 @@ LevelOne::LevelOne(Colour c, Board *b) : Robot(c, b) {}
 
 void LevelOne::generateMoves() {
     moveList.clear();
+
+    vector<Move> moves;
     if (colour == Colour::White) {
         //loop through whitePieces with auto
         for (auto it : board->getWhitePieces()) {
             //check if piece has a square
             if (it->getSquare() != nullptr) {
                 std::vector<Move> pieceMoves = it->getValidMoves();
-                moveList.insert(moveList.end(), pieceMoves.begin(), pieceMoves.end());
+                moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
             }
         }
     }
@@ -20,13 +22,18 @@ void LevelOne::generateMoves() {
             //check if piece has a square
             if (it->getSquare() != nullptr) {
                 std::vector<Move> pieceMoves = it->getValidMoves();
-                moveList.insert(moveList.end(), pieceMoves.begin(), pieceMoves.end());
+                moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
             }
         }
     }
-    // for (std::vector<Move>::iterator it = moveList.begin(); it != moveList.end(); it++) {
-    //     std::cout << it->getFrom()->getPiece()->getSymbol() << " (" << it->getFrom()->getX() << "," << it->getFrom()->getY() << ") -> (" << it->getTo()->getX() << "," << it->getTo()->getY() << ") : " << it->getMoveType() << std::endl;
-    // }
+
+    // make sure all moves here are valid
+    for (auto move : moves) {
+        if (board->isMoveLegal(move)) {
+            moveList.push_back(move);
+        }
+    }
+
     cout<<"end1"<<endl;
 }
 
@@ -35,13 +42,14 @@ Move LevelOne::makeMove(Board &board, const string &to, const string &from, cons
     bool legal = false;
     Move m;
 
+    std::srand(std::time(0));
+
     while (!legal){
 
-        //randomly select a move
-        std::srand(std::time(0));
-        int randomIndex = rand() % getMoveListSize();
+        std::size_t randomIndex = rand() % getMoveListSize();
+        std::cout << "Random Index: " << randomIndex << std::endl;
         cout<<"end2"<<endl;
-
+        cout << moveList.size() << endl;
 
         //check if move is Promotion movetype
         if (moveList[randomIndex].getMoveType() == MoveType::Promotion) {

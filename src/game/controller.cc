@@ -132,7 +132,7 @@ void Controller::handleCommand(const std::string &command) {
             // } else if (blackPlayerType == "computer3") {
             //     player2 = new Robot(Colour::Black, 3);
             }
-            else{
+            else {
                 std::cout << "Invalid player type" << std::endl;
                 return;
             }
@@ -168,7 +168,7 @@ void Controller::handleCommand(const std::string &command) {
             if (promotePiece != "") {
                 setPromotedTo(promotePiece);
             }
-            if (from.length() != 2 || to.length() != 2) {
+            if ((!currentPlayer->isRobot()) && (from.length() != 2 || to.length() != 2)) {
                 std::cout << "Invalid command" << std::endl;
                 return;
             }
