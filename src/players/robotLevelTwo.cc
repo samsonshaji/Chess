@@ -27,6 +27,7 @@ void LevelTwo::generateMoves() {
         }
     }
 
+    //filter out illegal moves
     for (auto it : moves) {
         if(board->isMoveLegal(it)) {
             moveList.push_back(it);
@@ -40,44 +41,66 @@ Move LevelTwo::makeMove(Board &board, const string &to, const string &from, cons
     Move m;
 
     std::srand(std::time(0));
+    int randomIndex;
 
     vector<Move> checks;
     vector<Move> captures;
+    Colour opponentColour = (colour == Colour::White) ? Colour::Black : Colour::White;
 
-
-    while (!legal){
-
-        std::size_t randomIndex = rand() % getMoveListSize();
-        std::cout << "Random Index: " << randomIndex << std::endl;
-        cout<<"end2"<<endl;
-        cout << moveList.size() << endl;
-
-        //check if move is Promotion movetype
-        if (moveList[randomIndex].getMoveType() == MoveType::Promotion) {
-            cout<<"end3"<<endl;
-            //randomly select a char value from q, n, b, r
-            std::string promoteOptions = "qnbr";
-            int randomPromoteIndex = rand() % promoteOptions.size();
-            cout << "end3.5" << endl;
-            char promoteChar = promoteOptions[randomPromoteIndex];
-            moveList[randomIndex].setPromotedTo(promoteChar);
-            cout<<"end4"<<endl;
+    //if legal moves have checking moves
+    for (auto it : moveList) {
+        board.overrideMovePiece(it);
+        if (board.isInCheck(opponentColour))  {
+            checks.push_back(it);
         }
-        cout << "--";
-        cout << "4.5 Move: " << moveList[randomIndex].getFrom()->getPiece()->getSymbol() <<" (" << moveList[randomIndex].getFrom()->getX() << "," << moveList[randomIndex].getFrom()->getY() << ") -> (" << moveList[randomIndex].getTo()->getX() << "," << moveList[randomIndex].getTo()->getY() << ") : " << moveList[randomIndex].getMoveType() << endl;
-        legal = board.isMoveLegal(moveList[randomIndex]);
-        cout<<"end5"<<endl;
-        if (legal) {
-            m = moveList[randomIndex];
-            std::cout << "Good Move: " << m.getFrom()->getPiece()->getSymbol() <<" (" << m.getFrom()->getX() << "," << m.getFrom()->getY() << ") -> (" << m.getTo()->getX() << "," << m.getTo()->getY() << ") : " << m.getMoveType() << std::endl;
-        }
-        else {
-            moveList.erase(moveList.begin() + randomIndex);
-            cout << "Bad Move: " << moveList[randomIndex].getFrom()->getPiece()->getSymbol() <<" (" << moveList[randomIndex].getFrom()->getX() << "," << moveList[randomIndex].getFrom()->getY() << ") -> (" << moveList[randomIndex].getTo()->getX() << "," << moveList[randomIndex].getTo()->getY() << ") : " << moveList[randomIndex].getMoveType() << endl;
-        }
-
+        board.undoMove();
     }
 
+    //priority to checking moves that capture as well
+    if (checks.size() > 0) {
+        for (auto it : checks) {
+            if (it.getTo()->getPiece() != nullptr) {
+                captures.push_back(it);
+            }
+        }
+        if (captures.size() > 0) {
+            randomIndex = rand() % captures.size();
+            m = captures[randomIndex];
+        }
+        //if no checking captures, randomly select any checking move
+        else {
+            randomIndex = rand() % checks.size();
+            m = checks[randomIndex];
+        }
+    }
+    //otherwise, randomly select a capturing move if available
+    //select a random legal move otherwise
+    else {
+        for (auto it : moveList) {
+            if (it.getTo()->getPiece() != nullptr) {
+                captures.push_back(it);
+            }
+        }
+        if (captures.size() > 0) {
+            randomIndex = rand() % captures.size();
+            m = captures[randomIndex];
+        }
+        else {
+            randomIndex = rand() % moveList.size();
+            m = moveList[randomIndex];
+        }
+    }
 
+        //check if move is Promotion movetype
+    if (m.getMoveType() == MoveType::Promotion) {
+        //randomly select a char value from q, n, b, r
+        std::string promoteOptions = "qnbr";
+        int randomPromoteIndex = rand() % promoteOptions.size();
+        char promoteChar = promoteOptions[randomPromoteIndex];
+        m.setPromotedTo(promoteChar);
+    }
+ 
+    std::cout << "Move: " << m.getFrom()->getPiece()->getSymbol() <<" (" << m.getFrom()->getX() << "," << m.getFrom()->getY() << ") -> (" << m.getTo()->getX() << "," << m.getTo()->getY() << ") : " << m.getMoveType() << std::endl;
+    
     return m;
 }
