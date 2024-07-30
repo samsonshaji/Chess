@@ -49,7 +49,9 @@ std::vector<Move> King::getValidMoves() const {
         board->getSquare(5,curY)->getPiece() == nullptr &&
         board->getSquare(6,curY)->getPiece() == nullptr &&
         board->getSquare(7,curY)->getPiece() != nullptr &&
-        board->getSquare(7,curY)->getPiece()->getPieceType() == PieceType::rook)
+        board->getSquare(7,curY)->getPiece()->getPieceType() == PieceType::rook &&
+        board->getSquare(7,curY)->getPiece()->getColour() == colour &&
+        board->getSquare(7,curY)->getPiece()->getHasMoved() == false)
     {
         // std::cout << std::endl;
         // std::cout << "Checking kingside castling for colour: " 
@@ -117,7 +119,9 @@ std::vector<Move> King::getValidMoves() const {
         board->getSquare(2,curY)->getPiece() == nullptr &&
         board->getSquare(1,curY)->getPiece() == nullptr &&
         board->getSquare(0,curY)->getPiece() != nullptr &&
-        board->getSquare(0,curY)->getPiece()->getPieceType() == PieceType::rook)
+        board->getSquare(0,curY)->getPiece()->getPieceType() == PieceType::rook &&
+        board->getSquare(0,curY)->getPiece()->getColour() == colour &&
+        board->getSquare(0,curY)->getPiece()->getHasMoved() == false)
     {
         if (!(board->getSquare(0, curY)->getPiece()->getHasMoved())) {
             // 0 -> rook

@@ -164,27 +164,21 @@ Move Board::getLastMove() const {
     return moveStack.back();
 }
 
-// bool Board::isMoveLegal(const Move& move) {
-//     // std::cout << "isMoveLegal called" << std::endl;
-//     // std::cout << "piece:" << move.getFrom()->getPiece()->getSymbol() << std::endl;
-//     // std::cout << "move: " << move.getFrom()->getX() << " " << move.getFrom()->getY() << " to " << move.getTo()->getX() << " " << move.getTo()->getY() << std::endl;
-
-//     std::vector<Move> allValidMovesColourX = move.getFrom()->getPiece()->getValidMoves();
-//     return std::find(allValidMovesColourX.begin(), allValidMovesColourX.end(), move) != allValidMovesColourX.end();
-// }
-
-
-
-
 bool Board::isMoveLegal(const Move& move) {
     // std::cout << "isMoveLegal called" << std::endl;
 
-    if (move.getFrom()->getPiece() == nullptr) {
+    if (move.getFrom() == nullptr) {
+        std::cout << "No square at coordinates: " << move.getFrom()->getX() << " " << move.getFrom()->getY() << std::endl;
         return false;
     }
+
+    if (move.getFrom()->getPiece() == nullptr) {
+        std::cout << "No piece at square: " << move.getFrom()->getX() << " " << move.getFrom()->getY() << std::endl;
+        return false;
+    }
+
     // fixed seg fault here
     Colour colour = move.getFrom()->getPiece()->getColour();
-    std::cout << "colour: " << colour << std::endl;
 
     // find all valid moves of all pieces of the given colour, that put the king out of check
     std::vector<Move> validMoves;
@@ -203,21 +197,60 @@ bool Board::isMoveLegal(const Move& move) {
         return false;
     }
 
-    bool isCheck1 = isInCheck(colour);
-    std::cout << "isMoveLegal: overriding move" << std::endl;
+    // bool isCheck1 = isInCheck(colour);
+    // std::cout << "isMoveLegal: overriding move" << std::endl;
     bool valid = overrideMovePiece(move);
-    std::cout << "isMoveLegal: calling isCheck " << valid << std::endl;
-    bool isCheck2 = isInCheck(colour);
-    std::cout << "isMoveLegal: undoing move" << std::endl;
-    undoMove();
-    std::cout << "isMoveLegal: done undoing move" << std::endl;
+
+    Square* whiteKing = findKing(Colour::White);
+    Square* blackKing = findKing(Colour::Black);
+    
+    int whiteKingX = whiteKing->getX();
+    int whiteKingY = whiteKing->getY();
+
+    int blackKingX = blackKing->getX();
+    int blackKingY = blackKing->getY();
+
+    bool kingsTogether = false;
+    if (whiteKingX-1 == blackKingX && whiteKingY-1 == blackKingY) {
+        kingsTogether = true;
+    } else if (whiteKingX-1 == blackKingX && whiteKingY == blackKingY) {
+        kingsTogether = true;
+    } else if (whiteKingX-1 == blackKingX && whiteKingY+1 == blackKingY) {
+        kingsTogether = true;
+    } else if (whiteKingX == blackKingX && whiteKingY-1 == blackKingY) {
+        kingsTogether = true;
+    } else if (whiteKingX == blackKingX && whiteKingY+1 == blackKingY) {
+        kingsTogether = true;
+    } else if (whiteKingX+1 == blackKingX && whiteKingY-1 == blackKingY) {
+        kingsTogether = true;
+    } else if (whiteKingX+1 == blackKingX && whiteKingY == blackKingY) {
+        kingsTogether = true;
+    } else if (whiteKingX+1 == blackKingX && whiteKingY+1 == blackKingY) {
+        kingsTogether = true;
+    }
+
+    if (kingsTogether) {
+        std::cout << "isMoveLegal: kings are next to each other" << std::endl;
+        undoMove();
+        return false;
+    }
+
+    // std::cout << "isMoveLegal: calling isCheck " << valid << std::endl;
+    bool isCheck = isInCheck(colour);
+    // std::cout << "isCheck: " << isCheck << std::endl;
+
+    if (valid) {
+        // std::cout << "isMoveLegal: undoing move" << std::endl;
+        undoMove();
+        if (isCheck) {
+            return false;
+        }
+    }
+    // std::cout << "isMoveLegal: done undoing move" << std::endl;
 
     // std::cout << "after move undoed" << std::endl;
     // print();
 
-    if (isCheck1 || isCheck2) {
-        return false;
-    }
 
     return true;
 }
@@ -278,10 +311,42 @@ bool Board::isValidSetup() const {
     }
 
     // check if the kings are not next to each other from setup mode
+    // Square* whiteKing = findKing(Colour::White);
+    // Square* blackKing = findKing(Colour::Black);
+
+    // if (whiteKing->getX() == blackKing->getX() && abs(whiteKing->getY() - blackKing->getY()) == 1) {
+    //     return false;
+    // }
+
     Square* whiteKing = findKing(Colour::White);
     Square* blackKing = findKing(Colour::Black);
+    
+    int whiteKingX = whiteKing->getX();
+    int whiteKingY = whiteKing->getY();
 
-    if (whiteKing->getX() == blackKing->getX() && abs(whiteKing->getY() - blackKing->getY()) == 1) {
+    int blackKingX = blackKing->getX();
+    int blackKingY = blackKing->getY();
+
+    bool kingsTogether = false;
+    if (whiteKingX-1 == blackKingX && whiteKingY-1 == blackKingY) {
+        kingsTogether = true;
+    } else if (whiteKingX-1 == blackKingX && whiteKingY == blackKingY) {
+        kingsTogether = true;
+    } else if (whiteKingX-1 == blackKingX && whiteKingY+1 == blackKingY) {
+        kingsTogether = true;
+    } else if (whiteKingX == blackKingX && whiteKingY-1 == blackKingY) {
+        kingsTogether = true;
+    } else if (whiteKingX == blackKingX && whiteKingY+1 == blackKingY) {
+        kingsTogether = true;
+    } else if (whiteKingX+1 == blackKingX && whiteKingY-1 == blackKingY) {
+        kingsTogether = true;
+    } else if (whiteKingX+1 == blackKingX && whiteKingY == blackKingY) {
+        kingsTogether = true;
+    } else if (whiteKingX+1 == blackKingX && whiteKingY+1 == blackKingY) {
+        kingsTogether = true;
+    }
+
+    if (kingsTogether) {
         return false;
     }
 
@@ -294,7 +359,18 @@ bool Board::isValidSetup() const {
 }
 
 bool Board::overrideMovePiece(const Move& move) {
+    // std::cout << std::endl;
     std::cout << "overrideMovePiece called" << std::endl;
+
+    if (move.getFrom() == nullptr) {
+        return false;
+    }
+
+    if (move.getFrom()->getPiece() == nullptr) {
+        std::cout << "No piece at square: " << move.getFrom()->getX() << " " << move.getFrom()->getY() << std::endl;
+        return false;
+    }
+
     Square* from = move.getFrom();
     Square* to = move.getTo();
     Piece* piece = from->getPiece();
@@ -302,8 +378,8 @@ bool Board::overrideMovePiece(const Move& move) {
 
     Piece *capturedPiece = nullptr;
 
-    std::cout << "Move from: " << from->getX() << " " << from->getY() << " to " << to->getX() << " " << to->getY() << std::endl;
-    std::cout << "Piece at from: " << from->getPiece()->getSymbol() << std::endl;
+    // std::cout << "Move from: " << from->getX() << " " << from->getY() << " to " << to->getX() << " " << to->getY() << std::endl;
+    // std::cout << "Piece at from: " << from->getPiece()->getSymbol() << std::endl;
     if (to->getPiece() != nullptr) {
         // std::cout << "Piece at to: " << to->getPiece()->getSymbol() << std::endl;
         capturedPiece = to->getPiece();
@@ -344,14 +420,14 @@ bool Board::overrideMovePiece(const Move& move) {
     }
 
     currMove.setMoveType(moveType);
-    std::cout << "moveType set to: " << moveType << std::endl;
+    // std::cout << "moveType set to: " << moveType << std::endl;
 
     if (currMove.getMoveType() == MoveType::Normal) {
-        std::cout << "normal move" << std::endl;
+        // std::cout << "normal move" << std::endl;
         to->setPiece(piece);
         from->setPiece(nullptr);
         piece->setSquare(to);
-        std::cout << "piece moved" << std::endl;
+        // std::cout << "piece moved" << std::endl;
     } else if (currMove.getMoveType() == MoveType::Capture) {
         to->setPiece(piece);
         from->setPiece(nullptr);
@@ -426,18 +502,20 @@ bool Board::overrideMovePiece(const Move& move) {
                 break;
         }
 
-        std::cout << "promotedType: " << promotedTo << std::endl;
+        if (newPiece == nullptr) {
+            std::cout << "uh oh promotion not working" << std::endl;
+        }
+        else {
+            std::cout << newPiece->getSymbol() << std::endl;
+        }
+
+        // std::cout << "promotedType: " << std::to_string(promotedTo) << std::endl;
         currMove.setPromotedPawn(piece);
 
         to->setPiece(newPiece);
         from->setPiece(nullptr);
         newPiece->setSquare(to);
         newPiece->setBoard(this);
-
-        // std::cout << "captured: ";
-        // std::cout << currMove.getCapturedPiece()->getSymbol() << std::endl;
-        // std::cout << "promoted: ";
-        // std::cout << currMove.getPromotedPawn()->getSymbol() << std::endl;
     }
 
     // set piece's moved state
@@ -447,18 +525,13 @@ bool Board::overrideMovePiece(const Move& move) {
     // add move to stack
     moveStack.push_back(currMove);
 
-    // for (auto& move : moveStack) {
-    //     std::cout << "move: " << move.getFrom()->getX() << " " << move.getFrom()->getY() << " to " << move.getTo()->getX() << " " << move.getTo()->getY() << std::endl;
-        
-    //     if (move.getMoveType() == MoveType::Promotion) {
-    //         std::cout << "captured: ";
-    //         std::cout << move.getCapturedPiece()->getSymbol() << std::endl;
-    //         std::cout << "promoted: ";
-    //         std::cout << move.getPromotedPawn()->getSymbol() << std::endl;
-    //     }
-    // }
+    // std::cout << "---------------------------------------" << std::endl;
+    // std::cout << "after overrideMovePiece" << std::endl;
+    // print();
+    // std::cout << "---------------------------------------" << std::endl;
 
-    std::cout << "moveStack size: " << moveStack.size() << std::endl;
+
+    // std::cout << "moveStack size: " << moveStack.size() << std::endl;
 
     // notifyObservers();
 
@@ -614,18 +687,18 @@ void Board::undoMove() {
     Piece* piece = to->getPiece();
     piece->setBoard(this);
 
-    std::cout << "undoMove called" << std::endl;
-    std::cout << "From: (" << from->getX() << ", " << from->getY() << ")" << std::endl;
-    std::cout << "To: (" << to->getX() << ", " << to->getY() << ")" << std::endl;
-    std::cout << "Piece: " << piece->getSymbol() << std::endl;
-    std::cout << (lastMove.getMoveType() == 0 ? "Normal" : 
-                  lastMove.getMoveType() == 1 ? "Capture" : 
-                  lastMove.getMoveType() == 2 ? "EnPassant" : 
-                  lastMove.getMoveType() == 3 ? "Castling" : 
-                  lastMove.getMoveType() == 4 ? "DoublePawn" : "Promotion") << std::endl;
-    std::cout << "state of board BEFORE undo" << std::endl;
-    print();
-    std::cout << std::endl;
+    // std::cout << "undoMove called" << std::endl;
+    // std::cout << "From: (" << from->getX() << ", " << from->getY() << ")" << std::endl;
+    // std::cout << "To: (" << to->getX() << ", " << to->getY() << ")" << std::endl;
+    // std::cout << "Piece: " << piece->getSymbol() << std::endl;
+    // std::cout << (lastMove.getMoveType() == 0 ? "Normal" : 
+    //               lastMove.getMoveType() == 1 ? "Capture" : 
+    //               lastMove.getMoveType() == 2 ? "EnPassant" : 
+    //               lastMove.getMoveType() == 3 ? "Castling" : 
+    //               lastMove.getMoveType() == 4 ? "DoublePawn" : "Promotion") << std::endl;
+    // std::cout << "state of board BEFORE undo" << std::endl;
+    // print();
+    // std::cout << std::endl;
 
 
 
@@ -734,9 +807,9 @@ void Board::undoMove() {
     }
 
     piece->setHasMoved(hasMoved);
-    std::cout << "state of board AFTER undo" << std::endl;
-    print();
-    std::cout << std::endl;
+    // std::cout << "state of board AFTER undo" << std::endl;
+    // print();
+    // std::cout << std::endl;
 }
 
 // copy constructor
@@ -840,8 +913,10 @@ bool Board::isInCheck(Colour colour) const {
         std::cout << "king not found!!!" << std::endl;
         return false;
     }
-    std::cout << "found king at " << kingSquare->getX() << " " << kingSquare->getY() << std::endl;
-    std::cout << "colour: " << colour << std::endl;
+    // std::cout << "found king at " << kingSquare->getX() << " " << kingSquare->getY() << std::endl;
+    // std::cout << "colour: " << colour << std::endl;
+
+    
 
     std::vector<Move> allValidMoves;
 
@@ -855,7 +930,7 @@ bool Board::isInCheck(Colour colour) const {
                 // std::cout << "piece is " << piece->getSymbol() << std::endl;
                 // std::cout << std::endl;
 
-                std::cout << "getting valid moves for piece: " << piece->getSymbol() << std::endl;
+                // std::cout << "getting valid moves for piece: " << piece->getSymbol() << std::endl;
                 std::vector<Move> validMoves = piece->getValidMoves();
                 // std::cout << "validMoves.size(): " << validMoves.size() << std::endl;
                 // std::cout << std::endl;
@@ -865,7 +940,7 @@ bool Board::isInCheck(Colour colour) const {
         }
     }
 
-    std::cout << "allValidMoves.size(): " << allValidMoves.size() << std::endl;
+    // std::cout << "allValidMoves.size(): " << allValidMoves.size() << std::endl;
 
     for (const auto& move : allValidMoves) {
         if (move.getTo() == kingSquare) {
@@ -973,4 +1048,29 @@ bool Board::isStalemate(Colour colour) const {
 
 std::vector<std::vector<Square*>> Board::getBoard() {
     return board;
+}
+
+MoveType Board::determineMoveType(const Move& move) {
+    Square* from = move.getFrom();
+    Square* to = move.getTo();
+    Piece* piece = from->getPiece();
+    Piece* capturedPiece = to->getPiece();
+
+    if (piece->getPieceType() == PieceType::pawn) {
+        if (to->getX() != from->getX() && capturedPiece == nullptr) {
+            return MoveType::EnPassant;
+        } else if (to->getY() == 0 || to->getY() == 7) {
+            return MoveType::Promotion;
+        } else if (from->getY() == 1 && to->getY() == 3) {
+            return MoveType::DoublePawn;
+        } else if (capturedPiece != nullptr) {
+            return MoveType::Capture;
+        }
+    } else if (piece->getPieceType() == PieceType::king && abs(from->getX() - to->getX()) == 2) {
+        return MoveType::Castling;
+    } else if (capturedPiece != nullptr) {
+        return MoveType::Capture;
+    }
+
+    return MoveType::Normal;
 }

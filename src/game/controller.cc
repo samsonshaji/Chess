@@ -182,10 +182,7 @@ void Controller::handleCommand(const std::string &command) {
             if (currentPlayer == nullptr) {
                 std::cout << "No current player" << std::endl;
             }
-
-            std::cout << "controller: before making move" << std::endl;
             Move move = currentPlayer->makeMove(*board, from, to, promotePiece);
-            std::cout << "controller: after making move" << std::endl;
 
             if (currentPlayer->isRobot() && (move.getPromotedTo() == 'q' || move.getPromotedTo() == 'n' || move.getPromotedTo() == 'b' || move.getPromotedTo() == 'r')) {
                 string s;
@@ -198,10 +195,7 @@ void Controller::handleCommand(const std::string &command) {
                 return;
             }
             // Move move = Move(fromSquare, toSquare);
-
-            std::cout << "controller: before running game" << std::endl;
             runGame(move);
-            std::cout << "controller: after running game" << std::endl;
 
             } else if (action == "setup") {
                 setupMode();
@@ -239,14 +233,11 @@ void Controller::startGame(Player &p1, Player &p2) {
 
 void Controller::checkWin() {
     Colour colour = (currentPlayer == player1) ? Colour::White : Colour::Black;
-    std::cout << "before calling isInCheck" << std::endl;
     bool isInCheck = board->isInCheck(colour);
-    std::cout << "after calling isInCheck" << std::endl;
 
     if (isInCheck) {
         std::cout << (colour == White ? "White" : "Black") << " is in check!" << std::endl;
         bool checkmate = board->isCheckmate(colour);
-        std::cout << "after calling isCheckmate" << std::endl;
         if (checkmate) {
             gameEnded = true;
             
@@ -263,9 +254,7 @@ void Controller::checkWin() {
         }
     }
     else {
-        std::cout << "Not in check - checking if stalemate" << std::endl;
         bool stalemate = board->isStalemate(colour);
-        std::cout << "after checking for stalemate" << std::endl;
         if (stalemate) {
             gameEnded = true;
             std::cout << "Stalemate!" << std::endl;

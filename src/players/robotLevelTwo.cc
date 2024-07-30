@@ -2,54 +2,49 @@
 
 LevelTwo::LevelTwo(Colour c, Board *b) : Robot(c, b) {}
 
-void LevelTwo::generateMoves(std::vector<Move> &allValidMoves) {
-    moveList.clear();
-
-    vector<Move> moves;
-    if (colour == Colour::White) {
-        //loop through whitePieces with auto
-        for (auto it : board->getWhitePieces()) {
-            //check if piece has a square
-            if (it->getSquare() != nullptr) {
-                std::vector<Move> pieceMoves = it->getValidMoves();
-                moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
-            }
-        }
-    }
-    else {
-        //loop through blackPieces with auto
-        for (auto it : board->getBlackPieces()) {
-            //check if piece has a square
-            if (it->getSquare() != nullptr) {
-                std::vector<Move> pieceMoves = it->getValidMoves();
-                moves.insert(moves.end(), pieceMoves.begin(), pieceMoves.end());
-            }
-        }
-    }
-
-    //filter out illegal moves
-    for (auto it : moves) {
-        if(board->isMoveLegal(it)) {
-            moveList.push_back(it);
-        }
-    }
-}
-
 Move LevelTwo::makeMove(Board &board, const string &to, const string &from, const string &promote) {
-    std::vector<Move> allValidMoves;
-    generateMoves(allValidMoves);
+    // generate moves
+    std::srand(std::time(0));
     bool legal = false;
     Move m;
+    
+    std::vector <Move> allMoves;
+    for (const auto& row : board.getBoard()) {
+        for (const auto& square : row) {
+            if (square->getPiece() != nullptr && square->getPiece()->getColour() != colour) {
+                std::vector<Move> moves = square->getPiece()->getValidMoves();
+                for (auto it : moves) {
+                    MoveType mt = board.determineMoveType(it);
+                    if (mt == MoveType::Promotion) {
+                        std::string promoteOptions = "qnbr";
+                        int randomPromoteIndex = rand() % promoteOptions.size();
+                        char promoteChar = promoteOptions[randomPromoteIndex];
+                        it.setPromotedTo(promoteChar);
+                    }
+                    it.setMoveType(mt);
+                    allMoves.push_back(it);
+                }
+            }
+        }
+    }
 
-    std::srand(std::time(0));
-    int randomIndex;
+    // filter out illegal moves
+    std::vector<Move> legalMoves;
+    for (auto it : allMoves) {
+        if (board.isMoveLegal(it)) {
+            legalMoves.push_back(it);
+        }
+    }
+
+    int randomIndex = rand() % legalMoves.size();
+    Move currMove = legalMoves[randomIndex];
 
     vector<Move> checks;
     vector<Move> captures;
     Colour opponentColour = (colour == Colour::White) ? Colour::Black : Colour::White;
 
     //if legal moves have checking moves
-    for (auto it : moveList) {
+    for (auto it : legalMoves) {
         board.overrideMovePiece(it);
         if (board.isInCheck(opponentColour))  {
             checks.push_back(it);
@@ -77,7 +72,7 @@ Move LevelTwo::makeMove(Board &board, const string &to, const string &from, cons
     //otherwise, randomly select a capturing move if available
     //select a random legal move otherwise
     else {
-        for (auto it : moveList) {
+        for (auto it : legalMoves) {
             if (it.getTo()->getPiece() != nullptr) {
                 captures.push_back(it);
             }
@@ -87,21 +82,10 @@ Move LevelTwo::makeMove(Board &board, const string &to, const string &from, cons
             m = captures[randomIndex];
         }
         else {
-            randomIndex = rand() % moveList.size();
-            m = moveList[randomIndex];
+            randomIndex = rand() % legalMoves.size();
+            m = legalMoves[randomIndex];
         }
     }
-
-        //check if move is Promotion movetype
-    if (m.getMoveType() == MoveType::Promotion) {
-        //randomly select a char value from q, n, b, r
-        std::string promoteOptions = "qnbr";
-        int randomPromoteIndex = rand() % promoteOptions.size();
-        char promoteChar = promoteOptions[randomPromoteIndex];
-        m.setPromotedTo(promoteChar);
-    }
- 
-    std::cout << "Move: " << m.getFrom()->getPiece()->getSymbol() <<" (" << m.getFrom()->getX() << "," << m.getFrom()->getY() << ") -> (" << m.getTo()->getX() << "," << m.getTo()->getY() << ") : " << m.getMoveType() << std::endl;
     
     return m;
 }

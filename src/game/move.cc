@@ -62,5 +62,8 @@ Move& Move::operator=(const Move& m) {
 }
 
 bool Move::operator==(const Move& m) const {
-    return from->getX() == m.from->getX() && from->getY() == m.from->getY() && to->getX() == m.to->getX() && to->getY() == m.to->getY();
+    return from->getX() == m.from->getX() 
+        && from->getY() == m.from->getY() 
+        && to->getX() == m.to->getX() 
+        && to->getY() == m.to->getY();
 }

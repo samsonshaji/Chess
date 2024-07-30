@@ -4,8 +4,6 @@
 #include "robot.h"
 
 class LevelThree : public Robot {
-    private:
-        void generateMoves(std::vector<Move> &allValidMoves) override;
     public:
         LevelThree(Colour c, Board *b);
         virtual Move makeMove(Board &board, const string &to, const string &from, const string &promote) override;

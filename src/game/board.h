@@ -63,12 +63,8 @@ public:
 
     bool isMoveLegal(const Move& move);
     std::vector<std::vector<Square*>> getBoard();
+
+    MoveType determineMoveType(const Move& move);
 };
 
 #endif // BOARD_H
-
-
-// TODO:
-// movePiece (+ determine move type)
-// undo move
-// in check, stale, checkmate
