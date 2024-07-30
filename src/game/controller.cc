@@ -25,7 +25,7 @@ Controller::Controller(Player *player1, Player *player2) : player1(player1), pla
     board->setController(this);
     scoreBoard = new ScoreBoard();
     new TextObserver(*board);
-    new GraphicsObserver(*board);
+    // new GraphicsObserver(*board);
 }
 
 void Controller::displayScore() {
@@ -212,7 +212,7 @@ void Controller::handleCommand(const std::string &command) {
                 currentPlayer = (currentPlayer == player1) ? player2 : player1;
                 board->notifyObservers();
             } else {
-                // std::cout << "Invalid command - " << std::endl;
+                std::cout << "Invalid command" << std::endl;
             }
 }
 

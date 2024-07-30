@@ -11,6 +11,7 @@ SRCS = main.cc \
        observers/graphicsobserver.cc observers/textobserver.cc observers/window.cc \
        players/human.cc \
 	   players/robotLevelOne.cc \
+	   players/robotLevelTwo.cc \
 	   players/robot.cc \
 	   players/player.cc \
 

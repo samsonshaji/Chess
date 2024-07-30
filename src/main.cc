@@ -13,9 +13,10 @@ int main() {
     Controller controller(whitePlayer, blackPlayer);
 
     std::string command;
+    std::cout << "> ";
     while (std::getline(std::cin, command)) {
-        std::cout << "> ";
         controller.handleCommand(command);
+        std::cout << "> ";
     }
     std::cout << "End of game, thanks for playing! " << std::endl;
     controller.displayScore();
