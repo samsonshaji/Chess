@@ -47,24 +47,11 @@ void GraphicsObserver::notify() {
 
             std::vector<std::vector<Square*>> board = subject.getState();
 
-            char piece;
-            if(board[i][j]->getPiece() == nullptr){
-                piece = '_';
-            } else {
-                piece = board[i][j]->getPiece()->getSymbol();
-            }
-            
-            if(piece != ' ' && piece != '_'){ 
-                std::stringstream ss;
-                std::string s;
-                ss << piece;
-                ss >> s;
-            
-                if(piece + 0 > 96){
-                    win.drawString(100*(j + 1) + 50, 100*(9-i) - 50, s, Xwindow::Black);
-                } else {
-                    win.drawString(100*(j + 1) + 50, 100*(9-i) - 50, s, Xwindow::Black);
-                }  
+            char piece = (board[i][j]->getPiece() == nullptr) ? '_' : board[i][j]->getPiece()->getSymbol();
+
+            if (piece != ' ' && piece != '_') { 
+                std::string convertStr(1, piece);
+                win.drawString(100 * (j + 1) + 50, 100 * (9 - i) - 50, convertStr, Xwindow::Black);
             }
         }
     }

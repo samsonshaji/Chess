@@ -37,11 +37,10 @@ Xwindow::Xwindow(int width, int height) {
 
     XSetForeground(d, gc, colours[Black]);
 
-    // Load the bold font
     Font font = XLoadFont(d, "-adobe-courier-bold-r-normal--34-240-100-100-m-200-iso8859-1");
     XSetFont(d, gc, font);
 
-    // Make window non-resizeable.
+
     XSizeHints hints;
     hints.flags = (USPosition | PSize | PMinSize | PMaxSize);
     hints.height = hints.base_height = hints.min_height = hints.max_height = height;
@@ -77,16 +76,3 @@ void Xwindow::drawString(int x, int y, std::string msg, int colour) {
     XDrawString(d, w, gc, x, y, msg.c_str(), msg.length());
     XSetForeground(d, gc, colours[Black]);
 }
-
-// void Xwindow::drawChessboard() {
-//     int squareSize = 100; // size of each square on the chessboard
-//     bool isWhite = true; // start with a white square
-//     for (int i = 0; i < 8; ++i) {
-//         for (int j = 0; j < 8; j++) {
-//             int color = isWhite ? White : Black; // 0 for white, 1 for black
-//             fillRectangle(j * squareSize, i * squareSize, squareSize, squareSize, color);
-//             isWhite = !isWhite; // alternate colors
-//         }
-//         isWhite = !isWhite; // alternate starting color for next row
-//     }
-// }

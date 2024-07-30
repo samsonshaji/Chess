@@ -15,7 +15,6 @@ class Board : public Subject {
 private:
     std::vector<std::vector<Square*>> board;
     Controller* controller;
-    void setupInitialBoard();
     std::vector<Move> moveStack;
     std::vector<Piece*> whitePieces;
     std::vector<Piece*> blackPieces;
@@ -23,6 +22,8 @@ public:
     Board();
     ~Board();
     Square* findKing(Colour colour) const;
+
+    void setupInitialBoard();
 
     void setController(Controller* ctrl);
     Square* getSquare(int x, int y) const;
