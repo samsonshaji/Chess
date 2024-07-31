@@ -29,8 +29,9 @@ void Board::setSquares() {
     for (auto& row : board) {
         for (auto& square : row) {
             square->setBoard(shared_from_this());
-            std::cout << square->getX() << " " << square->getY() << std::endl;
-            // square->getPiece()->setBoard(shared_from_this());
+            if (square->getPiece() != nullptr) {
+                square->getPiece()->setBoard(shared_from_this());
+            }
         }
     }
 }
