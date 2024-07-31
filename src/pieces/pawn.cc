@@ -12,7 +12,9 @@ Pawn::Pawn(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'P' : 'p';
 }
 
-Pawn::~Pawn() {}
+Pawn::~Pawn() {
+    cout << "Pawn destructor called" << endl;
+}
 
 bool Pawn::isEnPassantValid(const Board &board, int side) const {
     int curX = square->getX();

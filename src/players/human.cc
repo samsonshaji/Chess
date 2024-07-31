@@ -8,7 +8,9 @@ bool Human::isRobot() {
     return false;
 }
 
-Human::~Human() {}
+Human::~Human() {
+    cout << "Human destructor called" << endl;
+}
 
 bool Human::validMoveCmd(const string &from, const string &to, const string &promote) {
     if (to.length() != 2 || from.length() != 2) {

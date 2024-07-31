@@ -9,6 +9,7 @@ GraphicsObserver::GraphicsObserver(Subject &sub) : subject(sub), win(1000, 1000)
 
 GraphicsObserver::~GraphicsObserver() {
     subject.detach(this);
+    std::cout << "GraphicsObserver destructor called" << std::endl;
 }
 
 void GraphicsObserver::notify() {

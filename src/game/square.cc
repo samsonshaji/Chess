@@ -4,6 +4,7 @@
 Square::Square(int x, int y) : x(x), y(y), piece(nullptr) {}
 
 Square::~Square() {
+    std::cout << "Square destructor called" << std::endl;
     if (piece != nullptr) {
         delete piece;
         piece = nullptr;

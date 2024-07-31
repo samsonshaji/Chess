@@ -30,7 +30,7 @@ Controller::Controller(Player *player1, Player *player2) : player1(player1), pla
 }
 
 Controller::~Controller() {
-    std::cout << "Controller destructor called" << std::endl;
+    cout << "Controller destructor called" << endl;
     for (auto move : board->getMoveStack()) {
         if (move.getCapturedPiece() != nullptr) {
             delete move.getCapturedPiece();
@@ -40,12 +40,18 @@ Controller::~Controller() {
             move.setPromotedPawn(nullptr);
         }
     }
-    delete board;
+    board->getMoveStack().clear();
     delete scoreBoard;
+    delete board;
     scoreBoard = nullptr;
     currentPlayer = nullptr;
-    delete player1;
-    delete player2;
+
+    if (player1 != nullptr) {
+        delete player1;
+    }
+    if (player2 != nullptr) {
+        delete player2;
+    }
     player1 = nullptr;
     player2 = nullptr;
 }
@@ -231,7 +237,7 @@ void Controller::handleCommand(const std::string &command) {
             std::cout << "Invalid move" << std::endl;
             return;
         }
-
+        
         runGame(move);
 
     } else if (action == "setup") {
@@ -348,6 +354,12 @@ void Controller::endGame(bool resigned) {
         std::cout << "Stalemate!" << std::endl;
         scoreBoard->stalemateUpdate();
     }
+    board->clearBoard();
+    currentPlayer = nullptr;
+    delete player1;
+    delete player2;
+    player1 = nullptr;
+    player2 = nullptr;
     board->setupInitialBoard();
 }
 
@@ -358,6 +370,7 @@ void Controller::setupMode() {
     }
     board->clearBoard();
     board->notifyObservers();
+    
     while (!getGameStarted()) {
         std::string command;
         std::cin >> command;

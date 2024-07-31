@@ -12,17 +12,27 @@
 #include "square.h"
 
 Board::Board() {
+    for (int i = 0; i < 8; i++) {
+        std::vector<Square*> row;
+        for (int j = 0; j < 8; j++) {
+            Square* s = new Square(j, i);
+            s->setBoard(this);
+            row.push_back(s);
+        }
+        board.push_back(row);
+    }
     setupInitialBoard();
 }
 
 Board::~Board() {
+    cout << "Board destructor called" << endl;
     for (auto& row : board) {
         for (auto& square : row) {
             delete square;
             square = nullptr;
-            controller = nullptr;
         }
     }
+    controller = nullptr;
 }
 
 void Board::print() const {
@@ -52,21 +62,20 @@ void Board::clearBoard() {
             square->setPiece(nullptr);
         }
     }
+    for (auto move : moveStack) {
+        if (move.getCapturedPiece() != nullptr) {
+            delete move.getCapturedPiece();
+            move.setCapturedPiece(nullptr);
+        }
+        else if( move.getPromotedPawn() != nullptr){
+            delete move.getPromotedPawn();
+            move.setPromotedPawn(nullptr);
+        }
+    }
+    moveStack.clear();
 }
 
 void Board::setupInitialBoard() {
-    clearBoard();
-
-    for (int i = 0; i < 8; i++) {
-        std::vector<Square*> row;
-        for (int j = 0; j < 8; j++) {
-            Square* s = new Square(j, i);
-            s->setBoard(this);
-            row.push_back(s);
-        }
-        board.push_back(row);
-    }
-
     // calls square's setPiece function
     // white pieces
     board[0][0]->setPiece(new Rook(Colour::White));
