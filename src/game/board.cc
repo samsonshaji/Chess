@@ -160,14 +160,16 @@ Move Board::getLastMove() const {
 
 bool Board::isMoveLegal(const Move& move) {
     if (move.getFrom() == nullptr) {
-        std::cout << "No square at coordinates: " << move.getFrom()->getX() << " " << move.getFrom()->getY() << std::endl;
+        // std::cout << "No square at coordinates: " << move.getFrom()->getX() << " " << move.getFrom()->getY() << std::endl;
         return false;
     }
 
     if (move.getFrom()->getPiece() == nullptr) {
-        std::cout << "No piece at square: " << move.getFrom()->getX() << " " << move.getFrom()->getY() << std::endl;
+        // std::cout << "No piece at square: " << move.getFrom()->getX() << " " << move.getFrom()->getY() << std::endl;
         return false;
     }
+
+    // std::cout << "Move from: " << move.getFrom()->getX() << " " << move.getFrom()->getY() << std::endl;
     Colour colour = move.getFrom()->getPiece()->getColour();
 
     // find all valid moves of all pieces of the given colour, that put the king out of check
@@ -218,7 +220,6 @@ bool Board::isMoveLegal(const Move& move) {
     }
 
     if (kingsTogether) {
-        std::cout << "kings are next to each other!!!" << std::endl;
         undoMove();
         return false;
     }
@@ -334,7 +335,7 @@ bool Board::overrideMovePiece(const Move& move) {
     }
 
     if (move.getFrom()->getPiece() == nullptr) {
-        std::cout << "No piece at square: " << move.getFrom()->getX() << " " << move.getFrom()->getY() << std::endl;
+        // std::cout << "No piece at square: " << move.getFrom()->getX() << " " << move.getFrom()->getY() << std::endl;
         return false;
     }
 
@@ -683,7 +684,7 @@ bool Board::isInCheck(Colour colour) const {
     // check if the king of the given colour is in check
     Square* kingSquare = findKing(colour);
     if (kingSquare == nullptr) {
-        std::cout << "King not found!!!" << std::endl;
+        // std::cout << "King not found!!!" << std::endl;
         return false;
     }
 
