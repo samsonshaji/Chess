@@ -24,15 +24,11 @@
 
 
 Controller::Controller() : player1(nullptr), player2(nullptr), currentPlayer(nullptr), gameEnded(false) {
-    // std::cout << "Controller constructor called" << std::endl;
     board = std::make_shared<Board>();
     board->setSquares();
-    // std::cout << "Board created" << std::endl;
     board->setController(this);
     scoreBoard = std::make_shared<ScoreBoard>();
-    // std::cout << "Controller constructor called" << std::endl;
     new TextObserver(*board);
-    // std::cout << "TextObserver created" << std::endl;
     // new GraphicsObserver(*board);
 }
 

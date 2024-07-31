@@ -55,14 +55,11 @@ void Board::print() const {
 }
 
 void Board::clearBoard() {
-    // for (auto& row : board) {
-    //     for (auto& square : row) {
-    //         if (square->getPiece() != nullptr) {
-    //             // delete square->getPiece();
-    //         }
-    //         square->setPiece(nullptr);
-    //     }
-    // }
+    for (auto& row : board) {
+        for (auto& square : row) {
+            square->setPiece(nullptr);
+        }
+    }
 }
 
 void Board::setupInitialBoard() {
@@ -186,13 +183,13 @@ bool Board::isMoveLegal(const Move& move) {
         }
     }
 
-    std::cout << "Got valid moves" << std::endl;
+    // std::cout << "Got valid moves" << std::endl;
 
     if (std::find(validMoves.begin(), validMoves.end(), move) == validMoves.end()) {
         return false;
     }
 
-    std::cout << "Move is in valid moves" << std::endl;
+    // std::cout << "Move is in valid moves" << std::endl;
     bool valid = overrideMovePiece(move);
 
     std::shared_ptr<Square> whiteKing = findKing(Colour::White);
@@ -472,21 +469,21 @@ bool Board::movePiece(const Move& move) {
         return false;
     }
 
-    std::cout << "Move is legal" << std::endl;
+    // std::cout << "Move is legal" << std::endl;
 
     std::shared_ptr<Square> from = move.getFrom();
     std::shared_ptr<Square> to = move.getTo();
     std::shared_ptr<Piece> piece = from->getPiece();
     piece->setBoard(shared_from_this());
 
-    std::cout << "1" << std::endl;
+    // std::cout << "1" << std::endl;
 
     std::shared_ptr<Piece>capturedPiece = nullptr;
     if (to->getPiece() != nullptr) {
         capturedPiece = to->getPiece();
     }
 
-    std::cout << "2" << std::endl;
+    // std::cout << "2" << std::endl;
 
     Move currMove = move;
     // determine move type
