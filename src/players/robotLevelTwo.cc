@@ -2,7 +2,9 @@
 
 LevelTwo::LevelTwo(Colour c, Board *b) : Robot(c, b) {}
 
-LevelTwo::~LevelTwo() {}
+LevelTwo::~LevelTwo() {
+    std::cout << "LevelTwo destructor called" << std::endl;
+}
 
 Move LevelTwo::makeMove(Board &board, const string &to, const string &from, const string &promote) {
     // generate moves
@@ -26,6 +28,7 @@ Move LevelTwo::makeMove(Board &board, const string &to, const string &from, cons
                     it.setMoveType(mt);
                     allMoves.push_back(it);
                 }
+                moves.clear();
             }
         }
     }
@@ -88,6 +91,9 @@ Move LevelTwo::makeMove(Board &board, const string &to, const string &from, cons
             m = legalMoves[randomIndex];
         }
     }
-    
+    legalMoves.clear();
+    allMoves.clear();
+    checks.clear();
+    captures.clear();
     return m;
 }

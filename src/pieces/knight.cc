@@ -12,7 +12,9 @@ Knight::Knight(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'N' : 'n';
 }
 
-Knight::~Knight() {}
+Knight::~Knight() {
+    cout << "Knight destructor called" << endl;
+}
 
 //fill the vector with all possible Moves a knight can make at any given time
 vector<Move> Knight::getValidMoves() const {

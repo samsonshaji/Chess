@@ -7,7 +7,9 @@ Rook::Rook(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'R' : 'r';
 }
 
-Rook::~Rook() {}
+Rook::~Rook() {
+    cout << "Rook destructor called" << endl;
+}
 
 vector<Move> Rook::getValidMoves() const {
     vector<Move> moves;

@@ -22,4 +22,6 @@ void ScoreBoard::stalemateUpdate() {
     blackScore += 0.5;
 }
 
-ScoreBoard::~ScoreBoard() {}
+ScoreBoard::~ScoreBoard() {
+    std::cout << "ScoreBoard destructor called" << std::endl;
+}

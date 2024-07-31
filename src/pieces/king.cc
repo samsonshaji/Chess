@@ -8,7 +8,9 @@ King::King(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'K' : 'k';
 }
 
-King::~King() {}
+King::~King() {
+    std::cout << "King destructor called" << std::endl;
+}
 
 std::vector<Move> King::getValidMoves() const {
     std::vector<Move> validMoves;

@@ -1,9 +1,7 @@
 #include <iostream>
 #include <string>
 #include "controller.h"
-#include "board.h"
 #include "player.h"
-#include "human.h"
 // #include "robot.h"
 
 int main() {

@@ -2,7 +2,9 @@
 
 LevelOne::LevelOne(Colour c, Board *b) : Robot(c, b) {}
 
-LevelOne::~LevelOne() {}
+LevelOne::~LevelOne() {
+    std::cout << "LevelOne destructor called" << std::endl;
+}
 
 Move LevelOne::makeMove(Board &board, const string &to, const string &from, const string &promote) {
     std::srand(std::time(0));
@@ -25,6 +27,7 @@ Move LevelOne::makeMove(Board &board, const string &to, const string &from, cons
                     it.setMoveType(mt);
                     allMoves.push_back(it);
                 }
+                moves.clear();
             }
         }
     }
@@ -47,5 +50,6 @@ Move LevelOne::makeMove(Board &board, const string &to, const string &from, cons
         }
 
     }
+    allMoves.clear();
     return m;
 }

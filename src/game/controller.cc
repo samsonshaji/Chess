@@ -40,12 +40,18 @@ Controller::~Controller() {
             move.setPromotedPawn(nullptr);
         }
     }
-    delete board;
+    board->getMoveStack().clear();
     delete scoreBoard;
+    delete board;
     scoreBoard = nullptr;
     currentPlayer = nullptr;
+
+    if (player1 != nullptr) {
     delete player1;
+    }
+    if (player2 != nullptr) {
     delete player2;
+    }
     player1 = nullptr;
     player2 = nullptr;
 }
@@ -317,6 +323,12 @@ void Controller::endGame(bool resigned) {
         std::cout << "Stalemate!" << std::endl;
         scoreBoard->stalemateUpdate();
     }
+    board->clearBoard();
+    currentPlayer = nullptr;
+    delete player1;
+    delete player2;
+    player1 = nullptr;
+    player2 = nullptr;
     board->setupInitialBoard();
 }
 
@@ -327,6 +339,7 @@ void Controller::setupMode() {
     }
     board->clearBoard();
     board->notifyObservers();
+    
     while (!getGameStarted()) {
         std::string command;
         std::cin >> command;
