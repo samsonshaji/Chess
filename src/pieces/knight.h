@@ -8,6 +8,7 @@ class Knight : public Piece {
 public:
     Knight(Colour c);
     ~Knight();
+    //all possible knight behaviour
     std::vector<Move> getValidMoves() const override;
 };
 

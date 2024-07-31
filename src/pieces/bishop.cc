@@ -13,7 +13,6 @@ Bishop::Bishop(Colour c) : Piece(c) {
 }
 
 Bishop::~Bishop() {
-    cout << "Bishop destructor called" << endl;
 }
 
 

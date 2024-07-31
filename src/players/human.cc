@@ -9,7 +9,6 @@ bool Human::isRobot() {
 }
 
 Human::~Human() {
-    cout << "Human destructor called" << endl;
 }
 
 bool Human::validMoveCmd(const string &from, const string &to, const string &promote) {

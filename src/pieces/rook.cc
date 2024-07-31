@@ -8,7 +8,6 @@ Rook::Rook(Colour c) : Piece(c) {
 }
 
 Rook::~Rook() {
-    cout << "Rook destructor called" << endl;
 }
 
 vector<Move> Rook::getValidMoves() const {

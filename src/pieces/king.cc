@@ -9,7 +9,6 @@ King::King(Colour c) : Piece(c) {
 }
 
 King::~King() {
-    std::cout << "King destructor called" << std::endl;
 }
 
 std::vector<Move> King::getValidMoves() const {

@@ -31,7 +31,7 @@ Move LevelFour::makeMove(Board &board, const string &to, const string &from, con
     Move m;
     
     std::vector <Move> allMoves;
-    for (const auto& row : board.getBoard()) {
+    for (const auto& row : board.getState()) {
         for (const auto& square : row) {
             if (square->getPiece() != nullptr && square->getPiece()->getColour() == colour) {
                 std::vector<Move> moves = square->getPiece()->getValidMoves();
@@ -60,7 +60,7 @@ Move LevelFour::makeMove(Board &board, const string &to, const string &from, con
     vector<Move> opponentCaptures;
     Colour opponentColour = (colour == Colour::White) ? Colour::Black : Colour::White;
     //if opponent has capturing moves
-    for (const auto& row : board.getBoard()) {
+    for (const auto& row : board.getState()) {
         for (const auto& square : row) {
             if (square->getPiece() != nullptr && square->getPiece()->getColour() != colour) {
                 std::vector<Move> moves = square->getPiece()->getValidMoves();

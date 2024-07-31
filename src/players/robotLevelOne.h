@@ -5,8 +5,11 @@
 
 class LevelOne : public Robot {
     public:
+        // Constructor
         LevelOne(Colour c, Board *b);
+        // Destructor
         ~LevelOne();
+        // Make a move, as per robot level
         virtual Move makeMove(Board &board, const string &to, const string &from, const string &promote) override;
 };
 

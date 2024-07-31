@@ -7,7 +7,6 @@ Queen::Queen(Colour c) : Piece(c) {
 }
 
 Queen::~Queen() {
-    cout << "Queen destructor called" << endl;
 }
 
 std::vector<Move> Queen::getValidMoves() const {

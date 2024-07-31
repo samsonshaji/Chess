@@ -13,7 +13,6 @@ Pawn::Pawn(Colour c) : Piece(c) {
 }
 
 Pawn::~Pawn() {
-    cout << "Pawn destructor called" << endl;
 }
 
 bool Pawn::isEnPassantValid(const Board &board, int side) const {

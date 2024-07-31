@@ -8,6 +8,7 @@ private:
 public:
     King(Colour c);
     ~King();
+    //all possible king behaviour
     std::vector<Move> getValidMoves() const override;
 };
 

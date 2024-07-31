@@ -13,7 +13,6 @@ Knight::Knight(Colour c) : Piece(c) {
 }
 
 Knight::~Knight() {
-    cout << "Knight destructor called" << endl;
 }
 
 //fill the vector with all possible Moves a knight can make at any given time

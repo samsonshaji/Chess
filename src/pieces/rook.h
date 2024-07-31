@@ -11,6 +11,7 @@ private:
 public:
     Rook(Colour c);
     ~Rook();
+    //all possible rook behaviour
     std::vector<Move> getValidMoves() const override;
 };
 

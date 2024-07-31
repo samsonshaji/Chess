@@ -30,7 +30,6 @@ Controller::Controller(Player *player1, Player *player2) : player1(player1), pla
 }
 
 Controller::~Controller() {
-    cout << "Controller destructor called" << endl;
     for (auto move : board->getMoveStack()) {
         if (move.getCapturedPiece() != nullptr) {
             delete move.getCapturedPiece();
@@ -65,16 +64,8 @@ bool Controller::getGameEnded() {
     return gameEnded;
 }
 
-void Controller::setGameEnded(bool ended) {
-    gameEnded = ended;
-}
-
 bool Controller::getGameStarted() {
     return gameStarted;
-}
-
-void Controller::setGameStarted(bool started) {
-    gameStarted = started;
 }
 
 Colour Controller::getStartTurnColour() {
@@ -222,12 +213,11 @@ void Controller::handleCommand(const std::string &command) {
     } else if (action == "setup") {
         setupMode();
     } else if (action == "undo") {
-        if (MoveHistory.size() == 0) {
+        if (board->getMoveStack().size() == 0) {
             std::cout << "No moves to undo" << std::endl;
             return;
         }
         board->undoMove();
-        MoveHistory.pop_back();
         std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " called undo" << std::endl;
         currentPlayer = (currentPlayer == player1) ? player2 : player1;
         board->notifyObservers();
@@ -239,7 +229,7 @@ void Controller::handleCommand(const std::string &command) {
 void Controller::startGame(Player &p1, Player &p2) {
     player1 = &p1;
     player2 = &p2;
-    MoveHistory.clear();
+    board->getMoveStack().clear();
     gameEnded = false;
     gameStarted = true;
     std::cout << "Game started! (between Player 1 and Player2)" << std::endl;
@@ -255,9 +245,7 @@ void Controller::startGame(Player &p1, Player &p2) {
 
 void Controller::checkWin() {
     Colour colour = (currentPlayer == player1) ? Colour::White : Colour::Black;
-    std::cout << "Checking whether " << ((colour == Colour::White) ? "White" : "Black") << " is in check" << std::endl;
     bool isInCheck = board->isInCheck(colour);
-    std::cout << "Check: " << isInCheck << std::endl;
 
     if (isInCheck) {
         // std::cout << (colour == White ? "White" : "Black") << " is in check." << std::endl;
@@ -293,7 +281,6 @@ void Controller::runGame(const Move &move) {
     if (!legal) {
         return;
     }
-    MoveHistory.push_back(move);
     std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " made a move" << std::endl;
     std::cout << "Player " << (currentPlayer == player1 ? "2" : "1") << "'s turn...." << std::endl;
     currentPlayer = (currentPlayer->getColour() == White) ? player2 : player1;

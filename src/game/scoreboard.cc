@@ -23,5 +23,4 @@ void ScoreBoard::stalemateUpdate() {
 }
 
 ScoreBoard::~ScoreBoard() {
-    std::cout << "ScoreBoard destructor called" << std::endl;
 }

@@ -7,7 +7,6 @@ TextObserver::TextObserver(Subject &sub, std::ostream &out) : subject(sub), out(
 
 TextObserver::~TextObserver() {
     subject.detach(this);
-    cout << "TextObserver destructor called" << endl;
 }
 
 void TextObserver::notify() {

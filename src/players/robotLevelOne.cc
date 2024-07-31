@@ -3,7 +3,6 @@
 LevelOne::LevelOne(Colour c, Board *b) : Robot(c, b) {}
 
 LevelOne::~LevelOne() {
-    std::cout << "LevelOne destructor called" << std::endl;
 }
 
 Move LevelOne::makeMove(Board &board, const string &to, const string &from, const string &promote) {
@@ -12,7 +11,7 @@ Move LevelOne::makeMove(Board &board, const string &to, const string &from, cons
     Move m;
     
     std::vector <Move> allMoves;
-    for (const auto& row : board.getBoard()) {
+    for (const auto& row : board.getState()) {
         for (const auto& square : row) {
             if (square->getPiece() != nullptr && square->getPiece()->getColour() == colour) {
                 std::vector<Move> moves = square->getPiece()->getValidMoves();

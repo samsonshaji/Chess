@@ -21,5 +21,4 @@ Subject::~Subject() {
     delete obs;
   }
   observers.clear();
-  std::cout << "Subject destructor called" << std::endl;
 }
