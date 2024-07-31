@@ -12,8 +12,6 @@ int main() {
     Controller controller(whitePlayer, blackPlayer);
 
     cout << "Welcome to Chess! " << endl;
-    
-
 
     //main game command loop
     std::string command;

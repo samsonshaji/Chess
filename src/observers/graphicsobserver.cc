@@ -3,18 +3,23 @@
 #include <string>
 #include <sstream>
 
+
+// GraphicsObserver constructor
 GraphicsObserver::GraphicsObserver(Subject &sub) : subject(sub), win(1000, 1000) {
     subject.attach(this);
 }
 
+// GraphicsObserver destructor
 GraphicsObserver::~GraphicsObserver() {
     subject.detach(this);
 }
 
+// GraphicsObserver notify
 void GraphicsObserver::notify() {
     if(!gridDrawn){
         win.fillRectangle(0, 0, 1000, 1000, Xwindow::Black);
 
+        // Remders board via XWindow
         for(int i = 0; i < 2; i++){
             win.drawString(100*1 + 50, 50 + (900 * i), "A", Xwindow::White);
             win.drawString(100*2 + 50, 50 + (900 * i), "B", Xwindow::White);
@@ -37,6 +42,7 @@ void GraphicsObserver::notify() {
         gridDrawn = true;
     }   
 
+    // Renders pieces via XWindow
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if ((i + j) % 2 == 0) {
