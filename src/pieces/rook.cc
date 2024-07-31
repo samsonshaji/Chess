@@ -7,7 +7,8 @@ Rook::Rook(Colour c) : Piece(c) {
     symbol = (c == Colour::White) ? 'R' : 'r';
 }
 
-Rook::~Rook() {}
+Rook::~Rook() {
+}
 
 vector<Move> Rook::getValidMoves() const {
     vector<Move> moves;

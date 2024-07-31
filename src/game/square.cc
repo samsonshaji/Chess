@@ -30,11 +30,6 @@ void Square::setBoard(std::shared_ptr<Board> b) {
     board = b;
 }
 
-void Square::removePiece() {
-    piece->setSquare(nullptr);
-    piece = nullptr;
-}
-
 void Square::deletePiece() {
     // delete piece;
     piece = nullptr;

@@ -18,10 +18,6 @@ Colour Piece::getColour() const {
     return colour;
 }
 
-void Piece::setColour(Colour c) {
-    colour = c;
-}
-
 Piece::Piece(Colour c) : colour(c) {}
 
 std::shared_ptr<Square>Piece::getSquare() const {

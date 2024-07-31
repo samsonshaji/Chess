@@ -22,4 +22,5 @@ void ScoreBoard::stalemateUpdate() {
     blackScore += 0.5;
 }
 
-ScoreBoard::~ScoreBoard() {}
+ScoreBoard::~ScoreBoard() {
+}

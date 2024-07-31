@@ -20,4 +20,5 @@ Subject::~Subject() {
   for (auto &obs : observers) {
     delete obs;
   }
+  observers.clear();
 }

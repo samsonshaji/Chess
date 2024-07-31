@@ -20,7 +20,6 @@ Board::~Board() {
         for (auto& square : row) {
             // delete square;
             square = nullptr;
-            controller = nullptr;
         }
     }
 }
@@ -36,30 +35,23 @@ void Board::setSquares() {
     }
 }
 
-void Board::print() const {
-    for (int i = 7; i >= 0; i--) {
-        std::cout << i+1 << " ";
-        for (int j = 0; j < 8; j++) {
-            if (board[i][j]->getPiece() == nullptr && (i+j)%2 == 0) {
-                std::cout << "_";
-            } else if (board[i][j]->getPiece() == nullptr && (i+j)%2 == 1) {
-                std::cout << " ";
-            }
-            else {
-                std::cout << board[i][j]->getPiece()->getSymbol();
-            }
-        }
-        std::cout << std::endl;
-    }
-    std::cout << "  abcdefgh" << std::endl;
-}
-
 void Board::clearBoard() {
     for (auto& row : board) {
         for (auto& square : row) {
             square->setPiece(nullptr);
         }
     }
+    for (auto move : moveStack) {
+        if (move.getCapturedPiece() != nullptr) {
+            // delete move.getCapturedPiece();
+            move.setCapturedPiece(nullptr);
+        }
+        else if( move.getPromotedPawn() != nullptr){
+            // delete move.getPromotedPawn();
+            move.setPromotedPawn(nullptr);
+        }
+    }
+    moveStack.clear();
 }
 
 void Board::setupInitialBoard() {
@@ -142,10 +134,6 @@ std::shared_ptr<Square> Board::findKing(Colour colour) const {
     }
     // not found -- should never happen
     return nullptr;
-}
-
-void Board::addMoveToStack(const Move& move) {
-    moveStack.push_back(move);
 }
 
 std::vector<Move> Board::getMoveStack() const {
@@ -786,10 +774,6 @@ bool Board::isStalemate(Colour colour) const {
     }
 
 	return false;
-}
-
-std::vector<std::vector<std::shared_ptr<Square>>> Board::getBoard() {
-    return board;
 }
 
 MoveType Board::determineMoveType(const Move& move) {

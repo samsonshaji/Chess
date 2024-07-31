@@ -2,7 +2,8 @@
 
 LevelTwo::LevelTwo(Colour c, std::shared_ptr<Board>b) : Robot(c, b) {}
 
-LevelTwo::~LevelTwo() {}
+LevelTwo::~LevelTwo() {
+}
 
 Move LevelTwo::makeMove(Board &board, const string &to, const string &from, const string &promote) {
     // generate moves
@@ -11,7 +12,7 @@ Move LevelTwo::makeMove(Board &board, const string &to, const string &from, cons
     Move m;
     
     std::vector <Move> allMoves;
-    for (const auto& row : board.getBoard()) {
+    for (const auto& row : board.getState()) {
         for (const auto& square : row) {
             if (square->getPiece() != nullptr && square->getPiece()->getColour() == colour) {
                 std::vector<Move> moves = square->getPiece()->getValidMoves();
@@ -26,6 +27,7 @@ Move LevelTwo::makeMove(Board &board, const string &to, const string &from, cons
                     it.setMoveType(mt);
                     allMoves.push_back(it);
                 }
+                moves.clear();
             }
         }
     }
@@ -87,6 +89,9 @@ Move LevelTwo::makeMove(Board &board, const string &to, const string &from, cons
             m = legalMoves[randomIndex];
         }
     }
-    
+    legalMoves.clear();
+    allMoves.clear();
+    checks.clear();
+    captures.clear();
     return m;
 }

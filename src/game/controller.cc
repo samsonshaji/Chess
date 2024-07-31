@@ -13,10 +13,10 @@
 #include "pawn.h"
 #include "queen.h"
 #include "robot.h"
-#include "robotLevelOne.h"
-#include "robotLevelTwo.h"
-#include "robotLevelThree.h"
 #include "robotLevelFour.h"
+#include "robotLevelOne.h"
+#include "robotLevelThree.h"
+#include "robotLevelTwo.h"
 #include "rook.h"
 #include "scoreboard.h"
 #include "square.h"
@@ -33,7 +33,6 @@ Controller::Controller() : player1(nullptr), player2(nullptr), currentPlayer(nul
 }
 
 Controller::~Controller() {
-    // std::cout << "Controller destructor called" << std::endl;
     for (auto move : board->getMoveStack()) {
         if (move.getCapturedPiece() != nullptr) {
             // delete move.getCapturedPiece();
@@ -46,8 +45,10 @@ Controller::~Controller() {
     }
     // delete board;
     // delete scoreBoard;
+    board->getMoveStack().clear();
     scoreBoard = nullptr;
     currentPlayer = nullptr;
+
     // delete player1;
     // delete player2;
     player1 = nullptr;
@@ -62,16 +63,8 @@ bool Controller::getGameEnded() {
     return gameEnded;
 }
 
-void Controller::setGameEnded(bool ended) {
-    gameEnded = ended;
-}
-
 bool Controller::getGameStarted() {
     return gameStarted;
-}
-
-void Controller::setGameStarted(bool started) {
-    gameStarted = started;
 }
 
 Colour Controller::getStartTurnColour() {
@@ -84,6 +77,27 @@ void Controller::setStartTurnColour(Colour colour) {
 
 std::shared_ptr<Player>Controller::getCurrentPlayer() {
     return currentPlayer;
+}
+
+std::string Controller::coordinateToChessNotation(int x, int y) {
+    std::string notation;
+    notation += 'a' + x; 
+    notation += std::to_string(1 + y);
+    return notation;
+}
+
+void Controller::printLatestMove(const std::vector<Move>& getMoveStack) {
+    if (!getMoveStack.empty()) {
+        const auto& move = getMoveStack.back();
+        std::string fromNotation = coordinateToChessNotation(move.getFrom()->getX(), move.getFrom()->getY());
+        std::string toNotation = coordinateToChessNotation(move.getTo()->getX(), move.getTo()->getY());
+
+        std::cout << "Here is the latest move: "
+                  << "\"" << fromNotation << "\" to \"" << toNotation << "\""
+                  << std::endl;
+    } else {
+        std::cout << "No moves available." << std::endl;
+    }
 }
 
 std::shared_ptr<Square>Controller::stringToSquare(std::string squarestring) {
@@ -214,21 +228,24 @@ void Controller::handleCommand(const std::string &command) {
             std::cout << "Invalid move" << std::endl;
             return;
         }
-
+        
         runGame(move);
 
     } else if (action == "setup") {
         setupMode();
     } else if (action == "undo") {
-        if (MoveHistory.size() == 0) {
+        if (board->getMoveStack().size() == 0) {
             std::cout << "No moves to undo" << std::endl;
             return;
         }
         board->undoMove();
-        MoveHistory.pop_back();
         std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " called undo" << std::endl;
         currentPlayer = (currentPlayer == player1) ? player2 : player1;
         board->notifyObservers();
+    } else if (action == "history") {
+        printLatestMove(board->getMoveStack());
+    } else if (action == "score") {
+        displayScore();
     } else {
         std::cout << "Invalid command" << std::endl;
     }
@@ -237,7 +254,7 @@ void Controller::handleCommand(const std::string &command) {
 void Controller::startGame(std::shared_ptr<Player> p1, std::shared_ptr<Player> p2) {
     player1 = p1;
     player2 = p2;
-    MoveHistory.clear();
+    board->getMoveStack().clear();
     gameEnded = false;
     gameStarted = true;
     std::cout << "Game started! (between Player 1 and Player2)" << std::endl;
@@ -253,9 +270,7 @@ void Controller::startGame(std::shared_ptr<Player> p1, std::shared_ptr<Player> p
 
 void Controller::checkWin() {
     Colour colour = (currentPlayer == player1) ? Colour::White : Colour::Black;
-    std::cout << "Checking whether " << ((colour == Colour::White) ? "White" : "Black") << " is in check" << std::endl;
     bool isInCheck = board->isInCheck(colour);
-    std::cout << "Check: " << isInCheck << std::endl;
 
     if (isInCheck) {
         // std::cout << (colour == White ? "White" : "Black") << " is in check." << std::endl;
@@ -291,7 +306,6 @@ void Controller::runGame(const Move &move) {
     if (!legal) {
         return;
     }
-    MoveHistory.push_back(move);
     std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " made a move" << std::endl;
     std::cout << "Player " << (currentPlayer == player1 ? "2" : "1") << "'s turn...." << std::endl;
     currentPlayer = (currentPlayer->getColour() == White) ? player2 : player1;
@@ -327,6 +341,12 @@ void Controller::endGame(bool resigned) {
         std::cout << "Stalemate!" << std::endl;
         scoreBoard->stalemateUpdate();
     }
+    board->clearBoard();
+    currentPlayer = nullptr;
+    // delete player1;
+    // delete player2;
+    player1 = nullptr;
+    player2 = nullptr;
     board->setupInitialBoard();
 }
 
@@ -337,6 +357,7 @@ void Controller::setupMode() {
     }
     board->clearBoard();
     board->notifyObservers();
+    
     while (!getGameStarted()) {
         std::string command;
         std::cin >> command;

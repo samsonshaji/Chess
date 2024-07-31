@@ -2,7 +2,6 @@
 #include <string>
 #include <memory>
 #include "controller.h"
-#include "board.h"
 #include "player.h"
 #include "human.h"
 #include "robot.h"
@@ -10,6 +9,9 @@
 int main() {
     std::shared_ptr<Controller> controller = std::make_shared<Controller>();
 
+    cout << "Welcome to Chess! " << endl;
+
+    //main game command loop
     std::string command;
     std::cout << "> ";
     while (std::getline(std::cin, command)) {

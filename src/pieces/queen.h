@@ -10,6 +10,7 @@ private:
 public:
     Queen(Colour c);
     ~Queen();
+    //all possible queen behaviour
     std::vector<Move> getValidMoves() const override;
 };
 

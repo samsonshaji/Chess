@@ -7,6 +7,7 @@ class LevelThree : public Robot {
 public:
     LevelThree(Colour c, std::shared_ptr<Board>b);
     ~LevelThree();
+    // Make a valid move, as per robot level
     virtual Move makeMove(Board &board, const string &to, const string &from, const string &promote) override;
 };
 
