@@ -13,6 +13,7 @@ class Subject {
     void attach(Observer *o);
     void detach(Observer *o);
     void notifyObservers();
+    // getState returns the current state of the board
     virtual std::vector<std::vector<Square*>> getState() const = 0;
     virtual ~Subject() = 0;
 };

@@ -16,6 +16,7 @@ void Subject::notifyObservers() {
   }
 }
 
+// destructor => needs to delete all observers
 Subject::~Subject() {
   for (auto &obs : observers) {
     delete obs;
