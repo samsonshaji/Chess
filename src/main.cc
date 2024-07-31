@@ -8,8 +8,14 @@ int main() {
     Player* whitePlayer = nullptr;
     Player* blackPlayer = nullptr;
 
+    //create main controller, this will control the game flow through user input
     Controller controller(whitePlayer, blackPlayer);
 
+    cout << "Welcome to Chess! " << endl;
+    
+
+
+    //main game command loop
     std::string command;
     std::cout << "> ";
     while (std::getline(std::cin, command)) {

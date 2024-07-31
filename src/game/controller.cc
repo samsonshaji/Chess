@@ -29,7 +29,7 @@ Controller::Controller(Player *player1, Player *player2) : player1(player1), pla
 }
 
 Controller::~Controller() {
-    std::cout << "Controller destructor called" << std::endl;
+    cout << "Controller destructor called" << endl;
     for (auto move : board->getMoveStack()) {
         if (move.getCapturedPiece() != nullptr) {
             delete move.getCapturedPiece();
@@ -47,10 +47,10 @@ Controller::~Controller() {
     currentPlayer = nullptr;
 
     if (player1 != nullptr) {
-    delete player1;
+        delete player1;
     }
     if (player2 != nullptr) {
-    delete player2;
+        delete player2;
     }
     player1 = nullptr;
     player2 = nullptr;
@@ -212,7 +212,7 @@ void Controller::handleCommand(const std::string &command) {
             std::cout << "Invalid move" << std::endl;
             return;
         }
-
+        
         runGame(move);
 
     } else if (action == "setup") {

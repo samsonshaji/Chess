@@ -25,11 +25,11 @@ Board::Board() {
 }
 
 Board::~Board() {
+    cout << "Board destructor called" << endl;
     for (auto& row : board) {
         for (auto& square : row) {
             delete square;
             square = nullptr;
-            controller = nullptr;
         }
     }
     controller = nullptr;

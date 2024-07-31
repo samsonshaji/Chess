@@ -60,6 +60,7 @@ Xwindow::Xwindow(int width, int height) {
 }
 
 Xwindow::~Xwindow() {
+    std::cout << "Xwindow destructor called" << std::endl;
     XFreeGC(d, gc);
     XUnloadFont(d, font);
     XCloseDisplay(d);
