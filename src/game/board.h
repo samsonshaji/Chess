@@ -61,7 +61,7 @@ public:
     std::vector<Move> getMoveStack() const;
     Move getLastMove() const;
 
-
+    //get 2D vector of the board
     std::vector<std::vector<Square*>> getState() const override;
 
 };

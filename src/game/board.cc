@@ -11,6 +11,7 @@
 #include "move.h"
 #include "square.h"
 
+//construct a board with 8x8 squares when the program is first run
 Board::Board() {
     for (int i = 0; i < 8; i++) {
         std::vector<Square*> row;
@@ -21,12 +22,14 @@ Board::Board() {
         }
         board.push_back(row);
     }
+    //initialize the board with the standard chess setup
     setupInitialBoard();
 }
 
 Board::~Board() {
     for (auto& row : board) {
         for (auto& square : row) {
+            //delete all squares
             delete square;
             square = nullptr;
         }
@@ -38,11 +41,14 @@ void Board::clearBoard() {
     for (auto& row : board) {
         for (auto& square : row) {
             if (square->getPiece() != nullptr) {
+                //delete piece at every square
                 delete square->getPiece();
             }
             square->setPiece(nullptr);
         }
     }
+    //delete any pieces that aren't on the board
+    //may have been captured or promoted
     for (auto move : moveStack) {
         if (move.getCapturedPiece() != nullptr) {
             delete move.getCapturedPiece();
@@ -57,7 +63,6 @@ void Board::clearBoard() {
 }
 
 void Board::setupInitialBoard() {
-    // calls square's setPiece function
     // white pieces
     board[0][0]->setPiece(new Rook(Colour::White));
     board[0][1]->setPiece(new Knight(Colour::White));
@@ -91,6 +96,7 @@ void Board::addPiece(Piece* piece, Square* square) {
 
 void Board::removePiece(Square* square) {
    if (square->getPiece() != nullptr) {
+        //delete piece at square
         delete square->getPiece();
     }
     square->setPiece(nullptr);}
@@ -100,9 +106,12 @@ std::vector<std::vector<Square*>> Board::getState() const {
 }
 
 Square* Board::getSquare(int x, int y) const {
+    //check if the coordinates are within the board
     if (x < 0 || x > 7 || y < 0 || y > 7) {
         return nullptr;
     }
+    //return the square at the given coordinates
+    //flipped because of 2D vector is setup
     return board[y][x];
 }
 
@@ -111,13 +120,14 @@ void Board::setController(Controller* ctrl) {
 }
 
 Square* Board::findKing(Colour colour) const {
+    //iterate through the entire board
     for (const auto& row : board) {
         for (const auto& square : row) {
             Piece* piece = square->getPiece();
 
             if (piece == nullptr) {
             }
-
+            //given color is the same as the piece's color and the piece is a king
             if (piece && piece->getColour() == colour && piece->getPieceType() == PieceType::king) {
                 return square;
             }
@@ -136,20 +146,18 @@ Move Board::getLastMove() const {
 }
 
 bool Board::isMoveLegal(const Move& move) {
+    //check that the square where the move starts exists
     if (move.getFrom() == nullptr) {
-        // std::cout << "No square at coordinates: " << move.getFrom()->getX() << " " << move.getFrom()->getY() << std::endl;
         return false;
     }
-
+    //check that there is a piece at the square where the move starts
     if (move.getFrom()->getPiece() == nullptr) {
-        // std::cout << "No piece at square: " << move.getFrom()->getX() << " " << move.getFrom()->getY() << std::endl;
         return false;
     }
 
-    // std::cout << "Move from: " << move.getFrom()->getX() << " " << move.getFrom()->getY() << std::endl;
     Colour colour = move.getFrom()->getPiece()->getColour();
 
-    // find all valid moves of all pieces of the given colour, that put the king out of check
+    // find all valid moves of all pieces of the given colour
     std::vector<Move> validMoves;
 
     for (const auto& row : board) {
@@ -162,10 +170,13 @@ bool Board::isMoveLegal(const Move& move) {
         }
     }
 
+    // check if the move is in the list of valid moves
     if (std::find(validMoves.begin(), validMoves.end(), move) == validMoves.end()) {
         return false;
     }
 
+    // check if the move puts the king in check
+    //simulate the move ahead of the play
     bool valid = overrideMovePiece(move);
 
     Square* whiteKing = findKing(Colour::White);
@@ -177,6 +188,7 @@ bool Board::isMoveLegal(const Move& move) {
     int blackKingX = blackKing->getX();
     int blackKingY = blackKing->getY();
 
+    // check if the kings are within range of each other
     bool kingsTogether = false;
     if (whiteKingX-1 == blackKingX && whiteKingY-1 == blackKingY) {
         kingsTogether = true;
@@ -196,12 +208,15 @@ bool Board::isMoveLegal(const Move& move) {
         kingsTogether = true;
     }
 
+    //kings should not be in range of each other
     if (kingsTogether) {
         undoMove();
         return false;
     }
+    //check if the king is in check
     bool isCheck = isInCheck(colour);
 
+    //if move is valid and the players king does not end up in check, return true
     if (valid) {
         undoMove();
         if (isCheck) {
@@ -215,7 +230,6 @@ bool Board::isMoveLegal(const Move& move) {
 
 
 bool Board::isValidSetup() const {
-    // check if there is exactly one king of each color
     int whiteKingCount = 0;
     int blackKingCount = 0;
     for (const auto& row : board) {
@@ -232,6 +246,7 @@ bool Board::isValidSetup() const {
             }
         }
     }
+    //check that there is only one king of each color
     if (whiteKingCount != 1 || blackKingCount != 1) {
         return false;
     }
@@ -294,6 +309,7 @@ bool Board::isValidSetup() const {
         kingsTogether = true;
     }
 
+    // ensure kings are not in range of each other
     if (kingsTogether) {
         return false;
     }
@@ -307,12 +323,13 @@ bool Board::isValidSetup() const {
 }
 
 bool Board::overrideMovePiece(const Move& move) {
+    // check that the square where the move starts exists
     if (move.getFrom() == nullptr) {
         return false;
     }
 
+    // check that there is a piece at the square where the move starts
     if (move.getFrom()->getPiece() == nullptr) {
-        // std::cout << "No piece at square: " << move.getFrom()->getX() << " " << move.getFrom()->getY() << std::endl;
         return false;
     }
 
@@ -323,15 +340,15 @@ bool Board::overrideMovePiece(const Move& move) {
 
     Piece *capturedPiece = nullptr;
 
+    // check if there is a piece at the square where the move ends and store it
     if (to->getPiece() != nullptr) {
         capturedPiece = to->getPiece();
     }
 
     Move currMove = move;
 
-    // determine move type
+    // determine move type, default is normal
     MoveType moveType = MoveType::Normal;
-
     if (piece->getPieceType() == PieceType::pawn) {
         if (to->getX() != from->getX() && capturedPiece == nullptr) {
             moveType = MoveType::EnPassant;
@@ -350,6 +367,7 @@ bool Board::overrideMovePiece(const Move& move) {
 
     currMove.setMoveType(moveType);
 
+    // perform the move based on the move type
     if (currMove.getMoveType() == MoveType::Normal) {
         to->setPiece(piece);
         from->setPiece(nullptr);
@@ -398,7 +416,7 @@ bool Board::overrideMovePiece(const Move& move) {
         }
 
         Piece *newPiece = nullptr;
-        // PieceType promotedType = controller->getPromotedTo();
+        // determine the piece to promote to
         char promotedTo = currMove.getPromotedTo();
         switch (promotedTo) {
             case 'q':
@@ -416,7 +434,7 @@ bool Board::overrideMovePiece(const Move& move) {
             default:
                 break;
         }
-
+        // set the promoted pawn
         currMove.setPromotedPawn(piece);
 
         to->setPiece(newPiece);
@@ -437,6 +455,7 @@ bool Board::overrideMovePiece(const Move& move) {
 
 
 bool Board::movePiece(const Move& move) {
+    // check if the move is legal
     if (!isMoveLegal(move)) {
         if (!controller->getCurrentPlayer()->isRobot()) {
             std::cout << "Illegal move, try again!" << std::endl;
@@ -449,13 +468,14 @@ bool Board::movePiece(const Move& move) {
     Piece* piece = from->getPiece();
     piece->setBoard(this);
 
+    // check if there is a piece at the square where the move ends and store it
     Piece *capturedPiece = nullptr;
     if (to->getPiece() != nullptr) {
         capturedPiece = to->getPiece();
     }
 
     Move currMove = move;
-    // determine move type
+    // determine move type, default is normal
     MoveType moveType = MoveType::Normal;
 
     if (piece->getPieceType() == PieceType::pawn) {
@@ -476,6 +496,7 @@ bool Board::movePiece(const Move& move) {
 
     currMove.setMoveType(moveType);
 
+    // perform the move based on the move type
     if (currMove.getMoveType() == MoveType::Normal) {
         to->setPiece(piece);
         from->setPiece(nullptr);
@@ -498,12 +519,10 @@ bool Board::movePiece(const Move& move) {
         piece->setSquare(to);
     } else if (currMove.getMoveType() == MoveType::Castling) {
 
-        // set king
         to->setPiece(piece);
         from->setPiece(nullptr);
         piece->setSquare(to);
 
-        // set rook
         // Kingside castling
         if (to->getX() == from->getX() + 2) {
             Square* rookFrom = getSquare(7, from->getY());
@@ -530,7 +549,7 @@ bool Board::movePiece(const Move& move) {
 
         Piece *newPiece = nullptr;
         char promotedTo = currMove.getPromotedTo();
-
+        // determine the piece to promote to
         if (promotedTo == 'q' || promotedTo == 'Q') {
             newPiece = new Queen(piece->getColour());
         } else if (promotedTo == 'r' || promotedTo == 'R') {
@@ -540,7 +559,7 @@ bool Board::movePiece(const Move& move) {
         } else if (promotedTo == 'n' || promotedTo == 'N') {
             newPiece = new Knight(piece->getColour());
         }
-
+        // set the promoted pawn
         currMove.setPromotedPawn(piece);
 
         to->setPiece(newPiece);
@@ -555,13 +574,14 @@ bool Board::movePiece(const Move& move) {
 
     // add move to stack
     moveStack.push_back(currMove);
-
+    //update display
     notifyObservers();
 
     return true;
 }
 
 void Board::undoMove() {
+    // check if there are any moves to undo
     if (moveStack.size() == 0) {
         return;
     }
@@ -574,6 +594,8 @@ void Board::undoMove() {
     Piece* piece = to->getPiece();
     piece->setBoard(this);
 
+    // undo the move based on the move type
+    //reverse move performance logic
     if (lastMove.getMoveType() == MoveType::Normal) {
         from->setPiece(piece);
         to->setPiece(nullptr);
@@ -658,13 +680,13 @@ void Board::undoMove() {
 }
 
 bool Board::isInCheck(Colour colour) const {
-    // check if the king of the given colour is in check
+    // find the king of the given colour
     Square* kingSquare = findKing(colour);
     if (kingSquare == nullptr) {
-        // std::cout << "King not found!!!" << std::endl;
         return false;
     }
 
+    // find all valid moves of all pieces of the opposite colour
     std::vector<Move> allValidMoves;
 
     for (const auto& row : board) {
@@ -679,6 +701,7 @@ bool Board::isInCheck(Colour colour) const {
         }
     }
 
+    // check if any of the valid moves of the opposite colour are to the king's square
     for (const auto& move : allValidMoves) {
         if (move.getTo() == kingSquare) {
             return true;
@@ -690,12 +713,12 @@ bool Board::isInCheck(Colour colour) const {
 
 
 bool Board::isCheckmate(Colour colour) {
-
+    // check if the given colour is in check
     if (!isInCheck(colour)) {
         return false;
     }
 
-    // find all valid moves of all pieces of the given colour, that put the king out of check
+    // find all valid moves of all pieces of the given colour
     std::vector<Move> validMoves;
     for (const auto& row : board) {
         for (const auto& square : row) {
@@ -707,6 +730,7 @@ bool Board::isCheckmate(Colour colour) {
         }
     }
 
+    // check if any valid moves of the given colour put the king out of check
     for (const auto& move : validMoves) {
         bool valid = overrideMovePiece(move);
         bool isCheck = isInCheck(colour);
@@ -725,6 +749,7 @@ bool Board::isStalemate(Colour colour) const {
     bool turn = (colour == Colour::White) ? true : false;
 	std::vector<Move> moveList;
 
+    // find all valid moves of all pieces of the given colour
 	if (turn) {
         for (const auto& row : board) {
             for (const auto& square : row) {
@@ -748,14 +773,31 @@ bool Board::isStalemate(Colour colour) const {
         }
 	}
 
+    //if no moves are available, it is a stalemate
     if (moveList.size() == 0) {
         return true;
     }
 
-	return false;
+	//loop through the board and check that it isn't only 2 kings left
+    int pieceCount = 0;
+    for (const auto& row : board) {
+        for (const auto& square : row) {
+            if (square->getPiece() != nullptr) {
+                pieceCount++;
+            }
+        }
+    }
+
+    if (pieceCount == 2) {
+        return true;
+    }
+
+    return false;
 }
 
 MoveType Board::determineMoveType(const Move& move) {
+    //based off move attributes, determine the type of move
+    //helper function for robots
     Square* from = move.getFrom();
     Square* to = move.getTo();
     Piece* piece = from->getPiece();

@@ -8,6 +8,7 @@ private:
 public:
     Bishop(Colour c);
     ~Bishop();
+    //all possible moves a bishop can make
     std::vector<Move> getValidMoves() const override;
 };
 

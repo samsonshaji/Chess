@@ -45,6 +45,10 @@ class Controller {
         void setupMode();
         //return associated square based off of string input
         Square* stringToSquare(std::string squarestring);
+        //print last move made
+        void printLatestMove(const std::vector<Move>& MoveHistory);
+        //converts a code coordinate to chess board coordinate
+        std::string coordinateToChessNotation(int x, int y);
         
         //getters and setters
         void setPromotedTo(std::string promotedType);
@@ -58,9 +62,7 @@ class Controller {
 
         Player* getCurrentPlayer();
 
-        void printLatestMove(const std::vector<Move>& MoveHistory);
 
-        std::string coordinateToChessNotation(int x, int y);
 };
 
 #endif
