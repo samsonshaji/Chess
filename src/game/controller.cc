@@ -12,10 +12,10 @@
 #include "pawn.h"
 #include "queen.h"
 #include "robot.h"
-#include "robotLevelOne.h"
-#include "robotLevelTwo.h"
-#include "robotLevelThree.h"
 #include "robotLevelFour.h"
+#include "robotLevelOne.h"
+#include "robotLevelThree.h"
+#include "robotLevelTwo.h"
 #include "rook.h"
 #include "scoreboard.h"
 #include "square.h"
@@ -34,8 +34,7 @@ Controller::~Controller() {
         if (move.getCapturedPiece() != nullptr) {
             delete move.getCapturedPiece();
             move.setCapturedPiece(nullptr);
-        }
-        else if( move.getPromotedPawn() != nullptr){
+        } else if (move.getPromotedPawn() != nullptr) {
             delete move.getPromotedPawn();
             move.setPromotedPawn(nullptr);
         }
@@ -78,6 +77,28 @@ void Controller::setStartTurnColour(Colour colour) {
 
 Player *Controller::getCurrentPlayer() {
     return currentPlayer;
+}
+
+std::string Controller::coordinateToChessNotation(int x, int y) {
+    std::string notation;
+    notation += 'a' + x; 
+    notation += std::to_string(1 + y);
+    return notation;
+}
+
+
+void Controller::printLatestMove(const std::vector<Move>& getMoveStack) {
+    if (!getMoveStack.empty()) {
+        const auto& move = getMoveStack.back();
+        std::string fromNotation = coordinateToChessNotation(move.getFrom()->getX(), move.getFrom()->getY());
+        std::string toNotation = coordinateToChessNotation(move.getTo()->getX(), move.getTo()->getY());
+
+        std::cout << "Here is the latest move: "
+                  << "\"" << fromNotation << "\" to \"" << toNotation << "\""
+                  << std::endl;
+    } else {
+        std::cout << "No moves available." << std::endl;
+    }
 }
 
 Square *Controller::stringToSquare(std::string squarestring) {
@@ -221,6 +242,10 @@ void Controller::handleCommand(const std::string &command) {
         std::cout << "Player " << (currentPlayer == player1 ? "1" : "2") << " called undo" << std::endl;
         currentPlayer = (currentPlayer == player1) ? player2 : player1;
         board->notifyObservers();
+    } else if (action == "history") {
+        printLatestMove(board->getMoveStack());
+    } else if (action == "score") {
+        displayScore();
     } else {
         std::cout << "Invalid command" << std::endl;
     }

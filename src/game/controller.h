@@ -58,6 +58,11 @@ class Controller {
 
         Player* getCurrentPlayer();
 
+        void displayScore();
+
+        void printLatestMove(const std::vector<Move>& MoveHistory);
+
+        std::string coordinateToChessNotation(int x, int y);
 };
 
 #endif
