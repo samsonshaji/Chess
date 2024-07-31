@@ -28,7 +28,7 @@ std::vector<Move> King::getValidMoves() const {
 
                 // Ensure new position is within board limits
                 if (newX >= 0 && newX < 8 && newY >= 0 && newY < 8) {
-                    Square *targetSquare = board->getSquare(newX, newY);
+                    std::shared_ptr<Square>targetSquare = board->getSquare(newX, newY);
 
                     // Check if the target square is either empty or contains an opponent's piece
                     if (targetSquare->getPiece() == nullptr) {

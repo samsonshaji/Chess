@@ -4,6 +4,8 @@
 #include "player.h"
 #include "movetype.h"
 
+using namespace std;
+
 class Human : public Player {
 private:
     bool validMoveCmd(const string &from, const string &to, const string &promote);

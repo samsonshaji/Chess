@@ -24,15 +24,15 @@ void Piece::setColour(Colour c) {
 
 Piece::Piece(Colour c) : colour(c) {}
 
-Square *Piece::getSquare() const {
+std::shared_ptr<Square>Piece::getSquare() const {
     return (square) ? square : nullptr;
 }
 
-void Piece::setSquare(Square *s) {
+void Piece::setSquare(std::shared_ptr<Square>s) {
     square = s;
 }
 
-void Piece::setBoard(Board *b) {
+void Piece::setBoard(std::shared_ptr<Board>b) {
     board = b;
 }
 
@@ -57,7 +57,6 @@ void Piece::addMovesInDirection(std::vector<Move>& moves, int xDir, int yDir) co
     int curY = square->getY();
     int posX = curX + xDir;
     int posY = curY + yDir;
-
     while(posX >= 0 && posX < 8 && posY >= 0 && posY < 8){
         if (board->getSquare(posX, posY) && board->getSquare(posX, posY)->getPiece() != nullptr) {
             if (board->getSquare(posX, posY)->getPiece()->getColour() != colour) {

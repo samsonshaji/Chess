@@ -1,13 +1,14 @@
 #include "move.h"
 #include <iostream>
+#include <memory>
 
 Move::Move() {}
 
-Move::Move(Square* f, Square* t) : from(f), to(t) {}
+Move::Move(std::shared_ptr<Square> f, std::shared_ptr<Square> t) : from(f), to(t) {}
 
-Move::Move(Square* f, Square* t, MoveType mt) : from(f), to(t), type(mt) {}
+Move::Move(std::shared_ptr<Square> f, std::shared_ptr<Square> t, MoveType mt) : from(f), to(t), type(mt) {}
 
-Move::Move(Square* f, Square* t, MoveType mt, char p) : from(f), to(t), type(mt), promotedTo(p) {}
+Move::Move(std::shared_ptr<Square> f, std::shared_ptr<Square> t, MoveType mt, char p) : from(f), to(t), type(mt), promotedTo(p) {}
 
 Move::~Move() {
     from = nullptr;
@@ -24,19 +25,19 @@ void Move::setMoveType(MoveType t) {
     type = t;
 }
 
-Square* Move::getFrom() const {
+std::shared_ptr<Square> Move::getFrom() const {
     return from;
 }
 
-Square* Move::getTo() const {
+std::shared_ptr<Square> Move::getTo() const {
     return to;
 }
 
-Piece* Move::getCapturedPiece() const {
+std::shared_ptr<Piece> Move::getCapturedPiece() const {
     return capturedPiece;
 }
 
-void Move::setCapturedPiece(Piece* piece) {
+void Move::setCapturedPiece(std::shared_ptr<Piece> piece) {
     capturedPiece = piece;
 }
 
@@ -48,11 +49,11 @@ void Move::setPromotedTo(char p) {
     promotedTo = p;
 }
 
-Piece* Move::getPromotedPawn() {
+std::shared_ptr<Piece> Move::getPromotedPawn() {
     return promotedPawn;
 }
 
-void Move::setPromotedPawn(Piece* piece) {
+void Move::setPromotedPawn(std::shared_ptr<Piece> piece) {
     this->promotedPawn = piece;
 }
 

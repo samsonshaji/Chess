@@ -5,7 +5,7 @@
 
 class LevelTwo : public Robot {
     public:
-        LevelTwo(Colour c, Board *b);
+        LevelTwo(Colour c, std::shared_ptr<Board>b);
         ~LevelTwo();
         virtual Move makeMove(Board &board, const string &to, const string &from, const string &promote) override;
 };

@@ -1,6 +1,6 @@
 #include "robotLevelThree.h"
 
-LevelThree::LevelThree(Colour c, Board *b) : Robot(c, b) {}
+LevelThree::LevelThree(Colour c, std::shared_ptr<Board>b) : Robot(c, b) {}
 
 LevelThree::~LevelThree() {}
 
@@ -56,7 +56,7 @@ Move LevelThree::makeMove(Board &board, const string &to, const string &from, co
     if (opponentCaptures.size() > 0) {
         vector<Move> movesOutOfDanger;
         for (auto it : opponentCaptures) {
-            Piece* ourPiece = it.getTo()->getPiece();
+            std::shared_ptr<Piece> ourPiece = it.getTo()->getPiece();
             // we've found our piece. we need to create a move to get out of that square
             for (auto ourMove : legalMoves) {
                 if (ourMove.getFrom()->getPiece() == ourPiece) {

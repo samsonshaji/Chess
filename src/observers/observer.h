@@ -7,7 +7,7 @@ class Subject;
 
 class Observer {
   public:
-    Board *board;
+    std::shared_ptr<Board>board;
     virtual void notify() = 0;
     virtual ~Observer() = 0;
 };

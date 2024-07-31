@@ -13,7 +13,7 @@ class Subject {
     void attach(Observer *o);
     void detach(Observer *o);
     void notifyObservers();
-    virtual std::vector<std::vector<Square*>> getState() const = 0;
+    virtual std::vector<std::vector<std::shared_ptr<Square>>> getState() const = 0;
     virtual ~Subject() = 0;
 };
 

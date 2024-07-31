@@ -1,6 +1,6 @@
 #include "robotLevelOne.h"
 
-LevelOne::LevelOne(Colour c, Board *b) : Robot(c, b) {}
+LevelOne::LevelOne(Colour c, std::shared_ptr<Board>b) : Robot(c, b) {}
 
 LevelOne::~LevelOne() {}
 

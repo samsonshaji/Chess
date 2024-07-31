@@ -10,7 +10,7 @@ TextObserver::~TextObserver() {
 }
 
 void TextObserver::notify() {
-    std::vector<std::vector<Square*>> board = subject.getState();
+    std::vector<std::vector<std::shared_ptr<Square>>> board = subject.getState();
     out << "  abcdefgh" << std::endl;
 
     for (int i = 7; i >= 0; i--) {

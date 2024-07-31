@@ -11,20 +11,22 @@
 
 class Controller;
 
-class Board : public Subject {
+class Board : public Subject, public std::enable_shared_from_this<Board> {
 private:
-    std::vector<std::vector<Square*>> board;
+    std::vector<std::vector<std::shared_ptr<Square>>> board;
     Controller* controller;
     std::vector<Move> moveStack;
 public:
     Board();
     ~Board();
-    Square* findKing(Colour colour) const;
+    std::shared_ptr<Square> findKing(Colour colour) const;
+
+    void setSquares();
 
     void setupInitialBoard();
 
     void setController(Controller* ctrl);
-    Square* getSquare(int x, int y) const;
+    std::shared_ptr<Square> getSquare(int x, int y) const;
 
     std::vector<Move> getMoveStack() const;
     Move getLastMove() const;
@@ -32,13 +34,13 @@ public:
     void addMoveToStack(const Move& move);
     void undoMove();
 
-    void addPiece(Piece* piece, Square* square);
-    void removePiece(Square* square);
+    void addPiece(std::shared_ptr<Piece> piece, std::shared_ptr<Square> square);
+    void removePiece(std::shared_ptr<Square> square);
     void clearBoard();
 
     bool isValidSetup() const;
 
-    std::vector<std::vector<Square*>> getState() const override;
+    std::vector<std::vector<std::shared_ptr<Square>>> getState() const override;
 
     bool movePiece(const Move& move);
     bool overrideMovePiece(const Move& move);
@@ -51,7 +53,7 @@ public:
     void print() const;
 
     bool isMoveLegal(const Move& move);
-    std::vector<std::vector<Square*>> getBoard();
+    std::vector<std::vector<std::shared_ptr<Square>>> getBoard();
 
     MoveType determineMoveType(const Move& move);
 };

@@ -4,6 +4,7 @@
 #include "colour.h"
 #include "piecetype.h"
 #include <vector>
+#include <memory>
 
 class Square;
 class Board;
@@ -15,8 +16,8 @@ protected:
     bool hasMoved = false;
     PieceType type;
     char symbol;
-    Square *square;
-    Board *board;
+    std::shared_ptr<Square>square;
+    std::shared_ptr<Board>board;
 
 public:
     virtual ~Piece() = 0;
@@ -26,12 +27,12 @@ public:
     Colour getColour() const;
     void setColour(Colour c);
     Piece(Colour c);
-    void setSquare(Square *s);
-    void setBoard(Board *b);
+    void setSquare(std::shared_ptr<Square>s);
+    void setBoard(std::shared_ptr<Board>b);
     bool getHasMoved() const;
     void setHasMoved(bool m);
     char getSymbol() const;
-    Square *getSquare() const;
+    std::shared_ptr<Square>getSquare() const;
     bool operator==(const Piece &other) const;
 };
 

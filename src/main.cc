@@ -1,24 +1,22 @@
 #include <iostream>
 #include <string>
+#include <memory>
 #include "controller.h"
 #include "board.h"
 #include "player.h"
 #include "human.h"
-// #include "robot.h"
+#include "robot.h"
 
 int main() {
-    Player* whitePlayer = nullptr;
-    Player* blackPlayer = nullptr;
-
-    Controller controller(whitePlayer, blackPlayer);
+    std::shared_ptr<Controller> controller = std::make_shared<Controller>();
 
     std::string command;
     std::cout << "> ";
     while (std::getline(std::cin, command)) {
-        controller.handleCommand(command);
+        controller->handleCommand(command);
         std::cout << "> ";
     }
     std::cout << "End of game, thanks for playing! " << std::endl;
-    controller.displayScore();
+    controller->displayScore();
     return 0;
 }

@@ -18,6 +18,6 @@ void Subject::notifyObservers() {
 
 Subject::~Subject() {
   for (auto &obs : observers) {
-    delete obs;
+    // delete obs;
   }
 }

@@ -10,19 +10,19 @@
 
 class Move {
     private:
-        Square* from;
-        Square* to;
+        std::shared_ptr<Square> from;
+        std::shared_ptr<Square> to;
         MoveType type;
         char promotedTo;
-        Piece *capturedPiece=nullptr;
-        Piece *promotedPawn=nullptr;
+        std::shared_ptr<Piece>capturedPiece=nullptr;
+        std::shared_ptr<Piece>promotedPawn=nullptr;
 
     public:
         Move();
         ~Move();
-        Move(Square* f, Square* t);
-        Move(Square* f, Square* t, MoveType mt);
-        Move(Square* f, Square* t, MoveType mt, char p);
+        Move(std::shared_ptr<Square> f, std::shared_ptr<Square> t);
+        Move(std::shared_ptr<Square> f, std::shared_ptr<Square> t, MoveType mt);
+        Move(std::shared_ptr<Square> f, std::shared_ptr<Square> t, MoveType mt, char p);
         
         Move(const Move& m);
         Move& operator=(const Move& m);
@@ -30,17 +30,17 @@ class Move {
         MoveType getMoveType() const;
         void setMoveType(MoveType t);
 
-        Square* getFrom() const;
-        Square* getTo() const;
+        std::shared_ptr<Square> getFrom() const;
+        std::shared_ptr<Square> getTo() const;
 
         char getPromotedTo() const;
         void setPromotedTo(char p);
 
-        Piece* getCapturedPiece() const;
-        void setCapturedPiece(Piece* piece);
+        std::shared_ptr<Piece> getCapturedPiece() const;
+        void setCapturedPiece(std::shared_ptr<Piece> piece);
 
-        Piece* getPromotedPawn();
-        void setPromotedPawn(Piece* piece);
+        std::shared_ptr<Piece> getPromotedPawn();
+        void setPromotedPawn(std::shared_ptr<Piece> piece);
 
         bool operator==(const Move& m) const;
 

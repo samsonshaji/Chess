@@ -5,24 +5,28 @@ Square::Square(int x, int y) : x(x), y(y), piece(nullptr) {}
 
 Square::~Square() {
     if (piece != nullptr) {
-        delete piece;
+        // delete piece;
         piece = nullptr;
         board = nullptr;
     }
 }
 
-Piece* Square::getPiece() const {
+std::shared_ptr<Piece> Square::getPiece() const {
     return piece;
 }
 
-void Square::setPiece(Piece* p) {
+void Square::setPiece(std::shared_ptr<Piece> p) {
     this->piece = p;
     if (p == nullptr) return;
-    p->setSquare(this);
+
+    // std::cout << "Setting piece on square " << x << " " << y << std::endl;
+    p->setSquare(shared_from_this());
+    // std::cout << "Setting board on piece" << std::endl;
+    this->piece->setSquare(shared_from_this());
     p->setBoard(board);
 }
 
-void Square::setBoard(Board* b) {
+void Square::setBoard(std::shared_ptr<Board> b) {
     board = b;
 }
 
@@ -32,7 +36,7 @@ void Square::removePiece() {
 }
 
 void Square::deletePiece() {
-    delete piece;
+    // delete piece;
     piece = nullptr;
 }
 

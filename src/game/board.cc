@@ -18,9 +18,19 @@ Board::Board() {
 Board::~Board() {
     for (auto& row : board) {
         for (auto& square : row) {
-            delete square;
+            // delete square;
             square = nullptr;
             controller = nullptr;
+        }
+    }
+}
+
+void Board::setSquares() {
+    for (auto& row : board) {
+        for (auto& square : row) {
+            square->setBoard(shared_from_this());
+            std::cout << square->getX() << " " << square->getY() << std::endl;
+            // square->getPiece()->setBoard(shared_from_this());
         }
     }
 }
@@ -44,72 +54,71 @@ void Board::print() const {
 }
 
 void Board::clearBoard() {
-    for (auto& row : board) {
-        for (auto& square : row) {
-            if (square->getPiece() != nullptr) {
-                delete square->getPiece();
-            }
-            square->setPiece(nullptr);
-        }
-    }
+    // for (auto& row : board) {
+    //     for (auto& square : row) {
+    //         if (square->getPiece() != nullptr) {
+    //             // delete square->getPiece();
+    //         }
+    //         square->setPiece(nullptr);
+    //     }
+    // }
 }
 
 void Board::setupInitialBoard() {
     clearBoard();
 
     for (int i = 0; i < 8; i++) {
-        std::vector<Square*> row;
+        std::vector<std::shared_ptr<Square>> row;
         for (int j = 0; j < 8; j++) {
-            Square* s = new Square(j, i);
-            s->setBoard(this);
+            std::shared_ptr<Square> s = std::make_shared<Square>(j, i);
             row.push_back(s);
         }
         board.push_back(row);
     }
 
     // calls square's setPiece function
-    // white pieces
-    board[0][0]->setPiece(new Rook(Colour::White));
-    board[0][1]->setPiece(new Knight(Colour::White));
-    board[0][2]->setPiece(new Bishop(Colour::White));
-    board[0][3]->setPiece(new Queen(Colour::White));
-    board[0][4]->setPiece(new King(Colour::White));
-    board[0][5]->setPiece(new Bishop(Colour::White));
-    board[0][6]->setPiece(new Knight(Colour::White));
-    board[0][7]->setPiece(new Rook(Colour::White));
+    // White pieces
+    board[0][0]->setPiece(std::make_shared<Rook>(Colour::White));
+    board[0][1]->setPiece(std::make_shared<Knight>(Colour::White));
+    board[0][2]->setPiece(std::make_shared<Bishop>(Colour::White));
+    board[0][3]->setPiece(std::make_shared<Queen>(Colour::White));
+    board[0][4]->setPiece(std::make_shared<King>(Colour::White));
+    board[0][5]->setPiece(std::make_shared<Bishop>(Colour::White));
+    board[0][6]->setPiece(std::make_shared<Knight>(Colour::White));
+    board[0][7]->setPiece(std::make_shared<Rook>(Colour::White));
     for (int i = 0; i < 8; i++) {
-        board[1][i]->setPiece(new Pawn(Colour::White));
+        board[1][i]->setPiece(std::make_shared<Pawn>(Colour::White));
     }
 
-    // black pieces
-    board[7][0]->setPiece(new Rook(Colour::Black));
-    board[7][1]->setPiece(new Knight(Colour::Black));
-    board[7][2]->setPiece(new Bishop(Colour::Black));
-    board[7][3]->setPiece(new Queen(Colour::Black));
-    board[7][4]->setPiece(new King(Colour::Black));
-    board[7][5]->setPiece(new Bishop(Colour::Black));
-    board[7][6]->setPiece(new Knight(Colour::Black));
-    board[7][7]->setPiece(new Rook(Colour::Black));
+    // Black pieces
+    board[7][0]->setPiece(std::make_shared<Rook>(Colour::Black));
+    board[7][1]->setPiece(std::make_shared<Knight>(Colour::Black));
+    board[7][2]->setPiece(std::make_shared<Bishop>(Colour::Black));
+    board[7][3]->setPiece(std::make_shared<Queen>(Colour::Black));
+    board[7][4]->setPiece(std::make_shared<King>(Colour::Black));
+    board[7][5]->setPiece(std::make_shared<Bishop>(Colour::Black));
+    board[7][6]->setPiece(std::make_shared<Knight>(Colour::Black));
+    board[7][7]->setPiece(std::make_shared<Rook>(Colour::Black));
     for (int i = 0; i < 8; i++) {
-        board[6][i]->setPiece(new Pawn(Colour::Black));
+        board[6][i]->setPiece(std::make_shared<Pawn>(Colour::Black));
     }
 }
 
-void Board::addPiece(Piece* piece, Square* square) {
+void Board::addPiece(std::shared_ptr<Piece> piece, std::shared_ptr<Square> square) {
     square->setPiece(piece);
 }
 
-void Board::removePiece(Square* square) {
+void Board::removePiece(std::shared_ptr<Square> square) {
    if (square->getPiece() != nullptr) {
-        delete square->getPiece();
+        // delete square->getPiece();
     }
     square->setPiece(nullptr);}
 
-std::vector<std::vector<Square*>> Board::getState() const {
+std::vector<std::vector<std::shared_ptr<Square>>> Board::getState() const {
     return board;
 }
 
-Square* Board::getSquare(int x, int y) const {
+std::shared_ptr<Square> Board::getSquare(int x, int y) const {
     if (x < 0 || x > 7 || y < 0 || y > 7) {
         return nullptr;
     }
@@ -120,10 +129,10 @@ void Board::setController(Controller* ctrl) {
     controller = ctrl;
 }
 
-Square* Board::findKing(Colour colour) const {
+std::shared_ptr<Square> Board::findKing(Colour colour) const {
     for (const auto& row : board) {
         for (const auto& square : row) {
-            Piece* piece = square->getPiece();
+            std::shared_ptr<Piece> piece = square->getPiece();
 
             if (piece == nullptr) {
             }
@@ -165,25 +174,28 @@ bool Board::isMoveLegal(const Move& move) {
 
     // find all valid moves of all pieces of the given colour, that put the king out of check
     std::vector<Move> validMoves;
-
     for (const auto& row : board) {
         for (const auto& square : row) {
-            Piece* piece = square->getPiece();
+            std::shared_ptr<Piece> piece = square->getPiece();
             if (piece && piece->getColour() == colour) {
+                // seg fault here
                 std::vector<Move> temp = piece->getValidMoves();
                 validMoves.insert(validMoves.end(), temp.begin(), temp.end());
             }
         }
     }
 
+    std::cout << "Got valid moves" << std::endl;
+
     if (std::find(validMoves.begin(), validMoves.end(), move) == validMoves.end()) {
         return false;
     }
 
+    std::cout << "Move is in valid moves" << std::endl;
     bool valid = overrideMovePiece(move);
 
-    Square* whiteKing = findKing(Colour::White);
-    Square* blackKing = findKing(Colour::Black);
+    std::shared_ptr<Square> whiteKing = findKing(Colour::White);
+    std::shared_ptr<Square> blackKing = findKing(Colour::Black);
     
     int whiteKingX = whiteKing->getX();
     int whiteKingY = whiteKing->getY();
@@ -234,7 +246,7 @@ bool Board::isValidSetup() const {
     int blackKingCount = 0;
     for (const auto& row : board) {
         for (const auto& square : row) {
-            Piece* piece = square->getPiece();
+            std::shared_ptr<Piece> piece = square->getPiece();
             if (piece) {
                 if (piece->getPieceType() == PieceType::king) {
                     if (piece->getColour() == Colour::White) {
@@ -265,7 +277,7 @@ bool Board::isValidSetup() const {
     int blackPawnCount = 0;
     for (const auto& row : board) {
         for (const auto& square : row) {
-            Piece* piece = square->getPiece();
+            std::shared_ptr<Piece> piece = square->getPiece();
             if (piece && piece->getPieceType() == PieceType::pawn) {
                 if (piece->getColour() == Colour::White) {
                     whitePawnCount++;
@@ -280,8 +292,8 @@ bool Board::isValidSetup() const {
         return false;
     }
 
-    Square* whiteKing = findKing(Colour::White);
-    Square* blackKing = findKing(Colour::Black);
+    std::shared_ptr<Square> whiteKing = findKing(Colour::White);
+    std::shared_ptr<Square> blackKing = findKing(Colour::Black);
     
     int whiteKingX = whiteKing->getX();
     int whiteKingY = whiteKing->getY();
@@ -330,12 +342,12 @@ bool Board::overrideMovePiece(const Move& move) {
         return false;
     }
 
-    Square* from = move.getFrom();
-    Square* to = move.getTo();
-    Piece* piece = from->getPiece();
-    piece->setBoard(this);
+    std::shared_ptr<Square> from = move.getFrom();
+    std::shared_ptr<Square> to = move.getTo();
+    std::shared_ptr<Piece> piece = from->getPiece();
+    piece->setBoard(shared_from_this());
 
-    Piece *capturedPiece = nullptr;
+    std::shared_ptr<Piece>capturedPiece = nullptr;
 
     if (to->getPiece() != nullptr) {
         capturedPiece = to->getPiece();
@@ -376,7 +388,7 @@ bool Board::overrideMovePiece(const Move& move) {
     } else if (currMove.getMoveType() == MoveType::EnPassant) {
         to->setPiece(piece);
         from->setPiece(nullptr);
-        Square* target = getSquare(to->getX(), from->getY());
+        std::shared_ptr<Square> target = getSquare(to->getX(), from->getY());
         currMove.setCapturedPiece(target->getPiece());
         piece->setSquare(to);
         target->setPiece(nullptr);
@@ -391,17 +403,17 @@ bool Board::overrideMovePiece(const Move& move) {
  
         // Kingside castling
         if (to->getX() == from->getX() + 2) {
-            Square* rookFrom = getSquare(7, from->getY());
-            Square* rookTo = getSquare(5, from->getY());
-            Piece* rook = rookFrom->getPiece();
+            std::shared_ptr<Square> rookFrom = getSquare(7, from->getY());
+            std::shared_ptr<Square> rookTo = getSquare(5, from->getY());
+            std::shared_ptr<Piece> rook = rookFrom->getPiece();
             rookTo->setPiece(rook);
             rookFrom->setPiece(nullptr);
         }
         // Queenside castling
         else if (to->getX() == from->getX() - 2) {
-            Square* rookFrom = getSquare(0, from->getY());
-            Square* rookTo = getSquare(3, from->getY());
-            Piece* rook = rookFrom->getPiece();
+            std::shared_ptr<Square> rookFrom = getSquare(0, from->getY());
+            std::shared_ptr<Square> rookTo = getSquare(3, from->getY());
+            std::shared_ptr<Piece> rook = rookFrom->getPiece();
             rookTo->setPiece(rook);
             rookFrom->setPiece(nullptr);
         }
@@ -411,37 +423,38 @@ bool Board::overrideMovePiece(const Move& move) {
             currMove.setCapturedPiece(capturedPiece);
         }
 
-        Piece *newPiece = nullptr;
-        // PieceType promotedType = controller->getPromotedTo();
+        std::shared_ptr<Piece> newPiece = nullptr;
         char promotedTo = currMove.getPromotedTo();
+
         switch (promotedTo) {
             case 'q':
-                newPiece = new Queen(piece->getColour());
+                newPiece = std::make_shared<Queen>(piece->getColour());
                 break;
             case 'r':
-                newPiece = new Rook(piece->getColour());
+                newPiece = std::make_shared<Rook>(piece->getColour());
                 break;
             case 'b':
-                newPiece = new Bishop(piece->getColour());
+                newPiece = std::make_shared<Bishop>(piece->getColour());
                 break;
             case 'n':
-                newPiece = new Knight(piece->getColour());
+                newPiece = std::make_shared<Knight>(piece->getColour());
                 break;
             default:
                 break;
         }
+
 
         currMove.setPromotedPawn(piece);
 
         to->setPiece(newPiece);
         from->setPiece(nullptr);
         newPiece->setSquare(to);
-        newPiece->setBoard(this);
+        newPiece->setBoard(shared_from_this());
     }
 
     // set piece's moved state
     piece->setHasMoved(true);
-    piece->setBoard(this);
+    piece->setBoard(shared_from_this());
 
     // add move to stack
     moveStack.push_back(currMove);
@@ -458,15 +471,21 @@ bool Board::movePiece(const Move& move) {
         return false;
     }
 
-    Square* from = move.getFrom();
-    Square* to = move.getTo();
-    Piece* piece = from->getPiece();
-    piece->setBoard(this);
+    std::cout << "Move is legal" << std::endl;
 
-    Piece *capturedPiece = nullptr;
+    std::shared_ptr<Square> from = move.getFrom();
+    std::shared_ptr<Square> to = move.getTo();
+    std::shared_ptr<Piece> piece = from->getPiece();
+    piece->setBoard(shared_from_this());
+
+    std::cout << "1" << std::endl;
+
+    std::shared_ptr<Piece>capturedPiece = nullptr;
     if (to->getPiece() != nullptr) {
         capturedPiece = to->getPiece();
     }
+
+    std::cout << "2" << std::endl;
 
     Move currMove = move;
     // determine move type
@@ -502,7 +521,7 @@ bool Board::movePiece(const Move& move) {
     } else if (currMove.getMoveType() == MoveType::EnPassant) {
         to->setPiece(piece);
         from->setPiece(nullptr);
-        Square* target = getSquare(to->getX(), from->getY());
+        std::shared_ptr<Square> target = getSquare(to->getX(), from->getY());
         currMove.setCapturedPiece(target->getPiece());
         piece->setSquare(to);
         target->setPiece(nullptr);
@@ -520,18 +539,18 @@ bool Board::movePiece(const Move& move) {
         // set rook
         // Kingside castling
         if (to->getX() == from->getX() + 2) {
-            Square* rookFrom = getSquare(7, from->getY());
-            Square* rookTo = getSquare(5, from->getY());
-            Piece* rook = rookFrom->getPiece();
+            std::shared_ptr<Square> rookFrom = getSquare(7, from->getY());
+            std::shared_ptr<Square> rookTo = getSquare(5, from->getY());
+            std::shared_ptr<Piece> rook = rookFrom->getPiece();
             rookTo->setPiece(rook);
             rookFrom->setPiece(nullptr);
             rook->setHasMoved(true);
         }
         // Queenside castling
         else if (to->getX() == from->getX() - 2) {
-            Square* rookFrom = getSquare(0, from->getY());
-            Square* rookTo = getSquare(3, from->getY());
-            Piece* rook = rookFrom->getPiece();
+            std::shared_ptr<Square> rookFrom = getSquare(0, from->getY());
+            std::shared_ptr<Square> rookTo = getSquare(3, from->getY());
+            std::shared_ptr<Piece> rook = rookFrom->getPiece();
             rookTo->setPiece(rook);
             rookFrom->setPiece(nullptr);
             rook->setHasMoved(true);
@@ -542,30 +561,32 @@ bool Board::movePiece(const Move& move) {
             currMove.setCapturedPiece(capturedPiece);
         }
 
-        Piece *newPiece = nullptr;
+        std::shared_ptr<Piece> newPiece = nullptr;
         char promotedTo = currMove.getPromotedTo();
 
+        // Convert raw pointers to smart pointers
         if (promotedTo == 'q' || promotedTo == 'Q') {
-            newPiece = new Queen(piece->getColour());
+            newPiece = std::make_shared<Queen>(piece->getColour());
         } else if (promotedTo == 'r' || promotedTo == 'R') {
-            newPiece = new Rook(piece->getColour());
+            newPiece = std::make_shared<Rook>(piece->getColour());
         } else if (promotedTo == 'b' || promotedTo == 'B') {
-            newPiece = new Bishop(piece->getColour());
+            newPiece = std::make_shared<Bishop>(piece->getColour());
         } else if (promotedTo == 'n' || promotedTo == 'N') {
-            newPiece = new Knight(piece->getColour());
+            newPiece = std::make_shared<Knight>(piece->getColour());
         }
+
 
         currMove.setPromotedPawn(piece);
 
         to->setPiece(newPiece);
         from->setPiece(nullptr);
         newPiece->setSquare(to);
-        newPiece->setBoard(this);
+        newPiece->setBoard(shared_from_this());
     }
 
     // set piece's moved state
     piece->setHasMoved(true);
-    piece->setBoard(this);
+    piece->setBoard(shared_from_this());
 
     // add move to stack
     moveStack.push_back(currMove);
@@ -583,10 +604,10 @@ void Board::undoMove() {
     Move lastMove = moveStack.back();
     moveStack.pop_back();
 
-    Square* from = lastMove.getFrom();
-    Square* to = lastMove.getTo();
-    Piece* piece = to->getPiece();
-    piece->setBoard(this);
+    std::shared_ptr<Square> from = lastMove.getFrom();
+    std::shared_ptr<Square> to = lastMove.getTo();
+    std::shared_ptr<Piece> piece = to->getPiece();
+    piece->setBoard(shared_from_this());
 
     if (lastMove.getMoveType() == MoveType::Normal) {
         from->setPiece(piece);
@@ -600,7 +621,7 @@ void Board::undoMove() {
     } else if (lastMove.getMoveType() == MoveType::EnPassant) {
         from->setPiece(piece);
         to->setPiece(nullptr);
-        Square* target = getSquare(to->getX(), from->getY());
+        std::shared_ptr<Square> target = getSquare(to->getX(), from->getY());
         target->setPiece(lastMove.getCapturedPiece());
         piece->setSquare(from);
     } else if (lastMove.getMoveType() == MoveType::DoublePawn) {
@@ -615,18 +636,18 @@ void Board::undoMove() {
 
         // Kingside castling
         if (to->getX() == from->getX() + 2) {
-            Square* rookFrom = getSquare(5, from->getY());
-            Square* rookTo = getSquare(7, from->getY());
-            Piece* rook = rookFrom->getPiece();
+            std::shared_ptr<Square> rookFrom = getSquare(5, from->getY());
+            std::shared_ptr<Square> rookTo = getSquare(7, from->getY());
+            std::shared_ptr<Piece> rook = rookFrom->getPiece();
 
             rookTo->setPiece(rook);
             rookFrom->setPiece(nullptr);
             rook->setHasMoved(false);
         }
         else if (to->getX() == from->getX() - 2) {
-            Square* rookFrom = getSquare(3, from->getY());
-            Square* rookTo = getSquare(0, from->getY());
-            Piece* rook = rookFrom->getPiece();
+            std::shared_ptr<Square> rookFrom = getSquare(3, from->getY());
+            std::shared_ptr<Square> rookTo = getSquare(0, from->getY());
+            std::shared_ptr<Piece> rook = rookFrom->getPiece();
 
             rookTo->setPiece(rook);
             rookFrom->setPiece(nullptr);
@@ -634,24 +655,24 @@ void Board::undoMove() {
         }
 
     } else if (lastMove.getMoveType() == MoveType::Promotion) {
-        delete piece;
+        // delete piece;
 
         // static cast into pawn
-        piece = static_cast<Pawn*>(lastMove.getPromotedPawn());
+        piece = lastMove.getPromotedPawn();
         from->setPiece(piece);
         to->setPiece(nullptr);
 
         piece->setSquare(from);
-        piece->setBoard(this);
+        piece->setBoard(shared_from_this());
 
         // if a piece had been captured, undo it
         if (lastMove.getCapturedPiece() != nullptr) {
-            Square* capturedSquare = lastMove.getTo();
+            std::shared_ptr<Square> capturedSquare = lastMove.getTo();
             capturedSquare->setPiece(lastMove.getCapturedPiece());
         }
     }
 
-    piece->setBoard(this);
+    piece->setBoard(shared_from_this());
 
     // find last move of piece in moveStack
     bool found = false;
@@ -673,7 +694,7 @@ void Board::undoMove() {
 
 bool Board::isInCheck(Colour colour) const {
     // check if the king of the given colour is in check
-    Square* kingSquare = findKing(colour);
+    std::shared_ptr<Square> kingSquare = findKing(colour);
     if (kingSquare == nullptr) {
         // std::cout << "King not found!!!" << std::endl;
         return false;
@@ -683,7 +704,7 @@ bool Board::isInCheck(Colour colour) const {
 
     for (const auto& row : board) {
         for (const auto& square : row) {
-            Piece* piece = square->getPiece();
+            std::shared_ptr<Piece> piece = square->getPiece();
             if (piece && piece->getColour() != colour) {
 
                 std::vector<Move> validMoves = piece->getValidMoves();
@@ -713,7 +734,7 @@ bool Board::isCheckmate(Colour colour) {
     std::vector<Move> validMoves;
     for (const auto& row : board) {
         for (const auto& square : row) {
-            Piece* piece = square->getPiece();
+            std::shared_ptr<Piece> piece = square->getPiece();
             if (piece && piece->getColour() == colour) {
                 std::vector<Move> temp = piece->getValidMoves();
                 validMoves.insert(validMoves.end(), temp.begin(), temp.end());
@@ -742,7 +763,7 @@ bool Board::isStalemate(Colour colour) const {
 	if (turn) {
         for (const auto& row : board) {
             for (const auto& square : row) {
-                Piece* piece = square->getPiece();
+                std::shared_ptr<Piece> piece = square->getPiece();
                 if (piece && piece->getColour() == Colour::Black) {
                     std::vector<Move> temp = piece->getValidMoves();
                     moveList.insert(moveList.end(), temp.begin(), temp.end());
@@ -753,7 +774,7 @@ bool Board::isStalemate(Colour colour) const {
 	} else {
         for (const auto& row : board) {
             for (const auto& square : row) {
-                Piece* piece = square->getPiece();
+                std::shared_ptr<Piece> piece = square->getPiece();
                 if (piece && piece->getColour() == Colour::White) {
                     std::vector<Move> temp = piece->getValidMoves();
                     moveList.insert(moveList.end(), temp.begin(), temp.end());
@@ -769,15 +790,15 @@ bool Board::isStalemate(Colour colour) const {
 	return false;
 }
 
-std::vector<std::vector<Square*>> Board::getBoard() {
+std::vector<std::vector<std::shared_ptr<Square>>> Board::getBoard() {
     return board;
 }
 
 MoveType Board::determineMoveType(const Move& move) {
-    Square* from = move.getFrom();
-    Square* to = move.getTo();
-    Piece* piece = from->getPiece();
-    Piece* capturedPiece = to->getPiece();
+    std::shared_ptr<Square> from = move.getFrom();
+    std::shared_ptr<Square> to = move.getTo();
+    std::shared_ptr<Piece> piece = from->getPiece();
+    std::shared_ptr<Piece> capturedPiece = to->getPiece();
 
     if (piece->getPieceType() == PieceType::pawn) {
         if (to->getX() != from->getX() && capturedPiece == nullptr) {

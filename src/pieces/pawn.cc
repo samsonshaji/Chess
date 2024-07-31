@@ -23,8 +23,8 @@ bool Pawn::isEnPassantValid(const Board &board, int side) const {
         return false;
     }
 
-    Square* adjacentSquare = board.getSquare(curX + side, curY);
-    Square* targetSquare = board.getSquare(curX + side, curY + direction);
+    std::shared_ptr<Square> adjacentSquare = board.getSquare(curX + side, curY);
+    std::shared_ptr<Square> targetSquare = board.getSquare(curX + side, curY + direction);
 
     if (adjacentSquare->getPiece() &&
         adjacentSquare->getPiece()->getPieceType() == PieceType::pawn &&
@@ -72,7 +72,7 @@ std::vector<Move> Pawn::getValidMoves() const {
     // capture
     for (int i = -1; i <= 1; i += 2) {
         if (curX + i < 0 || curX + i >= 8) continue;
-        Square* targetSquare = board->getSquare(curX + i, curY + direction);
+        std::shared_ptr<Square> targetSquare = board->getSquare(curX + i, curY + direction);
         if (targetSquare && targetSquare->getPiece() && targetSquare->getPiece()->getColour() != colour) {
             MoveType moveType = MoveType::Normal;
             if (curY + direction == 0 || curY + direction == 7) {

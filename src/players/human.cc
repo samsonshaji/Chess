@@ -48,8 +48,8 @@ Move Human::makeMove(Board &board, const string &from, const string &to, const s
         return Move(nullptr, nullptr);
     }
 
-    Square *fromSquare = board.getSquare(fx, fy);
-    Square *toSquare = board.getSquare(tx, ty);
+    std::shared_ptr<Square>fromSquare = board.getSquare(fx, fy);
+    std::shared_ptr<Square>toSquare = board.getSquare(tx, ty);
 
     if (fromSquare->getPiece() == nullptr || fromSquare->getPiece()->getColour() != colour) {
         return Move(nullptr, nullptr);

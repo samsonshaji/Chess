@@ -2,22 +2,23 @@
 #define SQUARE_H
 
 #include "piece.h"
+#include <memory>
 
-class Square {
+class Square : public std::enable_shared_from_this<Square> {
 private:
     int x;
     int y;
-    Piece* piece=nullptr;
-    Board* board;
+    std::shared_ptr<Piece> piece=nullptr;
+    std::shared_ptr<Board> board;
 
 public:
 
     Square(int x, int y);
     ~Square();
 
-    Piece* getPiece() const;
-    void setPiece(Piece* p);
-    void setBoard(Board* b);
+    std::shared_ptr<Piece> getPiece() const;
+    void setPiece(std::shared_ptr<Piece> p);
+    void setBoard(std::shared_ptr<Board> b);
     void removePiece();
     void deletePiece();
     int getX() const;

@@ -45,7 +45,7 @@ void GraphicsObserver::notify() {
                 win.fillRectangle(100*(j + 1), 100*(8-i), 100, 100, Xwindow::White);
             }
 
-            std::vector<std::vector<Square*>> board = subject.getState();
+            std::vector<std::vector<std::shared_ptr<Square>>> board = subject.getState();
 
             char piece = (board[i][j]->getPiece() == nullptr) ? '_' : board[i][j]->getPiece()->getSymbol();
 

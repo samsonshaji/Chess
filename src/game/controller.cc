@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <memory>
 
 #include "bishop.h"
 #include "board.h"
@@ -21,32 +22,38 @@
 #include "square.h"
 #include "textobserver.h"
 
-Controller::Controller(Player *player1, Player *player2) : player1(player1), player2(player2), currentPlayer(player1), gameEnded(false) {
-    board = new Board();
+
+Controller::Controller() : player1(nullptr), player2(nullptr), currentPlayer(nullptr), gameEnded(false) {
+    // std::cout << "Controller constructor called" << std::endl;
+    board = std::make_shared<Board>();
+    board->setSquares();
+    // std::cout << "Board created" << std::endl;
     board->setController(this);
-    scoreBoard = new ScoreBoard();
+    scoreBoard = std::make_shared<ScoreBoard>();
+    // std::cout << "Controller constructor called" << std::endl;
     new TextObserver(*board);
+    // std::cout << "TextObserver created" << std::endl;
     // new GraphicsObserver(*board);
 }
 
 Controller::~Controller() {
-    std::cout << "Controller destructor called" << std::endl;
+    // std::cout << "Controller destructor called" << std::endl;
     for (auto move : board->getMoveStack()) {
         if (move.getCapturedPiece() != nullptr) {
-            delete move.getCapturedPiece();
+            // delete move.getCapturedPiece();
             move.setCapturedPiece(nullptr);
         }
         else if( move.getPromotedPawn() != nullptr){
-            delete move.getPromotedPawn();
+            // delete move.getPromotedPawn();
             move.setPromotedPawn(nullptr);
         }
     }
-    delete board;
-    delete scoreBoard;
+    // delete board;
+    // delete scoreBoard;
     scoreBoard = nullptr;
     currentPlayer = nullptr;
-    delete player1;
-    delete player2;
+    // delete player1;
+    // delete player2;
     player1 = nullptr;
     player2 = nullptr;
 }
@@ -79,11 +86,11 @@ void Controller::setStartTurnColour(Colour colour) {
     startTurnColour = colour;
 }
 
-Player *Controller::getCurrentPlayer() {
+std::shared_ptr<Player>Controller::getCurrentPlayer() {
     return currentPlayer;
 }
 
-Square *Controller::stringToSquare(std::string squarestring) {
+std::shared_ptr<Square>Controller::stringToSquare(std::string squarestring) {
 
     if (squarestring.length() != 2) {
         return nullptr;
@@ -100,7 +107,7 @@ Square *Controller::stringToSquare(std::string squarestring) {
     return board->getSquare(x, y);
 }
 
-void Controller::setScoreBoard(ScoreBoard *sb) {
+void Controller::setScoreBoard(std::shared_ptr<ScoreBoard> sb) {
     scoreBoard = sb;
 }
 
@@ -131,36 +138,37 @@ void Controller::handleCommand(const std::string &command) {
             return;
         }
 
-        if (whitePlayerType == "human") {
-            player1 = new Human(Colour::White);
-        } else if (whitePlayerType == "computer1") {
-            player1 = new LevelOne(Colour::White, board);
-        } else if (whitePlayerType == "computer2") {
-            player1 = new LevelTwo(Colour::White, board);
-        } else if (whitePlayerType == "computer3") {
-            player1 = new LevelThree(Colour::White, board);
-        } else if (whitePlayerType == "computer4") {
-            player1 = new LevelFour(Colour::White, board);
-        } else {
-            std::cout << "Invalid player type" << std::endl;
-            return;
-        }
+    if (whitePlayerType == "human") {
+        player1 = std::make_shared<Human>(Colour::White);
+    } else if (whitePlayerType == "computer1") {
+        player1 = std::make_shared<LevelOne>(Colour::White, board);
+    } else if (whitePlayerType == "computer2") {
+        player1 = std::make_shared<LevelTwo>(Colour::White, board);
+    } else if (whitePlayerType == "computer3") {
+        player1 = std::make_shared<LevelThree>(Colour::White, board);
+    } else if (whitePlayerType == "computer4") {
+        player1 = std::make_shared<LevelFour>(Colour::White, board);
+    } else {
+        std::cout << "Invalid player type" << std::endl;
+        return;
+    }
 
-        if (blackPlayerType == "human") {
-            player2 = new Human(Colour::Black);
-        } else if (blackPlayerType == "computer1") {
-            player2 = new LevelOne(Colour::Black, board);
-        } else if (blackPlayerType == "computer2") {
-            player2 = new LevelTwo(Colour::Black, board);
-        } else if (blackPlayerType == "computer3") {
-            player2 = new LevelThree(Colour::Black, board);
-        } else if (blackPlayerType == "computer4") {
-            player2 = new LevelFour(Colour::Black, board);
-        } else {
-            std::cout << "Invalid player type" << std::endl;
-            return;
-        }
-        startGame(*player1, *player2);
+    if (blackPlayerType == "human") {
+        player2 = std::make_shared<Human>(Colour::Black);
+    } else if (blackPlayerType == "computer1") {
+        player2 = std::make_shared<LevelOne>(Colour::Black, board);
+    } else if (blackPlayerType == "computer2") {
+        player2 = std::make_shared<LevelTwo>(Colour::Black, board);
+    } else if (blackPlayerType == "computer3") {
+        player2 = std::make_shared<LevelThree>(Colour::Black, board);
+    } else if (blackPlayerType == "computer4") {
+        player2 = std::make_shared<LevelFour>(Colour::Black, board);
+    } else {
+        std::cout << "Invalid player type" << std::endl;
+        return;
+    }
+        // startGame(player1, player2);
+        startGame(player1, player2);
     } else if (action == "resign") {
         if (!gameStarted) {
             std::cout << "Game has not started yet" << std::endl;
@@ -230,9 +238,9 @@ void Controller::handleCommand(const std::string &command) {
     }
 }
 
-void Controller::startGame(Player &p1, Player &p2) {
-    player1 = &p1;
-    player2 = &p2;
+void Controller::startGame(std::shared_ptr<Player> p1, std::shared_ptr<Player> p2) {
+    player1 = p1;
+    player2 = p2;
     MoveHistory.clear();
     gameEnded = false;
     gameStarted = true;
@@ -345,7 +353,7 @@ void Controller::setupMode() {
                 continue;
             }
 
-            Square *targetSquare = stringToSquare(square);
+            std::shared_ptr<Square>targetSquare = stringToSquare(square);
             if (targetSquare == nullptr) {
                 std::cout << "Invalid square (Out of Bounds)" << std::endl;
                 continue;
@@ -361,19 +369,19 @@ void Controller::setupMode() {
             }
 
             Colour colour = (piece[0] < 'a') ? Colour::White : Colour::Black;
-            Piece *piecePtr = nullptr;
+            std::shared_ptr<Piece>piecePtr = nullptr;
             if ((piece[0] == 'K' || piece[0] == 'k') && board->findKing(colour) == nullptr) {
-                piecePtr = new King(colour);
+                piecePtr = std::make_shared<King>(colour);
             } else if ((piece[0] == 'Q' || piece[0] == 'q')) {
-                piecePtr = new Queen(colour);
+                piecePtr = std::make_shared<Queen>(colour);
             } else if ((piece[0] == 'R' || piece[0] == 'r')) {
-                piecePtr = new Rook(colour);
+                piecePtr = std::make_shared<Rook>(colour);
             } else if (piece[0] == 'B' || piece[0] == 'b') {
-                piecePtr = new Bishop(colour);
+                piecePtr = std::make_shared<Bishop>(colour);
             } else if (piece[0] == 'N' || piece[0] == 'n') {
-                piecePtr = new Knight(colour);
+                piecePtr = std::make_shared<Knight>(colour);
             } else if (piece[0] == 'P' || piece[0] == 'p') {
-                piecePtr = new Pawn(colour);
+                piecePtr = std::make_shared<Pawn>(colour);
             } else {
                 std::cout << "Invalid piece" << std::endl;
                 continue;
@@ -392,7 +400,7 @@ void Controller::setupMode() {
                 std::cout << "Invalid command (Make sure to it is in proper format)" << std::endl;
                 continue;
             }
-            Square *targetSquare = stringToSquare(square);
+            std::shared_ptr<Square>targetSquare = stringToSquare(square);
             if (targetSquare == nullptr) {
                 std::cout << "Invalid square" << std::endl;
                 continue;
